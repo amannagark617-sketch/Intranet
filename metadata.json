@@ -1,0 +1,8 @@
+{
+  "name": "Little Nap Recliners Production Dashboard",
+  "description": "PMS (Production Management System) dashboard to track and visualize the 14-stage workflow, responsible department owners, bottlenecks, and on-time performance for Little Nap Recliners.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

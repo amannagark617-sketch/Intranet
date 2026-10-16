@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { fetchAndParseData, getCachedOrders } from './services/googleSheetService';
 import type { Order, ProductionStepName, Insight } from './types';
 import Header from './components/Header';
+import type { ViewMode } from './components/Header';
+import TodayHome from './components/TodayHome';
 import ProductionDashboard from './components/ProductionDashboard';
 import ReadyGoodsDashboard from './components/ReadyGoodsDashboard';
 import ReadyStockDashboard from './components/ReadyStockDashboard';
@@ -42,8 +44,8 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isAIAgentOpen, setIsAIAgentOpen] = useState<boolean>(false);
 
-  // View Mode: 'dashboard' | 'readyGoods' | 'readyStock' | 'receivableList' | 'pmsManesar' | 'pmsIndore' | 'overtime' | 'serviceComplaints' | 'salesReport' | 'executiveHub' | 'grossProfit'
-  const [viewMode, setViewMode] = useState<'dashboard' | 'readyGoods' | 'readyStock' | 'receivableList' | 'pmsManesar' | 'pmsIndore' | 'overtime' | 'serviceComplaints' | 'salesReport' | 'executiveHub' | 'grossProfit'>('dashboard');
+  // View Mode: 'today' (CEO home) | 'dashboard' | 'readyGoods' | 'readyStock' | 'receivableList' | 'pmsManesar' | 'pmsIndore' | 'overtime' | 'serviceComplaints' | 'salesReport' | 'executiveHub' | 'grossProfit'
+  const [viewMode, setViewMode] = useState<ViewMode>('today');
 
   // Detail Modal for Selected Order
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -459,6 +461,19 @@ const App: React.FC = () => {
           ? 'p-0 max-w-none flex flex-col' 
           : 'max-w-[1920px] mx-auto p-4 md:p-6 lg:p-8 space-y-6'
       }`}>
+        {/* VIEW 0: TODAY - CEO HOME SUMMARY */}
+        {viewMode === 'today' && (
+          <TodayHome
+            key={`today-${refreshKey}`}
+            orders={orders}
+            readyGoodsUnits={readyGoodsCount}
+            readyStockUnits={readyStockCount}
+            receivables={getCachedReceivables()}
+            onNavigate={setViewMode}
+            onGenerateInsights={handleGenerateInsights}
+          />
+        )}
+
         {/* VIEW 1: EXECUTIVE PRODUCTION DASHBOARD */}
         {viewMode === 'dashboard' && (
           <ProductionDashboard 
@@ -476,7 +491,7 @@ const App: React.FC = () => {
         {viewMode === 'readyGoods' && (
           <ReadyGoodsDashboard 
             key={`readyGoods-${refreshKey}`}
-            onBackToDashboard={() => setViewMode('dashboard')}
+            onBackToDashboard={() => setViewMode('today')}
           />
         )}
 
@@ -484,7 +499,7 @@ const App: React.FC = () => {
         {viewMode === 'readyStock' && (
           <ReadyStockDashboard 
             key={`readyStock-${refreshKey}`}
-            onBackToDashboard={() => setViewMode('dashboard')}
+            onBackToDashboard={() => setViewMode('today')}
           />
         )}
 
@@ -492,7 +507,7 @@ const App: React.FC = () => {
         {viewMode === 'receivableList' && (
           <ReceivableListDashboard 
             key={`receivableList-${refreshKey}`}
-            onBackToDashboard={() => setViewMode('dashboard')}
+            onBackToDashboard={() => setViewMode('today')}
           />
         )}
 
@@ -541,7 +556,7 @@ const App: React.FC = () => {
         {viewMode === 'pmsIndore' && (
           <PmsIndoreView 
             key={`pmsIndore-${refreshKey}`}
-            onBackToDashboard={() => setViewMode('dashboard')}
+            onBackToDashboard={() => setViewMode('today')}
           />
         )}
 
@@ -550,7 +565,7 @@ const App: React.FC = () => {
           <OvertimeTrackerDashboard 
             key={`overtime-${refreshKey}`}
             orders={orders}
-            onBackToDashboard={() => setViewMode('dashboard')}
+            onBackToDashboard={() => setViewMode('today')}
             onSelectOrder={setSelectedOrder}
           />
         )}
@@ -559,7 +574,7 @@ const App: React.FC = () => {
         {viewMode === 'serviceComplaints' && (
           <ServiceComplaintTrackerDashboard 
             key={`serviceComplaints-${refreshKey}`}
-            onBackToDashboard={() => setViewMode('dashboard')}
+            onBackToDashboard={() => setViewMode('today')}
           />
         )}
 
@@ -567,7 +582,7 @@ const App: React.FC = () => {
         {viewMode === 'salesReport' && (
           <SalesReportDashboard 
             key={`salesReport-${refreshKey}`}
-            onBackToDashboard={() => setViewMode('dashboard')}
+            onBackToDashboard={() => setViewMode('today')}
           />
         )}
 
@@ -575,7 +590,7 @@ const App: React.FC = () => {
         {viewMode === 'executiveHub' && (
           <ExecutiveHubDashboard 
             key={`executiveHub-${refreshKey}`}
-            onBackToDashboard={() => setViewMode('dashboard')}
+            onBackToDashboard={() => setViewMode('today')}
           />
         )}
 
@@ -583,7 +598,7 @@ const App: React.FC = () => {
         {viewMode === 'grossProfit' && (
           <RealTimeGrossProfitDashboard 
             key={`grossProfit-${refreshKey}`}
-            onBackToDashboard={() => setViewMode('dashboard')}
+            onBackToDashboard={() => setViewMode('today')}
           />
         )}
       </main>

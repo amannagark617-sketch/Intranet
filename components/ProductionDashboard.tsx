@@ -53,6 +53,53 @@ interface ProductionDashboardProps {
   onNavigateToReadyStock?: () => void;
 }
 
+const StatTile: React.FC<{
+  label: string;
+  value: string;
+  sub: string;
+  accent?: 'amber';
+  onClick?: () => void;
+}> = ({ label, value, sub, accent, onClick }) => (
+  <button
+    onClick={onClick}
+    disabled={!onClick}
+    className="group relative text-left bg-white rounded-2xl border border-slate-200/80 px-4 sm:px-5 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-slate-300 hover:shadow-[0_6px_20px_-8px_rgba(15,23,42,0.18)] transition-all cursor-pointer disabled:cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+  >
+    <div className="flex items-center gap-1.5 text-[13px] font-medium text-slate-500">
+      {accent === 'amber' && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
+      {label}
+    </div>
+    <div className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">{value}</div>
+    <div className="mt-1 text-xs text-slate-400">{sub}</div>
+  </button>
+);
+
+const Disclosure: React.FC<{
+  title: string;
+  subtitle: string;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}> = ({ title, subtitle, open, onToggle, children }) => (
+  <section>
+    <button
+      onClick={onToggle}
+      className="w-full flex items-center justify-between gap-4 bg-white hover:bg-slate-50 rounded-2xl border border-slate-200/80 px-5 py-4 text-left cursor-pointer transition-colors"
+      aria-expanded={open}
+    >
+      <span>
+        <span className="block text-base font-semibold text-slate-900">{title}</span>
+        <span className="block text-[13px] text-slate-500 mt-0.5">{subtitle}</span>
+      </span>
+      <span className="flex items-center gap-1.5 text-sm font-medium text-slate-500 shrink-0">
+        {open ? 'Hide' : 'Show'}
+        {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+      </span>
+    </button>
+    {open && <div className="mt-4">{children}</div>}
+  </section>
+);
+
 export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
   orders,
   onRefresh,
@@ -105,6 +152,11 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
 
   // Dashboard Sub-Tab: 'overview' | 'daily' | 'onTime'
   const [activeDashboardSubTab, setActiveDashboardSubTab] = useState<'overview' | 'daily' | 'onTime'>('overview');
+
+  // Collapsible sections (kept closed by default for a calmer page)
+  const [showAI, setShowAI] = useState<boolean>(false);
+  const [showTrends, setShowTrends] = useState<boolean>(false);
+  const [showAudit, setShowAudit] = useState<boolean>(false);
 
   // Fetch Final QC records and Dispatch records on mount or refresh
   const loadQcData = async (force = false) => {
@@ -674,96 +726,64 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
     }
   }, [plantContext]);
 
+  // Plain-language pace status for the target card
+  const pace = (() => {
+    const met = productionTarget > 0 && liveProducedTillDate >= productionTarget;
+    if (met) return { label: 'Target reached', pill: 'bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500', bar: 'bg-emerald-500' };
+    if (daysRemaining === 0) return { label: 'Month closed short', pill: 'bg-rose-50 text-rose-700', dot: 'bg-rose-500', bar: 'bg-rose-500' };
+    if (actualPerDay >= newTargetPerDay) return { label: 'On pace', pill: 'bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500', bar: 'bg-emerald-500' };
+    if (actualPerDay >= newTargetPerDay * 0.85) return { label: 'Slightly behind', pill: 'bg-amber-50 text-amber-700', dot: 'bg-amber-500', bar: 'bg-amber-400' };
+    return { label: 'Behind pace', pill: 'bg-rose-50 text-rose-700', dot: 'bg-rose-500', bar: 'bg-rose-500' };
+  })();
+
+  const queueSegments = [
+    { key: 'current' as const, label: 'This month', hint: `${monthNamesShort[selectedMonthNum - 1]}`, value: floorMetrics.inQueueCurrent, color: 'bg-indigo-500' },
+    { key: 'backlog' as const, label: 'Overdue backlog', hint: '', value: floorMetrics.backlogChairs, color: 'bg-rose-400' },
+    { key: 'next' as const, label: 'Next month', hint: nextMonthDisplay, value: floorMetrics.nextMonthChairs, color: 'bg-slate-300' },
+  ];
+  const queueTotalForBar = Math.max(1, queueSegments.reduce((a, x) => a + x.value, 0));
+
   return (
     <div className="space-y-6 animate-fade-in text-slate-800">
-      {/* Top Header Bar */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 md:p-6 shadow-xs border border-slate-200">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          {/* Left Branding & Title */}
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 sm:p-3 bg-indigo-50 text-indigo-700 rounded-xl border border-indigo-100/80 shadow-xs shrink-0">
-              <Layers className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
-                  Production Dashboard
-                </h1>
-              </div>
-              <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5 line-clamp-2 sm:line-clamp-none">
-                Executive target vs. achievement analysis, on-time delivery intelligence, and in-queue backlog tracking.
-              </p>
-            </div>
-          </div>
+      {/* Toolbar: sub-views + month */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-1 overflow-x-auto scrollbar-none -mx-1 px-1">
+          {([
+            { id: 'overview', label: 'This month' },
+            { id: 'daily', label: 'Daily steps' },
+            { id: 'onTime', label: `On-time delivery · ${onTimeMetrics.overallUnitOnTimePct}%` },
+          ] as const).map(t => (
+            <button
+              key={t.id}
+              onClick={() => setActiveDashboardSubTab(t.id)}
+              className={`shrink-0 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                activeDashboardSubTab === t.id
+                  ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
+                  : 'text-slate-500 hover:text-slate-800 border border-transparent'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-          {/* Right Controls: Sub-Tabs & Month Selector */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full lg:w-auto">
-            {/* View Switcher Sub-Tabs */}
-            <div className="flex items-center overflow-x-auto max-w-full p-1 bg-slate-100 border border-slate-200/80 rounded-xl text-xs font-semibold scrollbar-none w-full sm:w-auto">
-              <button
-                onClick={() => setActiveDashboardSubTab('overview')}
-                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
-                  activeDashboardSubTab === 'overview'
-                    ? 'bg-white text-indigo-700 font-bold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Layers className="w-3.5 h-3.5" />
-                <span>Executive Overview</span>
-              </button>
-
-              <button
-                onClick={() => setActiveDashboardSubTab('daily')}
-                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
-                  activeDashboardSubTab === 'daily'
-                    ? 'bg-white text-emerald-700 font-bold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <CalendarDays className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Daily Production &amp; Steps</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                  PMS
-                </span>
-              </button>
-
-              <button
-                onClick={() => setActiveDashboardSubTab('onTime')}
-                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
-                  activeDashboardSubTab === 'onTime'
-                    ? 'bg-white text-indigo-700 font-bold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Clock className="w-3.5 h-3.5 text-indigo-600" />
-                <span>On-Time Delivery</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">
-                  {onTimeMetrics.overallUnitOnTimePct}%
-                </span>
-              </button>
-            </div>
-
-            {/* Interactive Month Filter Dropdown */}
-            <div className="relative flex items-center bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl px-3 py-2 transition-colors shrink-0">
-              <Calendar className="w-4 h-4 text-slate-500 mr-2 shrink-0" />
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="bg-transparent text-xs font-bold text-slate-800 outline-none cursor-pointer pr-4 w-full sm:w-auto"
-                title="Select production month to filter Final QC and floor metrics"
-              >
-                {availableMonths.map((m) => {
-                  const [y, mon] = m.split('-');
-                  const label = `${monthNamesShort[parseInt(mon, 10) - 1]} ${y}`;
-                  return (
-                    <option key={m} value={m}>
-                      {label}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          </div>
+        <div className="flex items-center gap-2 bg-white border border-slate-200 hover:border-slate-300 rounded-lg px-3 py-2 transition-colors self-start sm:self-auto">
+          <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="bg-transparent text-sm font-medium text-slate-800 outline-none cursor-pointer"
+            title="Select production month"
+          >
+            {availableMonths.map((m) => {
+              const [y, mon] = m.split('-');
+              return (
+                <option key={m} value={m}>
+                  {monthNamesShort[parseInt(mon, 10) - 1]} {y}
+                </option>
+              );
+            })}
+          </select>
         </div>
       </div>
 
@@ -787,580 +807,268 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
         />
       ) : (
         <>
-          {/* VISUAL CHARTS & PRODUCTION INTELLIGENCE */}
-          <ProductionChartsSection
-            selectedMonth={selectedMonth}
-            selectedMonthDisplay={selectedMonthDisplay}
-            productionTarget={productionTarget}
-            liveProducedTillDate={liveProducedTillDate}
-            actualPerDay={actualPerDay}
-            newTargetPerDay={newTargetPerDay}
-            targetPerDay={targetPerDay}
-            pctTargetAchieved={pctTargetAchieved}
-            shortfall={shortfall}
-            projectedOutput={projectedOutput}
-            daysRemaining={daysRemaining}
-            daysElapsed={daysElapsed}
-            totalDaysInMonth={totalDaysInMonth}
-            monthlyAggregates={monthlyAggregates}
-            onTimeSummaries={onTimeMetrics.monthlySummaries}
-            queueMetrics={{
-              inQueueCurrent: floorMetrics.inQueueCurrent,
-              backlogChairs: floorMetrics.backlogChairs,
-              nextMonthChairs: floorMetrics.nextMonthChairs,
-              holdChairs: floorMetrics.holdChairs,
-              readyGoodsUnits: floorMetrics.readyGoodsUnits,
-              readyStockUnits: readyStockItems.reduce((acc, i) => acc + (i.qty || 0), 0),
-              dispatchedThisMonth: floorMetrics.dispatchedThisMonth
-            }}
-            bottleneckStages={plantBottlenecks}
-            onViewOnTimeTab={() => setActiveDashboardSubTab('onTime')}
-            onViewDailyTab={() => setActiveDashboardSubTab('daily')}
-          />
+      <div className="space-y-6">
+          {/* TARGET HERO */}
+          <section className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-3">
+                  <h2 className="text-sm font-medium text-slate-500">{selectedMonthDisplay} · Chairs passed final QC</h2>
+                  <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold ${pace.pill}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${pace.dot}`} />
+                    {pace.label}
+                  </span>
+                </div>
 
-      {/* Main Grid: Left 7 Columns vs Right 5 Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* LEFT COLUMN (7 COLS ON LG) */}
-        <div className="lg:col-span-7 space-y-6">
-          
-          {/* SECTION A: PRODUCTION SUMMARY BANNER */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-            <div className="px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
-                <span className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-slate-700">
-                  Production Performance Rate
-                </span>
-              </div>
-              <span className="text-[11px] sm:text-xs font-semibold text-slate-500">
-                Month: <strong className="text-slate-800">{selectedMonthDisplay}</strong>
-              </span>
-            </div>
-            
-            <div className="p-3 sm:p-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 bg-white">
-              {/* Selected Month Display */}
-              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 sm:p-3 text-center flex flex-col justify-center">
-                <span className="text-[11px] sm:text-xs font-semibold text-slate-500 block mb-0.5 sm:mb-1">Production Month</span>
-                <span className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
-                  {selectedMonthDisplay}
-                </span>
-              </div>
-
-              {/* Target Production Per Day */}
-              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 sm:p-3 text-center flex flex-col justify-center">
-                <span className="text-[11px] sm:text-xs font-semibold text-slate-500 leading-tight block mb-0.5 sm:mb-1">
-                  Target / Day
-                </span>
-                <span className="text-xl sm:text-2xl font-bold font-mono text-slate-900">
-                  {targetPerDay}
-                </span>
-              </div>
-
-              {/* Actual Produced Per Day */}
-              <div className="bg-indigo-50/40 border border-indigo-100 rounded-xl p-2.5 sm:p-3 text-center flex flex-col justify-center">
-                <span className="text-[11px] sm:text-xs font-semibold text-indigo-700 leading-tight block mb-0.5 sm:mb-1">
-                  Actual Produced / Day
-                </span>
-                <span className="text-xl sm:text-2xl font-bold font-mono text-indigo-700">
-                  {actualPerDay}
-                </span>
-              </div>
-
-              {/* % Target Achieved Till Date */}
-              <div className="bg-emerald-50/40 border border-emerald-100 rounded-xl p-2.5 sm:p-3 text-center flex flex-col justify-center">
-                <span className="text-[11px] sm:text-xs font-semibold text-emerald-700 leading-tight block mb-0.5 sm:mb-1">
-                  % Target Achieved
-                </span>
-                <span className="text-xl sm:text-2xl font-bold font-mono text-emerald-700">
-                  {pctTargetAchieved}%
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* SECTION B: TARGET VS ACHIEVEMENT + IN QUEUE */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-            {/* Desktop Synchronized Headers Row (Hidden on mobile) */}
-            <div className="hidden sm:grid sm:grid-cols-12 bg-slate-50/80 border-b border-slate-200 font-bold text-xs tracking-wider uppercase text-slate-700">
-              <div className="sm:col-span-8 px-5 py-3.5 border-r border-slate-200 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>Target vs Achievement</span>
-              </div>
-              <div className="sm:col-span-4 px-4 py-3.5 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                <span>In Queue Status</span>
-              </div>
-            </div>
-
-            {/* Mobile Header: Target vs Achievement */}
-            <div className="sm:hidden px-4 py-3 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span className="font-bold text-xs uppercase tracking-wider text-slate-700">
-                  Target vs Achievement
-                </span>
-              </div>
-              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 font-mono">
-                {pctTargetAchieved}% Achieved
-              </span>
-            </div>
-
-            {/* Inner Content Grid */}
-            <div className="grid grid-cols-12 p-3 sm:p-4 gap-3 sm:gap-4 bg-white">
-              
-              {/* Target Vs Achievement (8 cols on Desktop, 12 on mobile) */}
-              <div className="col-span-12 sm:col-span-8 space-y-3">
-                <div className="grid grid-cols-12 gap-2.5">
-                  {/* Production Target (Large Card) */}
-                  <div className="col-span-12 sm:col-span-4 bg-gradient-to-br from-indigo-50/60 to-blue-50/40 border border-indigo-100 rounded-xl p-3 text-center flex flex-col justify-center relative">
-                    <span className="text-[11px] text-indigo-900 font-bold leading-tight uppercase tracking-wider block mb-1">
-                      Monthly Target
-                    </span>
-                    {isEditingTarget ? (
-                      <div className="flex items-center gap-1 mt-1">
-                        <input
-                          type="number"
-                          value={targetInput}
-                          onChange={(e) => setTargetInput(e.target.value)}
-                          className="w-full bg-white border border-indigo-300 text-center text-sm font-bold font-mono p-1 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
-                        />
-                        <button
-                          onClick={handleSaveTarget}
-                          className="bg-indigo-600 text-white text-[10px] px-2 py-1 rounded-lg font-bold shadow-xs hover:bg-indigo-700 transition-colors"
-                        >
-                          OK
-                        </button>
-                      </div>
-                    ) : (
-                      <div 
-                        onClick={() => setIsEditingTarget(true)}
-                        className="cursor-pointer group flex flex-col items-center"
-                        title="Click to customize monthly target"
+                <div className="mt-3 flex flex-wrap items-baseline gap-x-3">
+                  <span className="text-5xl sm:text-6xl font-semibold tracking-tight text-slate-900 tabular-nums">
+                    {liveProducedTillDate.toLocaleString()}
+                  </span>
+                  <span className="text-lg text-slate-400">of</span>
+                  {isEditingTarget ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <input
+                        type="number"
+                        autoFocus
+                        value={targetInput}
+                        onChange={(e) => setTargetInput(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') handleSaveTarget(); }}
+                        className="w-28 bg-white border border-slate-300 text-lg font-semibold px-2 py-1 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                      <button
+                        onClick={handleSaveTarget}
+                        className="px-3 py-1.5 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 cursor-pointer"
                       >
-                        <span className="text-2xl sm:text-3xl font-bold font-mono text-indigo-950">
-                          {productionTarget.toLocaleString()}
-                        </span>
-                        <span className="text-[10px] text-indigo-600 group-hover:text-indigo-800 font-semibold mt-0.5">Click to edit</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Produced Till Date & Shortfall */}
-                  <div className="col-span-6 sm:col-span-4 space-y-2">
-                    <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-2.5 text-center">
-                      <span className="text-[10px] text-emerald-800 font-bold block leading-tight">
-                        Produced Till Date
-                      </span>
-                      <span className="text-base sm:text-lg font-bold font-mono text-emerald-950 mt-0.5 block">
-                        {liveProducedTillDate.toLocaleString()}
-                      </span>
-                    </div>
-
-                    <div className="bg-rose-50/70 border border-rose-200/80 rounded-xl p-2.5 text-center">
-                      <span className="text-[10px] text-rose-800 font-bold block leading-tight">
-                        Shortfall
-                      </span>
-                      <span className="text-base sm:text-lg font-bold font-mono text-rose-950 mt-0.5 block">
-                        {shortfall.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* % Columns */}
-                  <div className="col-span-6 sm:col-span-4 space-y-2">
-                    <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-2.5 text-center">
-                      <span className="text-[10px] text-emerald-800 font-bold block leading-tight">
-                        % Produced
-                      </span>
-                      <span className="text-base sm:text-lg font-bold font-mono text-emerald-950 mt-0.5 block">
-                        {pctProducedTillDate}%
-                      </span>
-                    </div>
-
-                    <div className="bg-rose-50/70 border border-rose-200/80 rounded-xl p-2.5 text-center">
-                      <span className="text-[10px] text-rose-800 font-bold block leading-tight">
-                        % Shortfall
-                      </span>
-                      <span className="text-base sm:text-lg font-bold font-mono text-rose-950 mt-0.5 block">
-                        {pctShortfall}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Row of Target vs Achievement: 4 Small Metrics */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2 text-center">
-                    <span className="text-[9px] sm:text-[10px] text-slate-500 font-semibold block leading-tight">
-                      Days Remaining
+                        Save
+                      </button>
                     </span>
-                    <span className="text-sm sm:text-base font-bold font-mono text-slate-900 mt-0.5 block">
-                      {daysRemaining}
-                    </span>
-                  </div>
-
-                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2 text-center">
-                    <span className="text-[9px] sm:text-[10px] text-slate-500 font-semibold block leading-tight">
-                      New Target / Day
-                    </span>
-                    <span className="text-sm sm:text-base font-bold font-mono text-slate-900 mt-0.5 block">
-                      {newTargetPerDay}
-                    </span>
-                  </div>
-
-                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2 text-center">
-                    <span className="text-[9px] sm:text-[10px] text-slate-500 font-semibold block leading-tight">
-                      Increase Req. (Units)
-                    </span>
-                    <div className="flex items-center justify-center gap-0.5 text-emerald-600 mt-0.5">
-                      <ArrowUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
-                      <span className="text-sm sm:text-base font-bold font-mono text-slate-900">
-                        {increaseRequiredUnits}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2 text-center">
-                    <span className="text-[9px] sm:text-[10px] text-slate-500 font-semibold block leading-tight">
-                      % Increase Req.
-                    </span>
-                    <span className="text-sm sm:text-base font-bold font-mono text-slate-900 mt-0.5 block">
-                      {pctIncreaseRequired}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* In Queue (4 cols on SM, full-width with distinct section header on mobile) */}
-              <div className="col-span-12 sm:col-span-4 flex flex-col justify-between space-y-2 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-200/80">
-                {/* Mobile In Queue Header */}
-                <div className="sm:hidden flex items-center justify-between pb-1">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                    <span className="font-bold text-xs uppercase tracking-wider text-slate-800">
-                      In Queue Status
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-bold text-amber-900 font-mono bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                    {floorMetrics.totalChairsInQueue.toLocaleString()} Chairs Total
-                  </span>
-                </div>
-
-                {/* 4. Total Chairs in Queue (Featured Prominently) */}
-                <div 
-                  onClick={() => {
-                    setQueueFilterCategory('all');
-                    setShowQueueDrawer(true);
-                  }}
-                  className="bg-slate-900 text-white rounded-xl p-2.5 text-center cursor-pointer hover:bg-slate-800 transition-colors group shadow-xs"
-                  title="Click to audit Total Queue (Current + Backlog + Next month chairs)"
-                >
-                  <span className="text-[10px] text-slate-300 font-bold block leading-tight">
-                    Total Chairs in Queue
-                  </span>
-                  <span className="text-xl font-bold font-mono text-white mt-0.5 block">
-                    {floorMetrics.totalChairsInQueue.toLocaleString()}
-                  </span>
-                  <span className="text-[9px] text-slate-400 font-medium block">
-                    Current ({floorMetrics.inQueueCurrent}) + Backlog ({floorMetrics.backlogChairs}) + Next ({floorMetrics.nextMonthChairs})
-                  </span>
-                </div>
-
-                {/* Grid for other 4 Queue Cards: 2-column on mobile, single-column on desktop */}
-                <div className="grid grid-cols-2 sm:grid-cols-1 gap-2">
-                  {/* 1. Current Month Chairs in Queue */}
-                  <div 
-                    onClick={() => {
-                      setQueueFilterCategory('current');
-                      setShowQueueDrawer(true);
-                    }}
-                    className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-2 text-center cursor-pointer hover:bg-amber-100/70 transition-colors group flex flex-col justify-center"
-                    title="Click to audit Selected Month queue orders"
-                  >
-                    <span className="text-[9px] sm:text-[10px] text-amber-900 font-bold block leading-tight">
-                      Current Month Queue
-                    </span>
-                    <span className="text-base sm:text-lg font-bold font-mono text-amber-950 mt-0.5 block">
-                      {floorMetrics.inQueueCurrent.toLocaleString()}
-                    </span>
-                    <span className="text-[8px] sm:text-[9px] text-amber-700/80 font-medium block truncate">
-                      {monthNamesShort[selectedMonthNum - 1]} {selectedYear}
-                    </span>
-                  </div>
-
-                  {/* 2. Backlog Chairs */}
-                  <div 
-                    onClick={() => {
-                      setQueueFilterCategory('backlog');
-                      setShowQueueDrawer(true);
-                    }}
-                    className="bg-rose-50/70 border border-rose-200/80 rounded-xl p-2 text-center cursor-pointer hover:bg-rose-100/70 transition-colors group flex flex-col justify-center"
-                    title="Click to audit Overdue Backlog queue orders (Excludes Hold)"
-                  >
-                    <span className="text-[9px] sm:text-[10px] text-rose-800 font-bold block leading-tight">
-                      Backlog Chairs
-                    </span>
-                    <span className="text-base sm:text-lg font-bold font-mono text-rose-950 mt-0.5 block">
-                      {floorMetrics.backlogChairs.toLocaleString()}
-                    </span>
-                    <span className="text-[8px] sm:text-[9px] text-rose-600 font-medium block truncate">
-                      Overdue Backlog
-                    </span>
-                  </div>
-
-                  {/* 3. Next Month Chairs */}
-                  <div 
-                    onClick={() => {
-                      setQueueFilterCategory('next');
-                      setShowQueueDrawer(true);
-                    }}
-                    className="bg-blue-50/70 border border-blue-200/80 rounded-xl p-2 text-center cursor-pointer hover:bg-blue-100/70 transition-colors group flex flex-col justify-center"
-                    title="Click to audit Next Month queue orders"
-                  >
-                    <span className="text-[9px] sm:text-[10px] text-blue-800 font-bold block leading-tight">
-                      Next Month Chairs
-                    </span>
-                    <span className="text-base sm:text-lg font-bold font-mono text-blue-950 mt-0.5 block">
-                      {floorMetrics.nextMonthChairs.toLocaleString()}
-                    </span>
-                    <span className="text-[8px] sm:text-[9px] text-blue-600 font-medium block truncate">
-                      {nextMonthDisplay} Plan
-                    </span>
-                  </div>
-
-                  {/* 5. On Hold Orders */}
-                  <div 
-                    onClick={() => {
-                      setQueueFilterCategory('hold');
-                      setShowQueueDrawer(true);
-                    }}
-                    className="bg-orange-50/80 border border-orange-200 rounded-xl p-2 text-center cursor-pointer hover:bg-orange-100/80 transition-colors group flex flex-col justify-center"
-                    title="Click to view all On Hold orders (Excluded from Backlog and Queue)"
-                  >
-                    <div className="flex items-center justify-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
-                      <span className="text-[9px] sm:text-[10px] text-orange-900 font-bold uppercase tracking-tight block">
-                        On Hold Orders
-                      </span>
-                    </div>
-                    <span className="text-base sm:text-lg font-bold font-mono text-orange-950 mt-0.5 block">
-                      {floorMetrics.holdChairs.toLocaleString()} <span className="text-[10px] font-semibold text-orange-800">U</span>
-                    </span>
-                    <span className="text-[8px] sm:text-[9px] text-orange-700 font-medium block truncate">
-                      {floorMetrics.holdOrdersCount} Orders
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* SECTION C: AI PRODUCTION & TARGET IMPROVEMENT ADVISOR (SUGGESTIONS BY AI) */}
-          <ProductionAIAdvisor
-            plantContext={plantContext}
-            analysis={aiAnalysis}
-            isLoading={isAnalyzingAI}
-            onRefreshAnalysis={handleRunDeepAIAnalysis}
-          />
-
-        </div>
-
-        {/* RIGHT COLUMN (5 COLS ON LG) */}
-        <div className="lg:col-span-5 space-y-6">
-          
-          {/* SECTION D: DISPATCH BOX */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-            <div className="px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-emerald-600" />
-                <span className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-slate-700">
-                  Dispatch Status ({selectedMonthDisplay})
-                </span>
-              </div>
-              <span className="text-[10px] sm:text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                Monthly Flow
-              </span>
-            </div>
-            <div className="p-3 sm:p-4 grid grid-cols-3 gap-2 sm:gap-2.5 bg-white">
-              <div 
-                onClick={() => setShowDispatchDrawer(prev => !prev)}
-                className="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-2.5 sm:p-3 text-center cursor-pointer hover:bg-emerald-100/60 transition-colors group"
-                title="Click to view dispatch entries"
-              >
-                <span className="text-[9px] sm:text-[10px] text-emerald-800 font-bold block leading-tight">
-                  Dispatched
-                </span>
-                <span className="text-lg sm:text-2xl font-bold font-mono text-emerald-950 mt-1 block">
-                  {floorMetrics.dispatchedThisMonth.toLocaleString()}
-                </span>
-                <span className="text-[8px] sm:text-[9px] text-emerald-600 font-medium block mt-0.5">
-                  View entries →
-                </span>
-              </div>
-
-              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 sm:p-3 text-center flex flex-col justify-center">
-                <span className="text-[9px] sm:text-[10px] text-slate-500 font-semibold block leading-tight">
-                  % Dispatched
-                </span>
-                <span className="text-lg sm:text-2xl font-bold font-mono text-slate-900 mt-1 block">
-                  {pctDispatched}
-                </span>
-                <span className="text-[8px] sm:text-[9px] text-slate-400 font-medium block mt-0.5">
-                  vs Target
-                </span>
-              </div>
-
-              <div 
-                onClick={() => setShowQcPassedNotDispatchedModal(true)}
-                className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-2.5 sm:p-3 text-center cursor-pointer hover:bg-amber-100/60 transition-colors group relative"
-                title="Click to view order-by-order OPF QC Passed vs Dispatched reconciliation"
-              >
-                <span className="text-[9px] sm:text-[10px] text-amber-900 font-bold block leading-tight">
-                  QC Passed, Not Disp.
-                </span>
-                <span className="text-lg sm:text-2xl font-bold font-mono text-amber-950 mt-1 block">
-                  {floorMetrics.qcPassedNotDispatched.toLocaleString()}
-                </span>
-                <span className="text-[8px] sm:text-[9px] text-amber-700 font-semibold block mt-0.5">
-                  {qcReconciliation.notDispatchedOpfs} OPFs Left
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* SECTION E: READY GOODS / STOCK BOX */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-            <div className="px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
-                <span className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-slate-700">
-                  Ready Goods &amp; Factory Stock
-                </span>
-              </div>
-              <span className="text-[10px] sm:text-[11px] text-indigo-700 font-bold bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
-                Finished Inventory
-              </span>
-            </div>
-            <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 bg-white">
-              <div 
-                onClick={() => onNavigateToReadyGoods ? onNavigateToReadyGoods() : null}
-                className="bg-gradient-to-br from-indigo-50/60 to-purple-50/40 border border-indigo-100/80 rounded-xl p-3 sm:p-3.5 text-center cursor-pointer hover:border-indigo-300 hover:shadow-xs transition-all group"
-                title="Click to open Ready Goods Dashboard"
-              >
-                <div className="flex items-center justify-center gap-1">
-                  <span className="text-xs text-indigo-950 font-bold block leading-tight">
-                    Ready Goods Qty
-                  </span>
-                  <ExternalLink className="w-3 h-3 text-indigo-600 group-hover:translate-x-0.5 transition-transform" />
-                </div>
-                <span className="text-xl sm:text-3xl font-bold font-mono text-indigo-950 mt-1 block">
-                  {(readyGoodsItems.length > 0 
-                    ? readyGoodsItems.reduce((acc, i) => acc + i.readyGoodsQty, 0) 
-                    : 461).toLocaleString()}
-                </span>
-                <span className="text-[10px] text-indigo-700 font-semibold block mt-1">
-                  {readyGoodsItems.length || 41} Orders Finished
-                </span>
-                <span className="text-[9px] text-indigo-500 font-medium underline block mt-0.5">
-                  Open Ready Goods Tab →
-                </span>
-              </div>
-
-              <div 
-                onClick={onNavigateToReadyStock}
-                className="bg-gradient-to-br from-amber-50/60 to-yellow-50/40 border border-amber-100/80 rounded-xl p-3 sm:p-3.5 text-center cursor-pointer hover:border-amber-300 hover:shadow-xs transition-all group"
-                title="Click to view Ready Stock Dashboard (Factory Sales Stock)"
-              >
-                <div className="flex items-center justify-center gap-1">
-                  <span className="text-xs text-amber-950 font-bold block leading-tight">
-                    Ready Stock
-                  </span>
-                  <ExternalLink className="w-3 h-3 text-amber-600 group-hover:translate-x-0.5 transition-transform" />
-                </div>
-                <span className="text-xl sm:text-3xl font-bold font-mono text-amber-950 mt-1 block">
-                  {(readyStockItems.length > 0
-                    ? readyStockItems.reduce((acc, i) => acc + i.qty, 0)
-                    : 91).toLocaleString()}
-                </span>
-                <span className="text-[10px] text-amber-800 font-semibold block mt-1">
-                  {readyStockItems.length || 40} Models Available
-                </span>
-                <span className="text-[9px] text-amber-600 font-medium underline block mt-0.5">
-                  Open Ready Stock Tab →
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* SECTION F: MONTHLY PRODUCTION PERFORMANCE TABLE */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-            <div className="px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
-              <span className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-slate-700">
-                Monthly Performance (From Apr-2025)
-              </span>
-              <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium">
-                {monthlyAggregates.length} Months Tracked
-              </span>
-            </div>
-            
-            <div className="overflow-x-auto max-h-72 overflow-y-auto">
-              <table className="w-full min-w-[360px] text-xs text-left border-collapse bg-white">
-                <thead className="bg-slate-50 text-slate-600 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200 sticky top-0 z-10">
-                  <tr>
-                    <th className="p-2 sm:p-2.5">Month</th>
-                    <th className="p-2 sm:p-2.5 text-right">Target</th>
-                    <th className="p-2 sm:p-2.5 text-right">Achieved</th>
-                    <th className="p-2 sm:p-2.5 text-right">Ach.%</th>
-                    <th className="p-2 sm:p-2.5 text-right">Dispatched</th>
-                    <th className="p-2 sm:p-2.5 text-right">Disp.%</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 font-sans text-[11px]">
-                  {monthlyAggregates.map((row) => (
-                    <tr
-                      key={row.monthKey}
-                      onClick={() => setSelectedMonth(row.monthKey)}
-                      className={`cursor-pointer transition-colors ${
-                        selectedMonth === row.monthKey 
-                          ? 'bg-indigo-50/80 font-bold text-indigo-950' 
-                          : 'hover:bg-slate-50/80 text-slate-700'
-                      }`}
-                      title="Click row to switch production dashboard to this month"
+                  ) : (
+                    <button
+                      onClick={() => setIsEditingTarget(true)}
+                      className="text-2xl font-medium text-slate-500 tabular-nums hover:text-slate-900 underline decoration-dotted decoration-slate-300 underline-offset-4 cursor-pointer"
+                      title="Click to change the monthly target"
                     >
-                      <td className="p-2 sm:p-2.5 font-bold flex items-center justify-between">
-                        <span>{row.monthDisplay}</span>
-                        {selectedMonth === row.monthKey && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
-                        )}
-                      </td>
-                      <td className="p-2 sm:p-2.5 text-right font-mono">{row.target.toLocaleString()}</td>
-                      <td className="p-2 sm:p-2.5 text-right font-mono font-semibold text-emerald-700">{row.achieved.toLocaleString()}</td>
-                      <td className="p-2 sm:p-2.5 text-right font-mono">{row.achPct}%</td>
-                      <td className="p-2 sm:p-2.5 text-right font-mono font-semibold text-slate-900">{row.dispatched.toLocaleString()}</td>
-                      <td className="p-2 sm:p-2.5 text-right font-mono">{row.dispPct}%</td>
-                    </tr>
-                  ))}
-                  
-                  {/* Grand Total Row */}
-                  <tr className="bg-slate-100/90 text-slate-900 font-bold border-t-2 border-slate-300 sticky bottom-0">
-                    <td className="p-2.5 font-black">Grand Total</td>
-                    <td className="p-2.5 text-right font-mono font-bold">{grandTotals.target.toLocaleString()}</td>
-                    <td className="p-2.5 text-right font-mono font-bold text-emerald-800">{grandTotals.achieved.toLocaleString()}</td>
-                    <td className="p-2.5 text-right font-mono font-bold">{grandTotals.achPct}%</td>
-                    <td className="p-2.5 text-right font-mono font-bold text-slate-950">{grandTotals.dispatched.toLocaleString()}</td>
-                    <td className="p-2.5 text-right font-mono font-bold">{grandTotals.dispPct}%</td>
-                  </tr>
-                </tbody>
-              </table>
+                      {productionTarget.toLocaleString()}
+                    </button>
+                  )}
+                </div>
+
+                <div className="mt-5 h-2.5 rounded-full bg-slate-100 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${pace.bar}`}
+                    style={{ width: `${Math.min(100, parseFloat(pctProducedTillDate) || 0)}%` }}
+                  />
+                </div>
+                <p className="mt-2.5 text-sm text-slate-500">
+                  <span className="font-semibold text-slate-800">{pctTargetAchieved}%</span> of target
+                  {shortfall > 0 ? <> · {shortfall.toLocaleString()} still to go</> : <> · target reached</>}
+                </p>
+              </div>
+
+              <dl className="grid grid-cols-3 gap-6 lg:gap-8 lg:pl-8 lg:border-l border-slate-100 shrink-0">
+                <div>
+                  <dt className="text-xs font-medium text-slate-400">Daily pace</dt>
+                  <dd className="mt-1.5 text-2xl font-semibold text-slate-900 tabular-nums">{actualPerDay}</dd>
+                  <dd className="text-xs text-slate-400">
+                    {daysRemaining > 0 && shortfall > 0 ? `need ${newTargetPerDay}/day` : `target ${targetPerDay}/day`}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-medium text-slate-400">Days left</dt>
+                  <dd className="mt-1.5 text-2xl font-semibold text-slate-900 tabular-nums">{daysRemaining}</dd>
+                  <dd className="text-xs text-slate-400">of {totalDaysInMonth}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-medium text-slate-400">Projected</dt>
+                  <dd className="mt-1.5 text-2xl font-semibold text-slate-900 tabular-nums">{projectedOutput.toLocaleString()}</dd>
+                  <dd className="text-xs text-slate-400">by month end</dd>
+                </div>
+              </dl>
             </div>
-          </div>
+          </section>
 
-        </div>
+          {/* KEY NUMBERS */}
+          <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
+            <StatTile
+              label="In queue"
+              value={floorMetrics.totalChairsInQueue.toLocaleString()}
+              sub="chairs waiting"
+              onClick={() => { setQueueFilterCategory('all'); setShowQueueDrawer(true); }}
+            />
+            <StatTile
+              label="On hold"
+              value={floorMetrics.holdChairs.toLocaleString()}
+              sub={`${floorMetrics.holdOrdersCount} orders`}
+              accent={floorMetrics.holdOrdersCount > 0 ? 'amber' : undefined}
+              onClick={() => { setQueueFilterCategory('hold'); setShowQueueDrawer(true); }}
+            />
+            <StatTile
+              label="Dispatched"
+              value={floorMetrics.dispatchedThisMonth.toLocaleString()}
+              sub={pctDispatched === 'No data' ? 'this month' : `${pctDispatched} of produced`}
+              onClick={() => setShowDispatchDrawer(true)}
+            />
+            <StatTile
+              label="Passed QC, not sent"
+              value={floorMetrics.qcPassedNotDispatched.toLocaleString()}
+              sub={`${qcReconciliation.notDispatchedOpfs} orders`}
+              accent={floorMetrics.qcPassedNotDispatched > 0 ? 'amber' : undefined}
+              onClick={() => setShowQcPassedNotDispatchedModal(true)}
+            />
+            <StatTile
+              label="Ready goods"
+              value={(readyGoodsItems.length > 0 ? readyGoodsItems.reduce((a, i) => a + i.readyGoodsQty, 0) : 461).toLocaleString()}
+              sub="open list"
+              onClick={onNavigateToReadyGoods}
+            />
+            <StatTile
+              label="Ready stock"
+              value={(readyStockItems.length > 0 ? readyStockItems.reduce((a, i) => a + i.qty, 0) : 91).toLocaleString()}
+              sub="open list"
+              onClick={onNavigateToReadyStock}
+            />
+          </section>
 
-      </div>
+          {/* QUEUE BREAKDOWN */}
+          <section className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="text-base font-semibold text-slate-900">Chairs in queue</h2>
+              <span className="text-sm text-slate-500 tabular-nums">{floorMetrics.totalChairsInQueue.toLocaleString()} total</span>
+            </div>
+            <div className="mt-4 flex h-3 rounded-full overflow-hidden bg-slate-100">
+              {queueSegments.map(s => s.value > 0 && (
+                <div key={s.key} className={s.color} style={{ width: `${(s.value / queueTotalForBar) * 100}%` }} title={`${s.label}: ${s.value}`} />
+              ))}
+            </div>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {queueSegments.map(s => (
+                <button
+                  key={s.key}
+                  onClick={() => { setQueueFilterCategory(s.key); setShowQueueDrawer(true); }}
+                  className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50 text-left cursor-pointer transition-colors"
+                >
+                  <span className="flex items-center gap-2 text-sm text-slate-600">
+                    <span className={`w-2.5 h-2.5 rounded-full ${s.color}`} />
+                    {s.label}
+                    <span className="text-xs text-slate-400">{s.hint}</span>
+                  </span>
+                  <span className="text-base font-semibold text-slate-900 tabular-nums">{s.value.toLocaleString()}</span>
+                </button>
+              ))}
+            </div>
+          </section>
 
+          {/* AI RECOMMENDATIONS (collapsed) */}
+          <Disclosure
+            title="AI recommendations"
+            subtitle="Suggested actions to hit the target"
+            open={showAI}
+            onToggle={() => setShowAI(v => !v)}
+          >
+            <ProductionAIAdvisor
+              plantContext={plantContext}
+              analysis={aiAnalysis}
+              isLoading={isAnalyzingAI}
+              onRefreshAnalysis={handleRunDeepAIAnalysis}
+            />
+          </Disclosure>
+
+          {/* TRENDS & HISTORY (collapsed) */}
+          <Disclosure
+            title="Trends & monthly history"
+            subtitle="Charts and month-by-month table"
+            open={showTrends}
+            onToggle={() => setShowTrends(v => !v)}
+          >
+            <div className="space-y-6">
+              <ProductionChartsSection
+                selectedMonth={selectedMonth}
+                selectedMonthDisplay={selectedMonthDisplay}
+                productionTarget={productionTarget}
+                liveProducedTillDate={liveProducedTillDate}
+                actualPerDay={actualPerDay}
+                newTargetPerDay={newTargetPerDay}
+                targetPerDay={targetPerDay}
+                pctTargetAchieved={pctTargetAchieved}
+                shortfall={shortfall}
+                projectedOutput={projectedOutput}
+                daysRemaining={daysRemaining}
+                daysElapsed={daysElapsed}
+                totalDaysInMonth={totalDaysInMonth}
+                monthlyAggregates={monthlyAggregates}
+                onTimeSummaries={onTimeMetrics.monthlySummaries}
+                queueMetrics={{
+                  inQueueCurrent: floorMetrics.inQueueCurrent,
+                  backlogChairs: floorMetrics.backlogChairs,
+                  nextMonthChairs: floorMetrics.nextMonthChairs,
+                  holdChairs: floorMetrics.holdChairs,
+                  readyGoodsUnits: floorMetrics.readyGoodsUnits,
+                  readyStockUnits: readyStockItems.reduce((acc, i) => acc + (i.qty || 0), 0),
+                  dispatchedThisMonth: floorMetrics.dispatchedThisMonth
+                }}
+                bottleneckStages={plantBottlenecks}
+                onViewOnTimeTab={() => setActiveDashboardSubTab('onTime')}
+                onViewDailyTab={() => setActiveDashboardSubTab('daily')}
+              />
+
+              <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden">
+                <div className="overflow-x-auto max-h-80 overflow-y-auto">
+                  <table className="w-full min-w-[420px] text-sm text-left border-collapse">
+                    <thead className="bg-slate-50 text-slate-500 text-xs font-medium border-b border-slate-200 sticky top-0 z-10">
+                      <tr>
+                        <th className="px-4 py-2.5 font-medium">Month</th>
+                        <th className="px-4 py-2.5 font-medium text-right">Target</th>
+                        <th className="px-4 py-2.5 font-medium text-right">Achieved</th>
+                        <th className="px-4 py-2.5 font-medium text-right">%</th>
+                        <th className="px-4 py-2.5 font-medium text-right">Dispatched</th>
+                        <th className="px-4 py-2.5 font-medium text-right">%</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 tabular-nums">
+                      {monthlyAggregates.map((row) => (
+                        <tr
+                          key={row.monthKey}
+                          onClick={() => setSelectedMonth(row.monthKey)}
+                          className={`cursor-pointer transition-colors ${
+                            selectedMonth === row.monthKey ? 'bg-indigo-50/70 text-slate-900' : 'hover:bg-slate-50 text-slate-600'
+                          }`}
+                          title="Show this month"
+                        >
+                          <td className="px-4 py-2.5 font-medium">{row.monthDisplay}</td>
+                          <td className="px-4 py-2.5 text-right">{row.target.toLocaleString()}</td>
+                          <td className="px-4 py-2.5 text-right text-slate-900">{row.achieved.toLocaleString()}</td>
+                          <td className="px-4 py-2.5 text-right">{row.achPct}%</td>
+                          <td className="px-4 py-2.5 text-right text-slate-900">{row.dispatched.toLocaleString()}</td>
+                          <td className="px-4 py-2.5 text-right">{row.dispPct}%</td>
+                        </tr>
+                      ))}
+                      <tr className="bg-slate-50 text-slate-900 font-semibold sticky bottom-0">
+                        <td className="px-4 py-2.5">Total</td>
+                        <td className="px-4 py-2.5 text-right">{grandTotals.target.toLocaleString()}</td>
+                        <td className="px-4 py-2.5 text-right">{grandTotals.achieved.toLocaleString()}</td>
+                        <td className="px-4 py-2.5 text-right">{grandTotals.achPct}%</td>
+                        <td className="px-4 py-2.5 text-right">{grandTotals.dispatched.toLocaleString()}</td>
+                        <td className="px-4 py-2.5 text-right">{grandTotals.dispPct}%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </Disclosure>
+
+          {/* DETAILED RECORDS (collapsed; opens automatically from the tiles above) */}
+          <Disclosure
+            title="Detailed records"
+            subtitle="QC submissions, queue orders and dispatch entries"
+            open={showAudit || showBatchDrawer || showQueueDrawer || showDispatchDrawer}
+            onToggle={() => {
+              const next = !(showAudit || showBatchDrawer || showQueueDrawer || showDispatchDrawer);
+              setShowAudit(next);
+              if (!next) { setShowBatchDrawer(false); setShowQueueDrawer(false); setShowDispatchDrawer(false); }
+            }}
+          >
+            <div className="space-y-4">
       {/* SECTION G: LIVE FINAL QC BATCH SUBMISSIONS AUDIT DRAWER (TRANSPARENCY & CALCULATION VERIFICATION) */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div 
@@ -1806,6 +1514,9 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             )}
           </div>
         )}
+      </div>
+            </div>
+          </Disclosure>
       </div>
       </>
       )}

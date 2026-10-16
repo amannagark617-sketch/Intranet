@@ -35,11 +35,11 @@ interface TodayHomeProps {
 
 type Tone = 'good' | 'watch' | 'bad' | 'neutral';
 
-const TONE_STYLES: Record<Tone, { dot: string; value: string; label: string }> = {
-  good: { dot: 'bg-emerald-500', value: 'text-slate-900', label: 'On track' },
-  watch: { dot: 'bg-amber-500', value: 'text-slate-900', label: 'Watch' },
-  bad: { dot: 'bg-rose-500', value: 'text-rose-700', label: 'Needs attention' },
-  neutral: { dot: 'bg-slate-300', value: 'text-slate-900', label: '' },
+const TONE_STYLES: Record<Tone, { pill: string; dot: string; bar: string; label: string }> = {
+  good: { pill: 'bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500', bar: 'bg-emerald-500', label: 'On track' },
+  watch: { pill: 'bg-amber-50 text-amber-700', dot: 'bg-amber-500', bar: 'bg-amber-400', label: 'Watch' },
+  bad: { pill: 'bg-rose-50 text-rose-700', dot: 'bg-rose-500', bar: 'bg-rose-500', label: 'Attention' },
+  neutral: { pill: '', dot: '', bar: 'bg-slate-200', label: '' },
 };
 
 const todayYMD = (): string => {
@@ -61,31 +61,39 @@ const KpiCard: React.FC<{
   tone: Tone;
   icon: React.ComponentType<{ className?: string }>;
   onClick: () => void;
-}> = ({ title, value, sub, tone, icon: Icon, onClick }) => {
+  className?: string;
+}> = ({ title, value, sub, tone, icon: Icon, onClick, className = '' }) => {
   const t = TONE_STYLES[tone];
   return (
     <button
       onClick={onClick}
-      className="group text-left bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 hover:border-slate-300 hover:shadow-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+      className={`group relative overflow-hidden text-left bg-white rounded-2xl border border-slate-200/80 px-4 sm:px-6 pt-5 sm:pt-6 pb-4 sm:pb-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:shadow-[0_6px_20px_-8px_rgba(15,23,42,0.18)] hover:border-slate-300 transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${className}`}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-slate-500">
-          <Icon className="w-5 h-5" />
-          <span className="text-sm font-semibold">{title}</span>
-        </div>
-        <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
-          <span className={`w-2.5 h-2.5 rounded-full ${t.dot}`} />
-          {t.label}
+      <span className={`absolute inset-x-0 top-0 h-[3px] ${t.bar}`} />
+      <div className="flex items-center justify-between gap-2 min-h-[24px]">
+        <span className="flex items-center gap-2 text-[13px] font-medium text-slate-500">
+          <Icon className="hidden sm:block w-4 h-4 text-slate-400" />
+          {title}
         </span>
+        {t.label && (
+          <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold ${t.pill}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${t.dot}`} />
+            <span className="hidden sm:inline">{t.label}</span>
+          </span>
+        )}
       </div>
-      <div className={`mt-3 text-4xl sm:text-5xl font-bold tracking-tight ${t.value}`}>{value}</div>
-      <div className="mt-2 flex items-center justify-between text-sm text-slate-500">
+      <div className="mt-3 sm:mt-4 text-3xl sm:text-[44px] leading-none font-semibold tracking-tight text-slate-900 tabular-nums">{value}</div>
+      <div className="mt-3 flex items-end justify-between gap-3 text-[13px] leading-snug text-slate-500">
         <span>{sub}</span>
-        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+        <ChevronRight className="w-4 h-4 shrink-0 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all" />
       </div>
     </button>
   );
 };
+
+const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{children}</h3>
+);
 
 const TodayHome: React.FC<TodayHomeProps> = ({
   orders,
@@ -205,130 +213,170 @@ const TodayHome: React.FC<TodayHomeProps> = ({
   const dueTone: Tone = stats.overdueAmount === 0 ? 'good' : 'bad';
   const maxBottleneck = Math.max(1, ...stats.bottlenecks.map(b => b.orders));
 
+  const greeting = (() => {
+    const h = new Date().getHours();
+    return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  })();
+
+  const headline = (() => {
+    const parts: string[] = [];
+    if (stats.late.count > 0)
+      parts.push(`${stats.late.count} ${stats.late.count === 1 ? 'order is' : 'orders are'} past the dispatch date`);
+    if (stats.hold.count > 0) parts.push(`${stats.hold.count} on hold`);
+    if (stats.overdueAmount > 0) parts.push(`${formatInr(stats.overdueAmount)} in receivables overdue`);
+    if (parts.length === 0) return 'Everything is on track. Nothing needs attention right now.';
+    return parts.join(' · ');
+  })();
+  const headlineTone: Tone =
+    stats.late.count > 5 || stats.overdueAmount > 0
+      ? 'bad'
+      : stats.late.count > 0 || stats.hold.count > 0
+      ? 'watch'
+      : 'good';
+
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      <div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Today</h2>
-        <p className="text-slate-500 mt-1">{dateLabel}</p>
+    <div className="max-w-6xl mx-auto space-y-10 pb-6">
+      <div className="pt-2">
+        <p className="text-sm font-medium text-slate-400">{dateLabel}</p>
+        <h2 className="mt-1 text-3xl sm:text-[34px] font-semibold text-slate-900 tracking-tight">{greeting}</h2>
+        <p className="mt-2 flex items-start gap-2.5 text-[15px] text-slate-600">
+          <span className={`mt-[7px] w-2 h-2 rounded-full shrink-0 ${TONE_STYLES[headlineTone].dot}`} />
+          {headline}
+        </p>
       </div>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <KpiCard
-          title="In production"
-          value={`${stats.wip.units}`}
-          sub={`units · ${stats.wip.count} orders on the floor`}
-          tone="neutral"
-          icon={Factory}
-          onClick={() => onNavigate('pmsManesar')}
-        />
-        <KpiCard
-          title="Past dispatch date"
-          value={`${stats.late.count}`}
-          sub={`orders · ${stats.late.units} units not yet dispatched`}
-          tone={lateTone}
-          icon={AlertTriangle}
-          onClick={() => onNavigate('pmsManesar')}
-        />
-        <KpiCard
-          title="On hold"
-          value={`${stats.hold.count}`}
-          sub={`orders · ${stats.hold.units} units`}
-          tone={holdTone}
-          icon={PauseCircle}
-          onClick={() => onNavigate('pmsManesar')}
-        />
-        <KpiCard
-          title="Dispatched this month"
-          value={`${stats.dispatchedMonth.units}`}
-          sub={`units · ${stats.dispatchedMonth.count} orders`}
-          tone="neutral"
-          icon={Truck}
-          onClick={() => onNavigate('dashboard')}
-        />
-        <KpiCard
-          title="On-time delivery"
-          value={stats.onTimePct === null ? '—' : `${stats.onTimePct}%`}
-          sub={stats.measured ? `${stats.measured} orders measured this month` : 'No QC data for this month yet'}
-          tone={onTimeTone}
-          icon={Timer}
-          onClick={() => onNavigate('dashboard')}
-        />
-        <KpiCard
-          title="Ready to dispatch"
-          value={`${readyGoodsUnits + readyStockUnits}`}
-          sub={`units · ${readyGoodsUnits} ready goods, ${readyStockUnits} ready stock`}
-          tone="neutral"
-          icon={PackageCheck}
-          onClick={() => onNavigate('readyGoods')}
-        />
-        <KpiCard
-          title="Receivables outstanding"
-          value={formatInr(stats.outstanding)}
-          sub={
-            stats.overdueAmount > 0
-              ? `${formatInr(stats.overdueAmount)} overdue · ${stats.overdueCount} invoices`
-              : 'Nothing overdue'
-          }
-          tone={dueTone}
-          icon={ReceiptText}
-          onClick={() => onNavigate('receivableList')}
-        />
+      <section>
+        <SectionLabel>Factory floor</SectionLabel>
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+          <KpiCard
+            title="In production"
+            value={`${stats.wip.units}`}
+            sub={`units across ${stats.wip.count} orders`}
+            tone="neutral"
+            icon={Factory}
+            onClick={() => onNavigate('pmsManesar')}
+          />
+          <KpiCard
+            title="Past dispatch date"
+            value={`${stats.late.count}`}
+            sub={`orders · ${stats.late.units} units not yet dispatched`}
+            tone={lateTone}
+            icon={AlertTriangle}
+            onClick={() => onNavigate('pmsManesar')}
+          />
+          <KpiCard
+            title="On hold"
+            value={`${stats.hold.count}`}
+            sub={`orders · ${stats.hold.units} units`}
+            tone={holdTone}
+            icon={PauseCircle}
+            onClick={() => onNavigate('pmsManesar')}
+          />
+          <KpiCard
+            title="Dispatched this month"
+            value={`${stats.dispatchedMonth.units}`}
+            sub={`units across ${stats.dispatchedMonth.count} orders`}
+            tone="neutral"
+            icon={Truck}
+            onClick={() => onNavigate('dashboard')}
+          />
+        </div>
+      </section>
+
+      <section>
+        <SectionLabel>Delivery &amp; cash</SectionLabel>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+          <KpiCard
+            title="On-time delivery"
+            value={stats.onTimePct === null ? '—' : `${stats.onTimePct}%`}
+            sub={stats.measured ? `${stats.measured} orders measured this month` : 'No QC data for this month yet'}
+            tone={onTimeTone}
+            icon={Timer}
+            onClick={() => onNavigate('dashboard')}
+          />
+          <KpiCard
+            title="Ready to dispatch"
+            value={`${readyGoodsUnits + readyStockUnits}`}
+            sub={`units · ${readyGoodsUnits} ready goods, ${readyStockUnits} ready stock`}
+            tone="neutral"
+            icon={PackageCheck}
+            onClick={() => onNavigate('readyGoods')}
+          />
+          <KpiCard
+            title="Receivables outstanding"
+            value={formatInr(stats.outstanding)}
+            sub={
+              stats.overdueAmount > 0
+                ? `${formatInr(stats.overdueAmount)} overdue across ${stats.overdueCount} invoices`
+                : 'Nothing overdue'
+            }
+            tone={dueTone}
+            className="col-span-2 md:col-span-1"
+            icon={ReceiptText}
+            onClick={() => onNavigate('receivableList')}
+          />
+        </div>
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
-          <h3 className="text-lg font-bold text-slate-900">Where orders are stuck</h3>
-          <p className="text-sm text-slate-500 mt-0.5">Stages holding the most orders right now</p>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+          <h3 className="text-base font-semibold text-slate-900">Where orders are stuck</h3>
+          <p className="text-[13px] text-slate-500 mt-0.5">The stages holding the most orders right now</p>
           {stats.bottlenecks.length === 0 ? (
-            <p className="mt-4 text-slate-500">No active orders on the floor.</p>
+            <p className="mt-6 text-sm text-slate-500">No active orders on the floor.</p>
           ) : (
-            <ul className="mt-4 space-y-4">
-              {stats.bottlenecks.map(b => (
-                <li key={b.stage}>
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span className="font-semibold text-slate-800 capitalize">{b.stage.toLowerCase()}</span>
-                    <span className="text-sm text-slate-600 shrink-0">
-                      {b.orders} orders · {b.units} units
-                    </span>
+            <ol className="mt-6 space-y-5">
+              {stats.bottlenecks.map((b, i) => (
+                <li key={b.stage} className="flex gap-4">
+                  <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-semibold flex items-center justify-center shrink-0 mt-0.5">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="font-medium text-slate-800 capitalize truncate">{b.stage.toLowerCase()}</span>
+                      <span className="text-[13px] text-slate-500 shrink-0 tabular-nums">
+                        {b.orders} orders · {b.units} units
+                      </span>
+                    </div>
+                    <div className="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-indigo-500/80"
+                        style={{ width: `${(b.orders / maxBottleneck) * 100}%` }}
+                      />
+                    </div>
+                    {b.owner && <div className="mt-1.5 text-xs text-slate-400">Owner · {b.owner}</div>}
                   </div>
-                  <div className="mt-1.5 h-2 rounded-full bg-slate-100 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-indigo-500"
-                      style={{ width: `${(b.orders / maxBottleneck) * 100}%` }}
-                    />
-                  </div>
-                  {b.owner && <div className="mt-1 text-xs text-slate-500">Owner: {b.owner}</div>}
                 </li>
               ))}
-            </ul>
+            </ol>
           )}
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h3 className="text-lg font-bold text-slate-900">AI summary</h3>
-              <p className="text-sm text-slate-500 mt-0.5">Plain-language read of today's numbers</p>
+              <h3 className="text-base font-semibold text-slate-900">AI summary</h3>
+              <p className="text-[13px] text-slate-500 mt-0.5">A plain-language read of today's numbers</p>
             </div>
             <button
               onClick={runInsights}
               disabled={insightsLoading}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white rounded-xl text-sm font-semibold cursor-pointer shrink-0"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 disabled:opacity-60 text-indigo-700 rounded-lg text-[13px] font-semibold cursor-pointer shrink-0 transition-colors"
             >
-              {insightsLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              {insightsLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
               {insights ? 'Refresh' : 'Generate'}
             </button>
           </div>
-          {insightsError && <p className="mt-4 text-sm text-rose-600">{insightsError}</p>}
+          {insightsError && <p className="mt-6 text-sm text-rose-600">{insightsError}</p>}
           {!insights && !insightsError && !insightsLoading && (
-            <p className="mt-4 text-slate-500">Tap Generate for a short summary of what needs attention.</p>
+            <p className="mt-6 text-sm text-slate-500">Press Generate for a short summary of what needs attention.</p>
           )}
           {insights && (
-            <ul className="mt-4 space-y-3">
+            <ul className="mt-6 space-y-4">
               {insights.slice(0, 4).map((ins, i) => (
                 <li key={i} className="flex gap-3">
                   <span
-                    className={`mt-2 w-2.5 h-2.5 rounded-full shrink-0 ${
+                    className={`mt-[7px] w-2 h-2 rounded-full shrink-0 ${
                       ins.severity === 'critical'
                         ? 'bg-rose-500'
                         : ins.severity === 'warning'
@@ -339,8 +387,8 @@ const TodayHome: React.FC<TodayHomeProps> = ({
                     }`}
                   />
                   <div>
-                    <div className="font-semibold text-slate-800">{ins.title}</div>
-                    <div className="text-sm text-slate-600">{ins.description}</div>
+                    <div className="text-[15px] font-medium text-slate-800">{ins.title}</div>
+                    <div className="mt-0.5 text-sm leading-relaxed text-slate-500">{ins.description}</div>
                   </div>
                 </li>
               ))}

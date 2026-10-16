@@ -114,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({
   const showSubNav = activeGroup.pages.length > 1;
 
   return (
-    <header className="bg-white sticky top-0 z-40 border-b border-slate-200">
+    <header className="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200/80">
       <div className="max-w-[1920px] mx-auto px-3 sm:px-4 md:px-8">
         {/* Top row: brand, primary groups, actions */}
         <div className="flex items-center justify-between gap-3 py-2.5 md:py-3">
@@ -144,8 +144,8 @@ const Header: React.FC<HeaderProps> = ({
                 <button
                   key={g.id}
                   onClick={() => onViewModeChange(g.pages[0].id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
-                    isActive ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                    isActive ? 'text-indigo-700 bg-indigo-50' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                   aria-current={isActive ? 'page' : undefined}
                 >
@@ -160,7 +160,7 @@ const Header: React.FC<HeaderProps> = ({
             {onOpenAIAgent && (
               <button
                 onClick={onOpenAIAgent}
-                className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 rounded-lg text-sm font-semibold cursor-pointer min-h-[36px]"
+                className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 rounded-lg text-sm font-medium cursor-pointer min-h-[36px]"
                 title="Ask AI about your data"
               >
                 <Bot className="w-4 h-4" />
@@ -170,7 +170,7 @@ const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onRefresh}
               disabled={isRefreshing}
-              className="flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white rounded-lg text-sm font-semibold cursor-pointer min-h-[36px]"
+              className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white rounded-lg text-sm font-medium cursor-pointer min-h-[36px]"
               title="Refresh latest data from all Google Sheets"
             >
               <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
@@ -189,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({
                 key={g.id}
                 onClick={() => onViewModeChange(g.pages[0].id)}
                 className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-semibold min-h-[38px] cursor-pointer ${
-                  isActive ? 'bg-slate-900 text-white' : 'text-slate-600 bg-slate-100'
+                  isActive ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -203,7 +203,7 @@ const Header: React.FC<HeaderProps> = ({
         {/* Sub navigation for the active group */}
         {showSubNav && (
           <nav
-            className="flex items-center gap-1 overflow-x-auto pb-2 md:pb-0 md:border-t md:border-slate-100 scrollbar-none"
+            className="flex items-center gap-1 overflow-x-auto pb-2 md:pb-0 scrollbar-none"
             aria-label={activeGroup.label}
           >
             {activeGroup.pages.map(p => {
@@ -214,7 +214,7 @@ const Header: React.FC<HeaderProps> = ({
                   onClick={() => onViewModeChange(p.id)}
                   className={`shrink-0 flex items-center gap-1.5 px-3 py-2 md:py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
                     isActive
-                      ? 'border-indigo-600 text-indigo-700'
+                      ? 'border-indigo-600 text-slate-900'
                       : 'border-transparent text-slate-500 hover:text-slate-800'
                   }`}
                 >

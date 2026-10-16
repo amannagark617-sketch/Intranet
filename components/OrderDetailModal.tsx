@@ -46,7 +46,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
             </div>
             <h2 className="text-xl font-semibold text-slate-900 mt-2">{order.modelName}</h2>
             <p className="text-sm text-slate-500 mt-0.5">
-              <span className="text-slate-400 font-medium">Upholstery:</span> <strong className="text-slate-700">{order.upholstery}</strong>
+              <strong className="text-slate-700">{order.upholstery}</strong>
             </p>
           </div>
 
@@ -62,19 +62,19 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
         {/* Order Quick Metadata */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50/50 border-b border-slate-200 text-xs">
           <div>
-            <span className="text-slate-400 block font-medium">Quantity (Qty)</span>
-            <span className="text-sm font-semibold text-slate-800 tabular-nums">{order.quantity} (units)</span>
+            <span className="text-slate-400 block font-medium">Chairs</span>
+            <span className="text-sm font-semibold text-slate-800 tabular-nums">{order.quantity}</span>
           </div>
           <div>
-            <span className="text-slate-400 block font-medium">OPF Receive Date</span>
+            <span className="text-slate-400 block font-medium">Order received</span>
             <span className="text-sm font-semibold text-slate-800 tabular-nums">{formatDateDDMMMYYYY(order.opfReceiveDate)}</span>
           </div>
           <div>
-            <span className="text-slate-400 block font-medium">Target Dispatch Date</span>
+            <span className="text-slate-400 block font-medium">Dispatch due</span>
             <span className="text-sm font-semibold text-slate-800 tabular-nums">{formatDateDDMMMYYYY(order.dispatchDate)}</span>
           </div>
           <div>
-            <span className="text-slate-400 block font-medium">Current Stage / Owner</span>
+            <span className="text-slate-400 block font-medium">Now at</span>
             <span className="text-sm font-semibold text-indigo-700">
               {order.overallStatus === 'Dispatched' ? 'Completed & Dispatched' : 
                order.overallStatus === 'Ready' ? 'Ready for Dispatch (Mr. Umesh)' :
@@ -86,7 +86,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
         {/* 14 PMS Production Stages Breakdown */}
         <div className="p-6 overflow-y-auto flex-1 space-y-4">
           <h3 className="text-xs font-semibold text-slate-500">
-            PMS 14-Stage Production Tracking {order.isArchived && <span className="text-slate-400 font-normal lowercase">(all steps verified completed in archive)</span>}
+            Progress by stage {order.isArchived && <span className="text-slate-400 font-normal lowercase">(completed)</span>}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -140,11 +140,11 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>Plan: <strong className="text-slate-800 tabular-nums">{formatDateDDMMMYYYY(step.plannedDate)}</strong></span>
+                      <span>Planned <strong className="text-slate-800 tabular-nums">{formatDateDDMMMYYYY(step.plannedDate)}</strong></span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>Act: <strong className="text-slate-800 tabular-nums">{formatDateDDMMMYYYY(step.actualDate)}</strong></span>
+                      <span>Done <strong className="text-slate-800 tabular-nums">{formatDateDDMMMYYYY(step.actualDate)}</strong></span>
                     </div>
                   </div>
 
@@ -169,7 +169,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
 
                   {step.qtyPass !== null && step.qtyPass !== undefined && (
                     <div className="mt-1.5 text-xs text-emerald-700 font-semibold">
-                      ✓ Passed Quantity: {step.qtyPass} / {order.quantity} (units)
+                      ✓ Passed Quantity: {step.qtyPass} / {order.quantity}
                     </div>
                   )}
 
@@ -188,9 +188,9 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                   )}
 
                   <div className="mt-2 flex justify-between text-xs text-slate-400">
-                    <span>How: {step.how}</span>
+                    <span>{step.how}</span>
                     {step.delay !== null && step.delay > 0 && (
-                      <span className="text-amber-700 font-semibold">Delay: +{step.delay}d</span>
+                      <span className="text-amber-700 font-semibold">{step.delay} days late</span>
                     )}
                   </div>
                 </div>

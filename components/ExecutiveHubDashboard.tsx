@@ -35,7 +35,7 @@ interface ExecutiveHubDashboardProps {
 }
 
 const CATEGORIES: { label: string; value: ResourceCategory | 'ALL'; icon: React.ReactNode; color: string }[] = [
-  { label: 'All Resources', value: 'ALL', icon: <LayoutGrid className="w-4 h-4" />, color: 'bg-slate-100 text-slate-800' },
+  { label: 'All', value: 'ALL', icon: <LayoutGrid className="w-4 h-4" />, color: 'bg-slate-100 text-slate-800' },
   { label: 'Leadership & MIS', value: 'Leadership & MIS', icon: <Sparkles className="w-4 h-4" />, color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
   { label: 'Finance & Costing', value: 'Finance & Costing', icon: <TrendingUp className="w-4 h-4" />, color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   { label: 'Factory & Operations', value: 'Factory & Operations', icon: <Factory className="w-4 h-4" />, color: 'bg-amber-50 text-amber-700 border-amber-200' },
@@ -181,59 +181,10 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
 
   return (
     <div className="w-full min-h-screen bg-slate-50 pb-16">
-      {/* Clean Light Analytics Highlights */}
-      <div className="bg-white border-b border-slate-200 px-4 md:px-8 py-5 shadow-2xs">
-        <div className="max-w-[1920px] mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-indigo-100 text-indigo-700">
-              <LayoutGrid className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-semibold text-slate-900">{analytics.totalResources}</div>
-              <div className="text-xs text-slate-500 font-medium">Master Resources</div>
-            </div>
-          </div>
-
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-emerald-100 text-emerald-700">
-              <FileSpreadsheet className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-semibold text-slate-900">{analytics.totalSheets}</div>
-              <div className="text-xs text-slate-500 font-medium">Google Sheets</div>
-            </div>
-          </div>
-
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-indigo-100 text-indigo-700">
-              <AppWindow className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-semibold text-slate-900">{analytics.totalWebApps}</div>
-              <div className="text-xs text-slate-500 font-medium">Web Apps &amp; Portals</div>
-            </div>
-          </div>
-
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-amber-100 text-amber-700">
-              <FolderGit2 className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-semibold text-slate-900">{analytics.totalDriveFolders}</div>
-              <div className="text-xs text-slate-500 font-medium">Drive Archives</div>
-            </div>
-          </div>
-
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200 flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-indigo-100 text-indigo-700">
-              <BarChart3 className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-semibold text-slate-900">{analytics.totalLookerReports}</div>
-              <div className="text-xs text-slate-500 font-medium">Looker BI Dashboards</div>
-            </div>
-          </div>
-        </div>
+      {/* Header */}
+      <div className="max-w-[1920px] mx-auto px-4 md:px-8 pt-8">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">Directory</h1>
+        <p className="mt-1 text-sm text-slate-500">Links to the company's sheets, reports and portals</p>
       </div>
 
       {/* Main Content Area */}
@@ -284,7 +235,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search resources, sheets, reports, descriptions, keywords..."
+                placeholder="Search the directory"
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
               />
               {searchQuery && (
@@ -304,7 +255,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                 onChange={e => setSelectedType(e.target.value as ResourceType | 'ALL')}
                 className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 cursor-pointer"
               >
-                <option value="ALL">All Resource Formats</option>
+                <option value="ALL">All types</option>
                 <option value="Google Sheet">Google Sheets</option>
                 <option value="Web App / Portal">Web Apps & Portals</option>
                 <option value="Google Drive">Drive Archives</option>

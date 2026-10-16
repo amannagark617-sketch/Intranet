@@ -109,7 +109,7 @@ const Header: React.FC<HeaderProps> = ({
       pages: [
         { id: 'overtime', label: 'Overtime', icon: Clock },
         { id: 'serviceComplaints', label: 'Complaints', icon: Headphones },
-        { id: 'executiveHub', label: 'RG Directory', icon: FolderKanban },
+        { id: 'executiveHub', label: 'Directory', icon: FolderKanban },
       ],
     },
   ];

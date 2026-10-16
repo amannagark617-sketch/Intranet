@@ -100,75 +100,6 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
         </p>
       </div>
 
-      {/* KPI Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Total On Hold</span>
-            <span className="p-2 rounded-xl bg-amber-50 text-amber-600">
-              <AlertTriangle className="w-5 h-5" />
-            </span>
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-semibold tabular-nums text-slate-900">{metrics.totalUnits}</span>
-            <span className="text-xs font-semibold text-slate-500">Chairs / Units</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-1 font-medium">Across {metrics.totalOrders} distinct OPF batches</p>
-        </div>
-
-        <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Stages with Holds</span>
-            <span className="p-2 rounded-xl bg-indigo-50 text-indigo-600">
-              <Layers className="w-5 h-5" />
-            </span>
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-semibold tabular-nums text-indigo-600">
-              {Object.keys(metrics.stageBreakdown).length}
-            </span>
-            <span className="text-xs font-semibold text-slate-500">Active Stations</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-1 font-medium">
-            Top: {(Object.entries(metrics.stageBreakdown) as [string, { count: number; units: number }][]).sort((a, b) => b[1].units - a[1].units)[0]?.[0] || 'None'}
-          </p>
-        </div>
-
-        <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Department In-Charge</span>
-            <span className="p-2 rounded-xl bg-rose-50 text-rose-600">
-              <User className="w-5 h-5" />
-            </span>
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-semibold tabular-nums text-rose-600">
-              {Object.keys(metrics.responsibleBreakdown).length}
-            </span>
-            <span className="text-xs font-semibold text-slate-500">Assignees</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-1 font-medium">
-            Coordinator: PC Kanishka
-          </p>
-        </div>
-
-        <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Status Rule</span>
-            <span className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
-              <ShieldAlert className="w-5 h-5" />
-            </span>
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-lg font-semibold tabular-nums text-emerald-700">Excluded</span>
-            <span className="text-xs font-semibold text-slate-500">from Queue</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-1 font-medium">
-            Zero impact on monthly daily run-rate targets
-          </p>
-        </div>
-      </div>
-
       {/* Main Table Card */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
         {/* Controls Toolbar */}
@@ -178,7 +109,7 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="text"
-                placeholder="Search OPF, model, upholstery, remarks..."
+                placeholder="Search orders."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 outline-none w-72 focus:border-amber-500 focus:bg-white transition-all"
@@ -209,7 +140,7 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
               title="Export Hold Orders to Excel"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Export Excel</span>
+              <span>Export</span>
             </button>
           </div>
         </div>
@@ -218,8 +149,8 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
         {filteredHoldOrders.length === 0 ? (
           <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-slate-500">
             <AlertTriangle className="w-8 h-8 text-amber-400 mx-auto mb-2" />
-            <p className="font-semibold text-sm text-slate-800">No Hold Orders matching your search criteria</p>
-            <p className="text-xs text-slate-400 mt-1">Try clearing filters or search terms.</p>
+            <p className="font-semibold text-sm text-slate-800">No orders on hold</p>
+            <p className="text-xs text-slate-400 mt-1">Nothing matches. Try clearing the filters.</p>
           </div>
         ) : (
           <div className="overflow-x-auto border border-slate-200 rounded-xl shadow-xs">

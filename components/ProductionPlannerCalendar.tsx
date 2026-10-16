@@ -609,7 +609,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
             {/* Today's Step Tasks */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 px-3.5 text-center">
-              <span className="text-xs text-slate-500 block font-semibold">Tasks Due Today</span>
+              <span className="text-xs text-slate-500 block font-semibold">Due today</span>
               <span className="text-sm font-semibold text-indigo-700 tabular-nums">
                 {stepMilestoneMap.get(todayYMD)?.length || 0} Steps
               </span>
@@ -617,43 +617,13 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
             {/* Next 7 Days Quota */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 px-3.5 text-center">
-              <span className="text-xs text-slate-500 block font-semibold">7-Day Dispatches</span>
+              <span className="text-xs text-slate-500 block font-semibold">Next 7 days</span>
               <span className="text-sm font-semibold text-slate-800 tabular-nums">
                 {weekHorizonDays.reduce((s, d) => s + d.dispatches.length, 0)} Orders
               </span>
             </div>
           </div>
         </div>
-
-        {/* Active Scheduled Periods Bar (Quick Jump) */}
-        {activePeriodsList.length > 0 && (
-          <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
-            <span className="text-slate-500 font-semibold text-xs flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" /> Active Periods:
-            </span>
-            <div className="flex flex-wrap items-center gap-1.5">
-              {activePeriodsList.slice(0, 8).map(period => {
-                const isActive = currentYear === period.year && currentMonth === period.month;
-                return (
-                  <button
-                    key={`${period.year}-${period.month}`}
-                    onClick={() => handleSelectPeriod(period.year, period.month)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                      isActive
-                        ? 'bg-indigo-600 text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 border border-slate-200/80'
-                    }`}
-                  >
-                    <span>{period.label}</span>
-                    <span className={`text-xs px-1.5 py-0.2 rounded-full tabular-nums font-semibold ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'}`}>
-                      {period.count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Sub-Nav Controls & Stage/Owner Filters Bar */}
@@ -669,7 +639,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
             }`}
           >
             <CalendarIcon className="w-3.5 h-3.5" />
-            <span>Monthly Step Calendar</span>
+            <span>Calendar</span>
           </button>
 
           <button
@@ -681,7 +651,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
             }`}
           >
             <ShieldAlert className="w-3.5 h-3.5" />
-            <span>Backlog Clearance ({backlogStats.totalBacklogOrders})</span>
+            <span>Backlog ({backlogStats.totalBacklogOrders})</span>
           </button>
 
           <button
@@ -693,7 +663,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
             }`}
           >
             <ListTodo className="w-3.5 h-3.5" />
-            <span>7-Day Priority Horizon</span>
+            <span>Next 7 days</span>
           </button>
 
           <button
@@ -705,7 +675,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>14-Stage Lead Times</span>
+            <span>Lead times</span>
           </button>
         </div>
 
@@ -719,7 +689,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
               onChange={(e) => setStageFilter(e.target.value)}
               className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
             >
-              <option value="All">All 14 Stages</option>
+              <option value="All">All stages</option>
               {PRODUCTION_STAGES.map(s => (
                 <option key={s} value={s}>{s}</option>
               ))}
@@ -736,7 +706,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
             >
               {RESPONSIBLE_PERSONS.map(owner => (
                 <option key={owner} value={owner}>
-                  {owner === 'All' ? 'All Department Owners' : owner}
+                  {owner === 'All' ? 'All owners' : owner}
                 </option>
               ))}
             </select>
@@ -750,7 +720,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
               onChange={(e) => setStepStatusFilter(e.target.value)}
               className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
             >
-              <option value="All">All Statuses</option>
+              <option value="All">Any status</option>
               <option value="WIP">WIP (In Progress)</option>
               <option value="Completed">Completed</option>
               <option value="Delayed">Delayed</option>
@@ -929,7 +899,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                   <span className="w-2.5 h-2.5 rounded-full bg-indigo-600"></span> Selected Date
                 </span>
               </div>
-              <span className="text-xs text-slate-400 tabular-nums">Date: YYYY-MM-DD</span>
+              <span className="text-xs text-slate-400 tabular-nums"></span>
             </div>
           </div>
 
@@ -950,7 +920,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                       <div className="flex items-center gap-2 mt-0.5">
                         {selectedDayInfo.isToday && (
                           <span className="text-xs font-semibold text-indigo-700 bg-indigo-100 px-1.5 py-0.2 rounded">
-                            ⚡ Active Operations Today
+                            Busy day
                           </span>
                         )}
                         {selectedDayInfo.isPast && !selectedDayInfo.isToday && (
@@ -1134,7 +1104,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                             )}
 
                             <div className="flex items-center justify-end text-xs text-indigo-600 font-semibold group-hover:underline pt-0.5">
-                              <span>Inspect 14-Step Workflow &rarr;</span>
+                              <span>See all steps &rarr;</span>
                             </div>
                           </div>
                         ))}
@@ -1204,14 +1174,6 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                 )}
               </div>
             </div>
-
-            {/* Bottom Agenda Helper */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600 flex items-start gap-2">
-              <Info className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
-              <span>
-                All 14 production step dates are synchronized directly with live Little Nap PMS lead times and Google Sheets data.
-              </span>
-            </div>
           </div>
         </div>
       )}
@@ -1220,7 +1182,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
       {plannerTab === 'backlog' && (
         <div className="space-y-6">
           {/* Backlog Overview Header & Clearing Strategy */}
-          <div className="bg-gradient-to-r from-rose-50 via-white to-amber-50 border border-rose-200 rounded-2xl p-5 md:p-6 shadow-xs space-y-4">
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-xs space-y-4">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">

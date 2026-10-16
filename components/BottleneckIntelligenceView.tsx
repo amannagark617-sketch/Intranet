@@ -1,3 +1,4 @@
+import { titleCase } from '../utils/format';
 import React, { useState, useMemo } from 'react';
 import type { Order, ProductionStepName } from '../types';
 import { PRODUCTION_STAGES, STAGE_CONFIGS } from '../constants';
@@ -309,49 +310,12 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
     <div className="space-y-6 animate-fade-in">
       {/* Top Header Card */}
       <div className="bg-white rounded-2xl border border-slate-200/90 p-5 md:p-6 shadow-xs">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl text-amber-700 shrink-0">
-              <ShieldAlert className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-500">
-                  Factory Operations
-                </span>
-                <span className="text-slate-300">•</span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                  Root Cause & Delay Audit
-                </span>
-              </div>
-              <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight mt-0.5">
-                Station Bottleneck & Department Owner Intelligence
-              </h1>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Real-time tracking of delayed stations, workload concentration, failure reasons, and action items.
-              </p>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            <button
-              onClick={handleExportExcel}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition-all shadow-xs cursor-pointer"
-              title="Export complete Bottlenecks & Owner Audit to Excel (.xlsx)"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export Bottlenecks to Excel</span>
-            </button>
-          </div>
-        </div>
-
         {/* 4 Summary KPI Tiles */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mt-5 pt-4 border-t border-slate-100">
           <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
             <div className="text-xs font-semibold text-slate-500">Top Bottleneck Stage</div>
             <div className="text-base font-semibold text-rose-700 mt-1 truncate" title={topBottleneckStage?.stage}>
-              {topBottleneckStage?.stage || 'None'}
+              {titleCase(topBottleneckStage?.stage) || 'None'}
             </div>
             <div className="text-xs text-slate-500 mt-0.5">
               {topBottleneckStage?.delayedOrders || 0} delayed orders ({topBottleneckStage?.responsible})
@@ -394,38 +358,38 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
       <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
         <button
           onClick={() => setActiveTab('stages')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
             activeTab === 'stages'
-              ? 'bg-indigo-600 text-white shadow-xs'
-              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+              ? 'bg-slate-900 text-white'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <Layers className="w-4 h-4" />
-          <span>Stage Bottleneck Ranking ({stageStats.length})</span>
+          <span>By stage</span>
         </button>
 
         <button
           onClick={() => setActiveTab('owners')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
             activeTab === 'owners'
-              ? 'bg-indigo-600 text-white shadow-xs'
-              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+              ? 'bg-slate-900 text-white'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <Users className="w-4 h-4" />
-          <span>Department Lead Workloads ({ownerStats.length})</span>
+          <span>By owner</span>
         </button>
 
         <button
           onClick={() => setActiveTab('delayedOrders')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
             activeTab === 'delayedOrders'
-              ? 'bg-indigo-600 text-white shadow-xs'
-              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+              ? 'bg-slate-900 text-white'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <AlertTriangle className="w-4 h-4" />
-          <span>Delayed Work Orders ({filteredDelayedOrders.length})</span>
+          <span>Late orders ({filteredDelayedOrders.length})</span>
         </button>
       </div>
 
@@ -438,93 +402,67 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
               return (
                 <div
                   key={st.stage}
-                  className={`bg-white rounded-2xl border p-4 shadow-xs transition-all flex flex-col justify-between ${
-                    isTop
-                      ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/10'
-                      : 'border-slate-200 hover:border-slate-300'
+                  className={`bg-white rounded-2xl border p-4 transition-all flex flex-col justify-between hover:shadow-md ${
+                    isTop ? 'border-rose-300' : 'border-slate-200/80 hover:border-slate-300'
                   }`}
                 >
                   <div>
-                    {/* Header */}
                     <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 tabular-nums">
-                            {st.stepCode}
-                          </span>
-                          <span className="text-xs text-slate-500 font-medium">
-                            {st.category}
-                          </span>
-                        </div>
-                        <h3 className="text-sm font-semibold text-slate-900 mt-1">
-                          {st.stage}
-                        </h3>
-                        <p className="text-xs text-indigo-700 font-semibold mt-0.5">
-                          Lead: {st.responsible}
-                        </p>
+                      <div className="min-w-0">
+                        <h3 className="text-base font-semibold text-slate-900">{titleCase(st.stage)}</h3>
+                        <p className="text-xs text-slate-500 mt-0.5 truncate">Owner: {st.responsible}</p>
                       </div>
-
                       <span
-                        className={`text-xs font-semibold px-2 py-0.5 rounded-full  shrink-0 ${
-                          st.severity === 'Critical'
-                            ? 'bg-rose-100 text-rose-800 border border-rose-200'
-                            : st.severity === 'Moderate'
-                            ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        className={`inline-flex items-center gap-1.5 text-xs font-medium shrink-0 whitespace-nowrap ${
+                          st.severity === 'Critical' ? 'text-rose-700' : st.severity === 'Moderate' ? 'text-amber-700' : 'text-emerald-700'
                         }`}
                       >
-                        {st.severity === 'Critical' ? 'Critical Bottleneck' : st.severity === 'Moderate' ? 'Moderate Backlog' : 'On Track'}
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            st.severity === 'Critical' ? 'bg-rose-500' : st.severity === 'Moderate' ? 'bg-amber-500' : 'bg-emerald-500'
+                          }`}
+                        />
+                        {st.severity === 'Critical' ? 'Held up' : st.severity === 'Moderate' ? 'Slowing' : 'Flowing'}
                       </span>
                     </div>
 
-                    {/* Metrics */}
-                    <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs">
-                      <div className="bg-slate-50 p-2 rounded-lg">
-                        <span className="text-xs text-slate-400 block font-semibold">Active WIP</span>
-                        <span className="text-sm font-semibold tabular-nums text-slate-900">
-                          {st.wipOrders} <span className="text-xs font-normal text-slate-500">({st.wipUnits}u)</span>
-                        </span>
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="text-xs text-slate-400">In progress</div>
+                        <div className="text-xl font-semibold tabular-nums text-slate-900">
+                          {st.wipOrders} <span className="text-xs font-normal text-slate-400">· {st.wipUnits} chairs</span>
+                        </div>
                       </div>
-                      <div className={`p-2 rounded-lg ${st.delayedOrders > 0 ? 'bg-rose-50' : 'bg-slate-50'}`}>
-                        <span className="text-xs text-slate-400 block font-semibold">Delayed / Overdue</span>
-                        <span className={`text-sm font-semibold tabular-nums ${st.delayedOrders > 0 ? 'text-rose-700' : 'text-slate-700'}`}>
-                          {st.delayedOrders} <span className="text-xs font-normal text-slate-500">({st.delayedUnits}u)</span>
-                        </span>
+                      <div>
+                        <div className="text-xs text-slate-400">Late</div>
+                        <div className={`text-xl font-semibold tabular-nums ${st.delayedOrders > 0 ? 'text-rose-700' : 'text-slate-900'}`}>
+                          {st.delayedOrders} <span className="text-xs font-normal text-slate-400">· {st.delayedUnits} chairs</span>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Root Cause Failure Reasons from Sheet */}
                     {st.topFailureReasons.length > 0 && (
-                      <div className="mt-3">
-                        <span className="text-xs font-semibold text-slate-500 block mb-1">
-                          Recorded Reasons & Remarks:
-                        </span>
-                        <div className="space-y-1">
-                          {st.topFailureReasons.map((r, rIdx) => (
-                            <div
-                              key={rIdx}
-                              className="text-xs text-slate-700 bg-amber-50/70 border border-amber-200/60 px-2 py-1 rounded-lg flex items-start gap-1.5"
-                            >
-                              <span className="w-1 h-1 rounded-full bg-amber-500 mt-1.5 shrink-0" />
-                              <span className="line-clamp-2">{r}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                      <ul className="mt-4 space-y-1.5">
+                        {st.topFailureReasons.slice(0, 2).map((r, rIdx) => (
+                          <li key={rIdx} className="text-xs text-slate-600 flex items-start gap-2">
+                            <span className="w-1 h-1 rounded-full bg-slate-300 mt-1.5 shrink-0" />
+                            <span className="line-clamp-2">{r}</span>
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </div>
 
-                  <div className="mt-3 pt-2 text-xs text-slate-400 border-t border-slate-100 flex items-center justify-between">
-                    <span>SLA: {st.timeline}</span>
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end">
                     <button
                       onClick={() => {
                         setSelectedStageFilter(st.stage);
                         setActiveTab('delayedOrders');
                       }}
-                      className="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 cursor-pointer"
+                      className="text-[13px] text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1 cursor-pointer"
                     >
-                      <span>View Orders</span>
-                      <ChevronRight className="w-3 h-3" />
+                      <span>See orders</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>

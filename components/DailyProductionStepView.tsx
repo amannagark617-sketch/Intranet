@@ -506,32 +506,16 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
       {/* 1. TOP STATS BANNER */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-slate-200 bg-slate-50/80 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100/80 shadow-xs">
-              <CalendarDays className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-lg md:text-xl font-semibold text-slate-900 tracking-tight">
-                  Daily Production &amp; Step-Wise Operations Tracker
-                </h2>
-                <span className="px-2.5 py-0.5 rounded-full text-xs tabular-nums font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
-                  {selectedMonthDisplay}
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Main actual daily production is derived strictly from the <strong>Final QC Response Form</strong> submissions, alongside step-by-step PMS floor stage tracking (Step 1–14).
-              </p>
-            </div>
+          <div>
+            <p className="text-sm text-slate-500">{selectedMonthDisplay} · chairs passed final QC each day</p>
           </div>
-
           <div className="flex flex-wrap items-center gap-2.5">
             {onBackToOverview && (
               <button
                 onClick={onBackToOverview}
                 className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
               >
-                ← Back to Overview
+                ← Back
               </button>
             )}
 
@@ -541,7 +525,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
               title="Export complete daily production & step-wise matrix to Excel"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Export Month to Excel</span>
+              <span>Export</span>
             </button>
           </div>
         </div>
@@ -641,7 +625,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
             }`}
           >
             <Table className="w-3.5 h-3.5" />
-            <span>Daily Ledger &amp; Steps</span>
+            <span>By day</span>
           </button>
 
           <button
@@ -653,7 +637,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
             }`}
           >
             <Grid className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Cross-Step Matrix</span>
+            <span>By step</span>
           </button>
 
           <button
@@ -665,7 +649,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
             }`}
           >
             <CalendarDays className="w-3.5 h-3.5 text-indigo-600" />
-            <span>Monthly Grid</span>
+            <span>Month grid</span>
           </button>
         </div>
 
@@ -720,13 +704,13 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                 onClick={expandAllDays}
                 className="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
               >
-                Expand All
+                Open all
               </button>
               <button
                 onClick={collapseAllDays}
                 className="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
               >
-                Collapse All
+                Close all
               </button>
             </div>
           )}
@@ -761,102 +745,57 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                 >
                   {/* Day Header Bar */}
                   <div className="p-3.5 sm:p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-white">
-                    {/* Date & Status Identifiers */}
-                    <div className="flex items-center gap-3">
-                      <div className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center border tabular-nums ${
-                        day.isToday
-                          ? 'bg-indigo-600 text-white border-indigo-700 shadow-xs'
-                          : day.isSunday
-                            ? 'bg-slate-100 text-slate-500 border-slate-200'
-                            : isTargetMet
-                              ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
-                              : 'bg-slate-50 text-slate-700 border-slate-200'
-                      }`}>
-                        <span className="text-xs font-semibold leading-none">{day.dayName}</span>
-                        <span className="text-lg font-semibold leading-tight">{day.dayNum}</span>
+                    {/* Day */}
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="w-12 text-center shrink-0">
+                        <div className="text-xs text-slate-400">{day.dayName}</div>
+                        <div className={`text-xl font-semibold tabular-nums ${day.isToday ? 'text-indigo-600' : 'text-slate-900'}`}>{day.dayNum}</div>
                       </div>
-
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-sm font-semibold text-slate-900">
-                            {day.dateDisplay}
-                          </span>
-                          {day.isToday && (
-                            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800">
-                              Today
-                            </span>
-                          )}
-                          {day.isSunday && (
-                            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
-                              Sunday / Weekly Off
-                            </span>
-                          )}
-                          {!day.isSunday && day.isPastOrToday && (
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                              isTargetMet 
-                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' 
-                                : day.actualProducedFinalQc > 0 
-                                  ? 'bg-amber-50 text-amber-800 border border-amber-200' 
-                                  : 'bg-rose-50 text-rose-800 border border-rose-200'
-                            }`}>
-                              {isTargetMet ? `Target Achieved (${day.achievementPct}%)` : day.actualProducedFinalQc > 0 ? `Partial Output (${day.achievementPct}%)` : 'Zero Final QC Output'}
-                            </span>
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                          <span className="text-sm font-medium text-slate-800">{day.dateDisplay}</span>
+                          {day.isToday && <span className="text-xs font-medium text-indigo-600">Today</span>}
+                          {day.isSunday ? (
+                            <span className="text-xs text-slate-400">Weekly off</span>
+                          ) : (
+                            day.isPastOrToday && (
+                              <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${
+                                isTargetMet ? 'text-emerald-700' : day.actualProducedFinalQc > 0 ? 'text-amber-700' : 'text-slate-400'
+                              }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${
+                                  isTargetMet ? 'bg-emerald-500' : day.actualProducedFinalQc > 0 ? 'bg-amber-500' : 'bg-slate-300'
+                                }`} />
+                                {isTargetMet ? 'Target met' : day.actualProducedFinalQc > 0 ? `${day.achievementPct}% of target` : 'No output'}
+                              </span>
+                            )
                           )}
                         </div>
-
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-1">
-                          <span>Daily Target: <strong className="text-slate-800 tabular-nums">{day.dailyTarget}</strong></span>
-                          <span>•</span>
-                          <span>Cumulative Output: <strong className="text-indigo-700 tabular-nums">{day.cumulativeActualProduced.toLocaleString()}</strong></span>
-                          <span>•</span>
-                          <span>Active Steps: <strong className="text-slate-800 tabular-nums">{(Object.values(day.stageBreakdown) as DayStepData[]).filter(s => s.unitCount > 0).length}</strong></span>
+                        <div className="text-xs text-slate-400 mt-0.5 tabular-nums">
+                          Target {day.dailyTarget} · Month so far {day.cumulativeActualProduced.toLocaleString()}
                         </div>
                       </div>
                     </div>
 
-                    {/* Center: ACTUAL PRODUCED (FINAL QC PASS) - PRIMARY KPI */}
-                    <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 sm:gap-4 w-full lg:w-auto mt-2 lg:mt-0">
-                      <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-br from-emerald-50/80 to-indigo-50/50 border border-emerald-200/80 rounded-xl text-left sm:text-right flex-1 sm:flex-initial min-w-[130px]">
-                        <span className="text-xs font-semibold text-emerald-900 block">
-                          Actual Produced (Final QC)
-                        </span>
-                        <div className="flex items-baseline sm:justify-end gap-1.5 mt-0.5">
-                          <span className="text-xl sm:text-2xl font-semibold tabular-nums text-emerald-950">
-                            {day.actualProducedFinalQc.toLocaleString()}
-                          </span>
-                          <span className="text-xs font-semibold text-emerald-700">units</span>
+                    {/* Produced + actions */}
+                    <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full lg:w-auto mt-2 lg:mt-0">
+                      <div className="text-right">
+                        <div className="text-2xl font-semibold tabular-nums text-slate-900">
+                          {day.actualProducedFinalQc.toLocaleString()} <span className="text-xs font-normal text-slate-400">chairs</span>
                         </div>
-                        <span className="text-xs text-emerald-700 font-medium block">
-                          {day.dailyVariance >= 0 ? `+${day.dailyVariance}` : day.dailyVariance} vs Daily Target
-                        </span>
+                        <div className="text-xs text-slate-400 tabular-nums">{day.dispatchedUnits} dispatched</div>
                       </div>
-
-                      {/* Dispatch & QC Inspections Pill */}
-                      <div className="hidden sm:flex flex-col text-right text-xs">
-                        <span className="text-slate-500">
-                          Dispatched: <strong className="text-slate-900 tabular-nums">{day.dispatchedUnits} units</strong>
-                        </span>
-                        <span className="text-slate-500 mt-0.5">
-                          QC Inspections: <strong className="text-slate-900 tabular-nums">{day.qcSubmissionsCount} batches</strong>
-                        </span>
-                      </div>
-
-                      {/* Actions: View Step Details Modal & Accordion */}
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex items-center gap-1 shrink-0">
                         <button
                           onClick={() => setSelectedDayDetail(day)}
-                          className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer"
-                          title="Open full day details & OPF work orders"
+                          className="px-2.5 py-1.5 text-[13px] font-medium text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 cursor-pointer"
                         >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline">Inspect</span>
+                          Details
                         </button>
-
                         <button
                           onClick={() => toggleDayExpansion(day.dateYMD)}
-                          className="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1.5 text-[13px] font-medium text-indigo-600 hover:text-indigo-800 rounded-lg hover:bg-indigo-50 flex items-center gap-1 cursor-pointer"
                         >
-                          <span>{isExpanded ? 'Hide Steps' : 'Step-Wise Flow'}</span>
+                          <span>{isExpanded ? 'Hide steps' : 'Steps'}</span>
                           {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                         </button>
                       </div>

@@ -93,39 +93,11 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
 
   return (
     <div className="space-y-6">
-      {/* Top Banner & Context */}
-      <div className="bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-amber-500/10 border-2 border-amber-400/40 rounded-2xl p-5 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20">
-              <AlertTriangle className="w-6 h-6 stroke-[2.5]" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-semibold text-slate-900 tracking-tight">
-                  On Hold Production Orders Control
-                </h1>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300">
-                  {metrics.totalUnits} Units • {metrics.totalOrders} Orders
-                </span>
-              </div>
-              <p className="text-xs text-slate-600 mt-0.5">
-                Isolated tracking for all paused, customer-held, or specification-pending orders. Excluded from standard run-rate queues.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-xs font-semibold">
-            <div className="bg-white border border-amber-200 px-3 py-1.5 rounded-xl shadow-xs text-slate-700">
-              <span className="text-slate-400">Total Held: </span>
-              <strong className="text-amber-700 tabular-nums text-sm">{metrics.totalUnits} Units</strong>
-            </div>
-            <div className="bg-white border border-amber-200 px-3 py-1.5 rounded-xl shadow-xs text-slate-700">
-              <span className="text-slate-400">Orders: </span>
-              <strong className="text-slate-900 tabular-nums text-sm">{metrics.totalOrders}</strong>
-            </div>
-          </div>
-        </div>
+      {/* Header */}
+      <div>
+        <p className="text-sm text-slate-500">
+          {metrics.totalOrders} orders · {metrics.totalUnits} chairs paused, not counted in the production queue
+        </p>
       </div>
 
       {/* KPI Summary Cards */}

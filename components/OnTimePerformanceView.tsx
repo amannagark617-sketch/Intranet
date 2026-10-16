@@ -216,197 +216,81 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
     exportOnTimeLedgerToExcel(filteredOrders, filename);
   };
 
+  const [showCharts, setShowCharts] = React.useState(false);
+  const [showWeekly, setShowWeekly] = React.useState(false);
+
   return (
     <div className="space-y-6">
-      {/* Top Header Card */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-5 md:p-6 shadow-xs">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-2xl text-indigo-700 shrink-0">
-              <Clock className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-500">
-                  Performance &amp; SLA
-                </span>
-                <span className="text-slate-300">•</span>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  Scheduled Dispatch vs Final QC Pass
-                </span>
-              </div>
-              <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight mt-0.5">
-                On-Time Production &amp; Delivery Intelligence
-              </h1>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Evaluates on-time delivery by matching scheduled dispatch dates against completed Final QC pass dates across all PMS live and archived orders.
-              </p>
-            </div>
-          </div>
-
-          {/* Month Scope Switcher & Export Button */}
-          <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-            <div className="relative flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 flex-1 sm:flex-initial">
-              <Calendar className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
-              <select
-                value={monthScopeFilter}
-                onChange={(e) => handleMonthChange(e.target.value)}
-                className="bg-transparent text-xs font-semibold text-slate-800 pr-5 focus:outline-hidden cursor-pointer w-full"
-              >
-                <option value="all">All Months (Lifetime Data)</option>
-                {onTimeMetrics.monthlySummaries.map((m) => (
-                  <option key={m.monthKey} value={m.monthKey}>
-                    {m.monthDisplay} ({m.totalUnits.toLocaleString()} units)
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              onClick={handleExportExcel}
-              className="flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition-all shadow-xs cursor-pointer w-full sm:w-auto shrink-0"
-              title="Export filtered On-Time records and SLA summaries to Excel (.xlsx)"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export to Excel</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Active Scope / Week Filter Indicator Tag */}
-        {(monthScopeFilter !== 'all' || weekScopeFilter) && (
-          <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-slate-500 font-semibold">Active Scope:</span>
-              <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200">
-                {monthScopeFilter === 'all' ? 'All Months' : monthScopeFilter}
-              </span>
+      {/* Month picker and export */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <p className="text-sm text-slate-500">
+          Was each order passed through final QC by its dispatch date?
+          {(monthScopeFilter !== 'all' || weekScopeFilter) && (
+            <span className="text-slate-700">
+              {' '}Showing {monthScopeFilter === 'all' ? 'all months' : monthScopeFilter}
+              {weekScopeFilter ? `, ${activeWeekObj ? activeWeekObj.weekName : weekScopeFilter}` : ''}
               {weekScopeFilter && (
-                <span className="px-2.5 py-1 rounded-lg bg-indigo-100/80 text-indigo-900 font-semibold border border-indigo-200 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
-                  <span>Filtered to {activeWeekObj ? `${activeWeekObj.weekName} (${activeWeekObj.dateRange})` : weekScopeFilter}</span>
-                  <button
-                    onClick={() => setWeekScopeFilter(null)}
-                    className="hover:text-rose-600 font-semibold ml-1 cursor-pointer text-xs"
-                    title="Clear week filter"
-                  >
-                    ×
-                  </button>
-                </span>
+                <button onClick={() => setWeekScopeFilter(null)} className="ml-2 text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer">
+                  Show full month
+                </button>
               )}
-            </div>
-
-            {weekScopeFilter && (
-              <button
-                onClick={() => setWeekScopeFilter(null)}
-                className="text-xs text-slate-500 hover:text-indigo-600 font-semibold cursor-pointer underline"
-              >
-                Reset to Full Month
-              </button>
-            )}
+            </span>
+          )}
+        </p>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center bg-white border border-slate-200 rounded-lg px-3 py-2">
+            <Calendar className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
+            <select
+              value={monthScopeFilter}
+              onChange={(e) => handleMonthChange(e.target.value)}
+              className="bg-transparent text-sm font-medium text-slate-800 focus:outline-hidden cursor-pointer"
+            >
+              <option value="all">All months</option>
+              {onTimeMetrics.monthlySummaries.map((m) => (
+                <option key={m.monthKey} value={m.monthKey}>{m.monthDisplay}</option>
+              ))}
+            </select>
           </div>
-        )}
-      </div>
-
-      {/* KPI 4-CARD SUMMARY GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Unit-Wise On-Time Rate */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
-          <div>
-            <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
-              <span>Unit On-Time Fulfillment</span>
-              <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums text-xs ${
-                scopeMetrics.unitOnTimePct >= 85 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'
-              }`}>
-                {scopeMetrics.unitOnTimePct}%
-              </span>
-            </div>
-            <div className="text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 mt-1">
-              {scopeMetrics.onTimeUnits.toLocaleString()} <span className="text-xs font-normal text-slate-500">/ {scopeMetrics.totalUnits.toLocaleString()} units</span>
-            </div>
-          </div>
-          {/* Progress Bar */}
-          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-3.5">
-            <div
-              className="bg-emerald-500 h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, scopeMetrics.unitOnTimePct)}%` }}
-            />
-          </div>
-          <p className="text-xs text-slate-500 mt-2">
-            Units with Final QC passed on or before scheduled dispatch date
-          </p>
-        </div>
-
-        {/* Card 2: Order-Wise On-Time Rate */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
-          <div>
-            <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
-              <span>Order Success Rate</span>
-              <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums text-xs ${
-                scopeMetrics.orderOnTimePct >= 80 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
-              }`}>
-                {scopeMetrics.orderOnTimePct}%
-              </span>
-            </div>
-            <div className="text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 mt-1">
-              {scopeMetrics.onTimeOrders.toLocaleString()} <span className="text-xs font-normal text-slate-500">/ {scopeMetrics.totalOrders.toLocaleString()} orders</span>
-            </div>
-          </div>
-          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-3.5">
-            <div
-              className="bg-indigo-500 h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, scopeMetrics.orderOnTimePct)}%` }}
-            />
-          </div>
-          <p className="text-xs text-slate-500 mt-2">
-            Orders where 100% quantity passed QC by dispatch date
-          </p>
-        </div>
-
-        {/* Card 3: Delayed Units & Shortfall */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
-          <div>
-            <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
-              <span>Delayed Units / Shortfall</span>
-              <span className="p-1 rounded bg-rose-50 text-rose-600 border border-rose-100">
-                <AlertTriangle className="w-3.5 h-3.5" />
-              </span>
-            </div>
-            <div className="text-2xl sm:text-3xl font-semibold tabular-nums text-rose-600 mt-1">
-              {scopeMetrics.delayedUnits.toLocaleString()} <span className="text-xs font-normal text-slate-500">delayed chairs</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-3 text-xs text-slate-600 bg-rose-50/70 p-2 rounded-xl border border-rose-100">
-            <span className="font-semibold text-rose-700">{scopeMetrics.partialOrders} partial</span>
-            <span>+</span>
-            <span className="font-semibold text-rose-700">{scopeMetrics.delayedOrders} late orders</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-2">
-            Units not cleared by QC deadline or cleared after dispatch date
-          </p>
-        </div>
-
-        {/* Card 4: Upcoming / Active Pipeline */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
-          <div>
-            <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
-              <span>Upcoming Scheduled Pipeline</span>
-              <span className="p-1 rounded bg-indigo-50 text-indigo-600 border border-indigo-100">
-                <Package className="w-3.5 h-3.5" />
-              </span>
-            </div>
-            <div className="text-2xl sm:text-3xl font-semibold tabular-nums text-indigo-700 mt-1">
-              {scopeMetrics.upcomingOrders.toLocaleString()} <span className="text-xs font-normal text-slate-500">active orders</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-3 text-xs text-slate-600 bg-indigo-50/70 p-2 rounded-xl border border-indigo-100">
-            <span className="font-semibold text-indigo-700">{scopeMetrics.holdOrders} orders on hold</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-2">
-            Orders scheduled for future dates currently progressing on floor
-          </p>
+          <button
+            onClick={handleExportExcel}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-lg border border-slate-200 transition-colors cursor-pointer"
+          >
+            <Download className="w-4 h-4" />
+            <span>Export</span>
+          </button>
         </div>
       </div>
+
+      {/* Key numbers */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        {[
+          { label: 'Chairs on time', value: `${scopeMetrics.unitOnTimePct}%`, sub: `${scopeMetrics.onTimeUnits.toLocaleString()} of ${scopeMetrics.totalUnits.toLocaleString()} chairs`, tone: scopeMetrics.unitOnTimePct >= 85 ? 'bg-emerald-500' : scopeMetrics.unitOnTimePct >= 70 ? 'bg-amber-400' : 'bg-rose-500' },
+          { label: 'Orders on time', value: `${scopeMetrics.orderOnTimePct}%`, sub: `${scopeMetrics.onTimeOrders.toLocaleString()} of ${scopeMetrics.totalOrders.toLocaleString()} orders`, tone: scopeMetrics.orderOnTimePct >= 80 ? 'bg-emerald-500' : scopeMetrics.orderOnTimePct >= 65 ? 'bg-amber-400' : 'bg-rose-500' },
+          { label: 'Still to come', value: `${scopeMetrics.upcomingOrders.toLocaleString()}`, sub: `orders in progress · ${scopeMetrics.holdOrders} on hold`, tone: 'bg-slate-200' },
+        ].map(c => (
+          <div key={c.label} className="relative overflow-hidden bg-white rounded-2xl border border-slate-200/80 px-5 pt-5 pb-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <span className={`absolute inset-x-0 top-0 h-[3px] ${c.tone}`} />
+            <div className="text-[13px] font-medium text-slate-500">{c.label}</div>
+            <div className="mt-2 text-4xl font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
+            <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Month-by-month chart (collapsed) */}
+      <div>
+        <button
+          onClick={() => setShowCharts(v => !v)}
+          className="w-full flex items-center justify-between bg-white hover:bg-slate-50 rounded-2xl border border-slate-200/80 px-5 py-4 text-left cursor-pointer transition-colors"
+          aria-expanded={showCharts}
+        >
+          <span>
+            <span className="block text-base font-semibold text-slate-900">Month by month</span>
+            <span className="block text-[13px] text-slate-500 mt-0.5">Chairs delivered on time vs late, and order status</span>
+          </span>
+          <span className="text-sm font-medium text-slate-500">{showCharts ? 'Hide' : 'Show'}</span>
+        </button>
+        {showCharts && <div className="mt-4">
 
       {/* CHARTS SECTION */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -552,7 +436,23 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
         </div>
       </div>
 
-      {/* WEEKLY OTD PRODUCTION DATA SPREADSHEET MATRIX */}
+      </div>}
+      </div>
+
+      {/* Weekly breakdown (collapsed) */}
+      <div>
+        <button
+          onClick={() => setShowWeekly(v => !v)}
+          className="w-full flex items-center justify-between bg-white hover:bg-slate-50 rounded-2xl border border-slate-200/80 px-5 py-4 text-left cursor-pointer transition-colors"
+          aria-expanded={showWeekly}
+        >
+          <span>
+            <span className="block text-base font-semibold text-slate-900">Week by week</span>
+            <span className="block text-[13px] text-slate-500 mt-0.5">Tap a week to filter the order list</span>
+          </span>
+          <span className="text-sm font-medium text-slate-500">{showWeekly ? 'Hide' : 'Show'}</span>
+        </button>
+        {showWeekly && <div className="mt-4">
       <WeeklyOtdMatrixTable
         monthlySummaries={onTimeMetrics.monthlySummaries}
         weeklyMatrices={onTimeMetrics.weeklyMatrices}
@@ -561,6 +461,8 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
         onSelectMonth={(mKey) => handleMonthChange(mKey)}
         onSelectWeek={(wkName) => setWeekScopeFilter(wkName)}
       />
+        </div>}
+      </div>
 
       {/* FILTER & ORDER DRILLDOWN TABLE */}
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
@@ -572,14 +474,11 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                  <span>On-Time vs Delayed Order Ledger</span>
+                  <span>Orders</span>
                   <span className="px-2 py-0.5 rounded-full text-xs tabular-nums font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                    {filteredOrders.length.toLocaleString()} matching
+                    {filteredOrders.length.toLocaleString()}
                   </span>
                 </h3>
-                <p className="text-xs text-slate-500">
-                  Detailed audit showing Column G scheduled dispatch date against Final QC pass records
-                </p>
               </div>
             </div>
 
@@ -591,7 +490,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search OPF, Model, Customer..."
+                  placeholder="Search orders."
                   className="pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-hidden focus:border-indigo-500 w-full sm:w-56 shadow-2xs text-slate-800"
                 />
               </div>
@@ -607,7 +506,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                 title="Export this filtered On-Time vs Delayed Order Ledger directly to Excel (.xlsx)"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Export Ledger ({filteredOrders.length})</span>
+                <span>Export ({filteredOrders.length})</span>
               </button>
             </div>
           </div>
@@ -715,14 +614,14 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
             <thead className="bg-slate-50 sticky top-0 z-10 border-b border-slate-200 text-slate-600 text-xs font-semibold">
               <tr>
                 <th className="py-3 px-4">OPF &amp; Model</th>
-                <th className="py-3 px-4">Week Schedule</th>
-                <th className="py-3 px-4">Total Qty</th>
-                <th className="py-3 px-4">Scheduled Dispatch</th>
-                <th className="py-3 px-4">Final QC Date</th>
-                <th className="py-3 px-4 text-emerald-700">On-Time Qty</th>
-                <th className="py-3 px-4 text-rose-700">Delayed Qty</th>
-                <th className="py-3 px-4">Delivery Status</th>
-                <th className="py-3 px-4">Audit Diagnosis</th>
+                <th className="py-3 px-4">Week</th>
+                <th className="py-3 px-4">Chairs</th>
+                <th className="py-3 px-4">Due</th>
+                <th className="py-3 px-4">QC passed</th>
+                <th className="py-3 px-4 text-emerald-700">On time</th>
+                <th className="py-3 px-4 text-rose-700">Late</th>
+                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4">Note</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -749,7 +648,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
 
                   return (
                     <tr key={`${o.opfNo}-${idx}`} className="hover:bg-slate-50/80 transition-colors">
-                      {/* OPF & Model */}
+                      {/* Order */}
                       <td className="py-3 px-4">
                         <div className="font-semibold text-slate-900 tabular-nums">{o.opfNo}</div>
                         <div className="text-xs text-slate-500 truncate max-w-[180px]" title={o.modelName}>
@@ -757,7 +656,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                         </div>
                       </td>
 
-                      {/* Week Schedule */}
+                      {/* Week */}
                       <td className="py-3 px-4 whitespace-nowrap">
                         {o.weekName ? (
                           <div className="flex flex-col">
@@ -773,12 +672,12 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                         )}
                       </td>
 
-                      {/* Total Qty */}
+                      {/* Chairs */}
                       <td className="py-3 px-4 tabular-nums font-semibold text-slate-900">
-                        {o.totalQty} <span className="text-xs text-slate-400 font-normal">units</span>
+                        {o.totalQty} 
                       </td>
 
-                      {/* Scheduled Dispatch Date */}
+                      {/* Due Date */}
                       <td className="py-3 px-4 tabular-nums font-semibold text-slate-800">
                         {o.dispatchDateStr}
                       </td>
@@ -795,7 +694,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                         )}
                       </td>
 
-                      {/* On-Time Qty */}
+                      {/* On time */}
                       <td className="py-3 px-4 tabular-nums font-semibold text-emerald-700">
                         {o.onTimeQty > 0 ? (
                           <span className="px-2 py-0.5 bg-emerald-50 rounded-lg border border-emerald-200">
@@ -806,7 +705,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                         )}
                       </td>
 
-                      {/* Delayed Qty */}
+                      {/* Late */}
                       <td className="py-3 px-4 tabular-nums font-semibold text-rose-700">
                         {o.delayedQty > 0 ? (
                           <span className="px-2 py-0.5 bg-rose-50 rounded-lg border border-rose-200">
@@ -840,7 +739,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
 
         {filteredOrders.length > 150 && (
           <div className="p-3 bg-slate-50 border-t border-slate-200 text-center text-xs text-slate-500 font-medium">
-            Showing first 150 of {filteredOrders.length.toLocaleString()} matching records. Use search or filters to narrow down.
+            Showing first 150 of {filteredOrders.length.toLocaleString()} records. Use search or filters to narrow down.
           </div>
         )}
       </div>

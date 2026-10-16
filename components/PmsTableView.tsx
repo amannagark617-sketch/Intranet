@@ -62,15 +62,11 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-semibold text-slate-900">
-                PMS (Production Management System) Matrix
+                Data sheet
               </h3>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 tabular-nums font-semibold">
-                Live View • {orders.length} Active Orders
-              </span>
+              <span className="text-xs text-slate-500 tabular-nums">{orders.length} orders</span>
             </div>
-            <p className="text-xs text-slate-500">
-              PC: <strong className="text-slate-800">Kanishka</strong> • 14 Steps End-to-End Workflow with Department Owners & Google Form links
-            </p>
+            <p className="text-xs text-slate-500">All 14 steps for every order. Scroll sideways to see them all.</p>
           </div>
         </div>
 
@@ -87,7 +83,7 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
             title="Export full PMS Matrix orders to Excel"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Export Matrix to Excel</span>
+            <span>Export</span>
           </button>
         </div>
       </div>

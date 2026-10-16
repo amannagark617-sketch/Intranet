@@ -116,6 +116,8 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
   initialSubTab = 'cards'
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<PmsSubTab>(initialSubTab);
+  const [showOwners, setShowOwners] = useState<boolean>(false);
+  const inProgressCount = orders.filter(o => !o.isArchived && o.overallStatus !== 'Dispatched').length;
 
   // Pagination calculations for Cards
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / pageSize));
@@ -134,115 +136,43 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* PMS@MANESAR HEADER & SUB-NAVIGATION BAR */}
-      <div className="bg-white rounded-2xl p-4 md:p-5 shadow-xs border border-slate-200">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-indigo-50 text-indigo-700 rounded-xl border border-indigo-200">
-              <Factory className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg md:text-xl font-semibold text-slate-900 tracking-tight">
-                  PMS @ Manesar Plant
-                </h1>
-                <span className="text-xs bg-indigo-100 text-indigo-900 font-semibold px-2 py-0.5 rounded-full border border-indigo-200 tabular-nums">
-                  {orders.length} Active Work Orders
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-0.5">
-                14-Stage Floor Workflow, Production Scheduling, Order Holds, Station Bottlenecks & PMS Matrix
-              </p>
-            </div>
+      {/* Header and sub-views */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">Manesar</h1>
+            <p className="mt-1 text-sm text-slate-500">{inProgressCount} orders in progress</p>
           </div>
+          <button
+            onClick={() => exportOrdersToExcel(filteredOrders, `PMS_Manesar_Orders_${new Date().toISOString().slice(0, 10)}.xlsx`)}
+            className="flex items-center gap-1.5 self-start sm:self-auto px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-lg border border-slate-200 transition-colors cursor-pointer"
+          >
+            <Download className="w-4 h-4" />
+            <span>Export</span>
+          </button>
+        </div>
 
-          {/* SUB-VIEW SWITCHER PILLS */}
-          <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs">
-            {/* 1. Cards Pipeline */}
+        <div className="flex items-center gap-1 overflow-x-auto -mx-1 px-1">
+          {([
+            { id: 'cards', label: 'Orders', badge: filteredOrders.length },
+            { id: 'planner', label: 'Calendar' },
+            { id: 'hold', label: 'On hold', badge: holdOrdersCount },
+            { id: 'stages', label: 'Bottlenecks' },
+            { id: 'table', label: 'Data sheet' },
+          ] as Array<{ id: PmsSubTab; label: string; badge?: number }>).map(t => (
             <button
-              onClick={() => setActiveSubTab('cards')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
-                activeSubTab === 'cards'
-                  ? 'bg-white text-indigo-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              key={t.id}
+              onClick={() => setActiveSubTab(t.id)}
+              className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                activeSubTab === t.id ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <LayoutGrid className="w-3.5 h-3.5" />
-              <span>Pipeline Cards</span>
-              <span className="text-xs px-1.5 py-0.2 rounded-full tabular-nums font-semibold bg-slate-200 text-slate-700">
-                {filteredOrders.length}
-              </span>
-            </button>
-
-            {/* 2. Planning Calendar */}
-            <button
-              onClick={() => setActiveSubTab('planner')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
-                activeSubTab === 'planner'
-                  ? 'bg-white text-indigo-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              <CalendarDays className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Planning Calendar</span>
-            </button>
-
-            {/* 3. Hold Orders */}
-            <button
-              onClick={() => setActiveSubTab('hold')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
-                activeSubTab === 'hold'
-                  ? 'bg-amber-500 text-white shadow-xs'
-                  : 'text-amber-800 hover:text-amber-950 hover:bg-amber-100/60'
-              }`}
-            >
-              <AlertTriangle className={`w-3.5 h-3.5 ${activeSubTab === 'hold' ? 'text-white' : 'text-amber-600'}`} />
-              <span>Hold Orders</span>
-              {holdOrdersCount > 0 && (
-                <span className={`text-xs px-1.5 py-0.2 rounded-full tabular-nums font-semibold ${
-                  activeSubTab === 'hold' ? 'bg-amber-700 text-white' : 'bg-amber-100 text-amber-900 border border-amber-300'
-                }`}>
-                  {holdOrdersCount}
-                </span>
+              {t.label}
+              {typeof t.badge === 'number' && t.badge > 0 && (
+                <span className={`text-xs tabular-nums ${activeSubTab === t.id ? 'text-slate-300' : 'text-slate-400'}`}>{t.badge}</span>
               )}
             </button>
-
-            {/* 4. Bottlenecks & Owners */}
-            <button
-              onClick={() => setActiveSubTab('stages')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
-                activeSubTab === 'stages'
-                  ? 'bg-white text-indigo-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Bottlenecks</span>
-            </button>
-
-            {/* 5. Data Sheet Matrix */}
-            <button
-              onClick={() => setActiveSubTab('table')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
-                activeSubTab === 'table'
-                  ? 'bg-white text-indigo-700 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              <TableIcon className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Data Sheet</span>
-            </button>
-
-            {/* Excel Export Button */}
-            <button
-              onClick={() => exportOrdersToExcel(filteredOrders, `PMS_Manesar_Orders_${new Date().toISOString().slice(0, 10)}.xlsx`)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs ml-1 cursor-pointer"
-              title="Export currently filtered PMS orders to formatted Excel (.xlsx)"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export Excel</span>
-            </button>
-          </div>
+          ))}
         </div>
       </div>
 
@@ -276,82 +206,55 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             onResetFilters={onResetFilters}
           />
 
-          {/* 5 KPI Metric Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            <StatCard 
-              title="Total Orders" 
-              value={kpis.total.count.toString()} 
-              units={`${kpis.total.units} (units) in scope`} 
-              icon={<Boxes className="w-6 h-6" />} 
-              iconBgColor="bg-indigo-50" 
-              iconColor="text-indigo-600" 
-            />
-            <StatCard 
-              title="WIP Orders" 
-              value={kpis.wip.count.toString()} 
-              units={`${kpis.wip.units} (units) in stages`} 
-              icon={<Clock className="w-6 h-6" />} 
-              iconBgColor="bg-indigo-50" 
-              iconColor="text-indigo-600" 
-            />
-            <StatCard 
-              title="On Hold / Attention" 
-              value={kpis.onHold.count.toString()} 
-              units={`${kpis.onHold.units} (units) delayed`} 
-              icon={<AlertCircle className="w-6 h-6" />} 
-              iconBgColor="bg-amber-50" 
-              iconColor="text-amber-600" 
-            />
-            <StatCard 
-              title="Ready for Dispatch" 
-              value={kpis.ready.count.toString()} 
-              units={`${kpis.ready.units} (units) packed & ready`} 
-              icon={<CheckCircle2 className="w-6 h-6" />} 
-              iconBgColor="bg-indigo-50" 
-              iconColor="text-indigo-600" 
-            />
-            <StatCard 
-              title="Dispatched" 
-              value={kpis.dispatched.count.toString()} 
-              units={`${kpis.dispatched.units} (units) delivered/archived`} 
-              icon={<Truck className="w-6 h-6" />} 
-              iconBgColor="bg-emerald-50" 
-              iconColor="text-emerald-600" 
-            />
+          {/* Key numbers */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            {[
+              { label: 'Orders shown', value: kpis.total.count, sub: `${kpis.total.units} chairs` },
+              { label: 'In progress', value: kpis.wip.count, sub: `${kpis.wip.units} chairs` },
+              { label: 'On hold', value: kpis.onHold.count, sub: `${kpis.onHold.units} chairs`, accent: kpis.onHold.count > 0 },
+              { label: 'Ready to dispatch', value: kpis.ready.count, sub: `${kpis.ready.units} chairs` },
+            ].map(c => (
+              <div key={c.label} className="bg-white rounded-2xl border border-slate-200/80 px-5 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+                <div className="flex items-center gap-1.5 text-[13px] font-medium text-slate-500">
+                  {c.accent && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
+                  {c.label}
+                </div>
+                <div className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
+                <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
+              </div>
+            ))}
           </div>
 
-          {/* Responsible Department Owners Strip */}
-          <ResponsibleStats 
-            orders={filteredOrders}
-            selectedResponsibles={selectedResponsibles}
-            onTogglePersonFilter={onResponsibleToggle}
-            onClearAll={onClearResponsibles}
-          />
+          {/* Stage owners (collapsed) */}
+          <div>
+            <button
+              onClick={() => setShowOwners(v => !v)}
+              className="w-full flex items-center justify-between bg-white hover:bg-slate-50 rounded-2xl border border-slate-200/80 px-5 py-4 text-left cursor-pointer transition-colors"
+              aria-expanded={showOwners}
+            >
+              <span>
+                <span className="block text-base font-semibold text-slate-900">Who owns each stage</span>
+                <span className="block text-[13px] text-slate-500 mt-0.5">Tap a person to filter the orders</span>
+              </span>
+              <span className="text-sm font-medium text-slate-500">{showOwners ? 'Hide' : 'Show'}</span>
+            </button>
+            {showOwners && (
+              <div className="mt-4">
+                <ResponsibleStats
+                  orders={filteredOrders}
+                  selectedResponsibles={selectedResponsibles}
+                  onTogglePersonFilter={onResponsibleToggle}
+                  onClearAll={onClearResponsibles}
+                />
+              </div>
+            )}
+          </div>
 
-          {/* Orders Pipeline List Section */}
+          {/* Orders list */}
           <div className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h2 className="text-base md:text-lg font-semibold text-slate-900 flex items-center gap-2">
-                  <LayoutGrid className="w-5 h-5 text-indigo-600" />
-                  Orders Pipeline ({filteredOrders.length})
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  14-step workflow tracking. Showing {paginatedOrders.length} orders on page {validCurrentPage} of {totalPages}.
-                </p>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-slate-600">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Completed
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">
-                  <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span> WIP Active
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">
-                  <span className="w-2 h-2 rounded-full bg-amber-500"></span> Delayed
-                </span>
-              </div>
-            </div>
+            <h2 className="text-base font-semibold text-slate-900">
+              Orders <span className="text-slate-400 font-normal tabular-nums">{filteredOrders.length}</span>
+            </h2>
 
             {/* List of Orders */}
             <div className="flex flex-col gap-3.5">
@@ -365,8 +268,8 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
                 ))
               ) : (
                 <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 text-slate-500 shadow-xs">
-                  <p className="font-semibold text-base text-slate-800">No matching production orders</p>
-                  <p className="text-xs text-slate-400 mt-1">Try adjusting your multi-filters or click "Reset Filters".</p>
+                  <p className="font-semibold text-base text-slate-800">No orders match</p>
+                  <p className="text-xs text-slate-400 mt-1">Try clearing the filters.</p>
                 </div>
               )}
             </div>

@@ -164,7 +164,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              All ({counts.all})
+              All
             </button>
             <button
               onClick={() => onSourceChange('live')}
@@ -175,7 +175,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               }`}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              Live ({counts.live})
+              Current
             </button>
             <button
               onClick={() => onSourceChange('archive')}
@@ -185,7 +185,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Archive ({counts.archive})
+              Past orders
             </button>
           </div>
 
@@ -200,7 +200,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Multi-Filters</span>
+              <span>Filters</span>
               {totalActiveFilterCount > 0 && (
                 <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center tabular-nums">
                   {totalActiveFilterCount}
@@ -239,7 +239,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-700">
-                      1. Status Filter:
+                      Status
                     </span>
                     <div className="flex items-center gap-2 text-xs">
                       <button onClick={onSelectAllStatuses} className="text-indigo-600 hover:underline font-medium">
@@ -247,7 +247,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                       </button>
                       <span className="text-slate-300">•</span>
                       <button onClick={onSelectActiveStatuses} className="text-indigo-600 hover:underline font-medium">
-                        Active Only
+                        Open only
                       </button>
                       <span className="text-slate-300">•</span>
                       <button onClick={onClearStatuses} className="text-slate-500 hover:underline">

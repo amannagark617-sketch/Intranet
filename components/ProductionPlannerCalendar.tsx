@@ -580,27 +580,10 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
       {/* Top Banner: Standalone Production Planning & Backlog Management */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-xs space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            <div className="p-3 rounded-xl bg-indigo-600 text-white shadow-xs shrink-0">
-              <CalendarDays className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2.5">
-                <h2 className="text-lg md:text-xl font-semibold text-slate-900 tracking-tight">
-                  Production Planning & 14-Step Milestone Calendar
-                </h2>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                  <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-                  Today: 01 Sep 2026
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-1 max-w-3xl leading-relaxed">
-                Comprehensive step-level production planning. Click any date on the calendar to view all 14-stage planned tasks, responsible owners, and target dispatches scheduled strictly for that exact day.
-              </p>
-            </div>
+          <div>
+            <p className="text-sm text-slate-500">Tap a day to see what is planned and who owns it</p>
           </div>
-
-          {/* Quick Backlog & Planning Summary Pill Cards */}
+                    {/* Quick Backlog & Planning Summary Pill Cards */}
           <div className="flex flex-wrap items-center gap-2.5 text-xs">
             {/* Backlog Alert Trigger */}
             <button

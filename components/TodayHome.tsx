@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Factory,
   PauseCircle,
@@ -11,14 +11,19 @@ import {
   ChevronRight,
   Loader2,
 } from 'lucide-react';
-import type { Order, Insight } from '../types';
+import type { Order, Insight, FinalQcRecord } from '../types';
 import type { ReceivableItem } from '../services/receivableListService';
 import { STAGE_CONFIGS } from '../constants';
-import { normalizeToYMD, diffDaysYMD } from '../utils/dateUtils';
+import { normalizeToYMD, diffDaysYMD, formatDisplayDate } from '../utils/dateUtils';
+import { fetchFinalQcRecords, getMonthlyTarget } from '../services/qcResponsesService';
+import { calculateOnTimePerformance } from '../services/onTimeDeliveryService';
+import type { OnTimeOrderItem } from '../services/onTimeDeliveryService';
+import { getCachedReadyGoods } from '../services/readyGoodsService';
 
 export type TodayTarget =
   | 'dashboard'
   | 'pmsManesar'
+  | 'pmsIndore'
   | 'readyGoods'
   | 'readyStock'
   | 'receivableList'
@@ -94,6 +99,35 @@ const KpiCard: React.FC<{
 const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{children}</h3>
 );
+
+const OTD_PILL: Record<string, string> = {
+  'On-Time': 'bg-emerald-50 text-emerald-700',
+  'Partially Delayed': 'bg-amber-50 text-amber-700',
+  Delayed: 'bg-rose-50 text-rose-700',
+  Upcoming: 'bg-slate-100 text-slate-600',
+};
+
+const PctBlock: React.FC<{ label: string; pct: number | null | undefined; sub: string }> = ({ label, pct, sub }) => {
+  const tone: Tone = pct == null ? 'neutral' : pct >= 90 ? 'good' : pct >= 75 ? 'watch' : 'bad';
+  const t = TONE_STYLES[tone];
+  return (
+    <div>
+      <div className="flex items-center gap-2 text-[13px] font-medium text-slate-500">
+        {label}
+        {t.label && (
+          <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold ${t.pill}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${t.dot}`} />
+            {t.label}
+          </span>
+        )}
+      </div>
+      <div className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900 tabular-nums">
+        {pct == null ? '—' : `${pct}%`}
+      </div>
+      <div className="mt-1.5 text-[13px] text-slate-500">{sub}</div>
+    </div>
+  );
+};
 
 const TodayHome: React.FC<TodayHomeProps> = ({
   orders,
@@ -187,6 +221,65 @@ const TodayHome: React.FC<TodayHomeProps> = ({
     };
   }, [orders, receivables]);
 
+  // Final QC sheet drives production + on-time numbers
+  const [qcRecords, setQcRecords] = useState<FinalQcRecord[] | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetchFinalQcRecords(false)
+      .then(r => { if (alive) setQcRecords(r); })
+      .catch(() => { if (alive) setQcRecords([]); });
+    return () => { alive = false; };
+  }, []);
+
+  const [showAllOtd, setShowAllOtd] = useState(false);
+
+  const production = useMemo(() => {
+    if (!qcRecords) return null;
+    const today = todayYMD();
+    const month = today.slice(0, 7);
+    const passed = qcRecords.filter(r => r.status === 'Pass' || r.passQuantity > 0);
+    const units = (list: FinalQcRecord[]) => list.reduce((s, r) => s + (r.passQuantity || 0), 0);
+    const todayRecs = passed.filter(r => r.dateYMD === today);
+    const monthRecs = passed.filter(r => r.monthKey === month);
+    const pastDays = Array.from(new Set(passed.map(r => r.dateYMD).filter(d => d && d < today))).sort();
+    const lastDay = pastDays.length ? pastDays[pastDays.length - 1] : null;
+    const lastUnits = lastDay ? units(passed.filter(r => r.dateYMD === lastDay)) : 0;
+    return {
+      todayUnits: units(todayRecs),
+      todayOrders: new Set(todayRecs.map(r => r.opfNo)).size,
+      monthUnits: units(monthRecs),
+      target: getMonthlyTarget(month),
+      lastDay,
+      lastUnits,
+    };
+  }, [qcRecords]);
+
+  const otd = useMemo(() => {
+    if (!qcRecords) return null;
+    const today = todayYMD();
+    const month = today.slice(0, 7);
+    const metrics = calculateOnTimePerformance(orders, qcRecords, today);
+    const m = metrics.monthlySummaries.find(x => x.monthKey === month) || null;
+    const rank = (o: OnTimeOrderItem) =>
+      o.status === 'Delayed' ? 0 : o.status === 'Partially Delayed' ? 1 : o.status === 'Upcoming' ? 2 : 3;
+    const rows = metrics.orderItems
+      .filter(o => o.assignedMonthKey === month && o.status !== 'On Hold')
+      .sort((a, b) => rank(a) - rank(b) || (a.dispatchYMD || '').localeCompare(b.dispatchYMD || ''));
+    return { month: m, overallUnitPct: metrics.overallUnitOnTimePct, overallOrderPct: metrics.overallOrderOnTimePct, rows };
+  }, [qcRecords, orders]);
+
+  const readyGoods = useMemo(() => {
+    const items = getCachedReadyGoods();
+    const sum = (f: (i: (typeof items)[number]) => number) => items.reduce((a, i) => a + (f(i) || 0), 0);
+    return {
+      orders: items.length,
+      orderQty: sum(i => i.orderQty),
+      readyQty: sum(i => i.readyGoodsQty),
+      gross: sum(i => i.grossAmount),
+      balance: sum(i => i.balancePayment),
+    };
+  }, []);
+
   const runInsights = async () => {
     setInsightsLoading(true);
     setInsightsError(null);
@@ -246,6 +339,75 @@ const TodayHome: React.FC<TodayHomeProps> = ({
       </div>
 
       <section>
+        <SectionLabel>Production</SectionLabel>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-semibold text-slate-900">Manesar</h3>
+              <button onClick={() => onNavigate('pmsManesar')} className="flex items-center gap-0.5 text-[13px] font-medium text-slate-500 hover:text-slate-800 cursor-pointer">
+                Details <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-6">
+              <div>
+                <div className="text-[13px] font-medium text-slate-500">Produced today</div>
+                <div className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900 tabular-nums">
+                  {production ? production.todayUnits : '—'}
+                </div>
+                <div className="mt-1.5 text-[13px] text-slate-500">
+                  {!production
+                    ? 'Loading…'
+                    : production.todayUnits > 0
+                    ? `chairs · ${production.todayOrders} orders passed QC`
+                    : production.lastDay
+                    ? `Last: ${production.lastUnits} on ${formatDisplayDate(production.lastDay, false)}`
+                    : 'Nothing passed QC yet'}
+                </div>
+              </div>
+              <div>
+                <div className="text-[13px] font-medium text-slate-500">Produced this month</div>
+                <div className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900 tabular-nums">
+                  {production ? production.monthUnits.toLocaleString() : '—'}
+                </div>
+                <div className="mt-1.5 text-[13px] text-slate-500">
+                  {production ? `of ${production.target.toLocaleString()} target` : 'Loading…'}
+                </div>
+              </div>
+            </div>
+            {production && (
+              <div className="mt-6">
+                <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-indigo-500"
+                    style={{ width: `${Math.min(100, production.target ? (production.monthUnits / production.target) * 100 : 0)}%` }}
+                  />
+                </div>
+                <div className="mt-2 flex justify-between text-[13px] text-slate-500 tabular-nums">
+                  <span>{production.target ? Math.round((production.monthUnits / production.target) * 100) : 0}% of target</span>
+                  <span>{Math.max(0, production.target - production.monthUnits).toLocaleString()} to go</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-5 sm:p-6 flex flex-col">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-semibold text-slate-900">Indore</h3>
+              <button onClick={() => onNavigate('pmsIndore')} className="flex items-center gap-0.5 text-[13px] font-medium text-slate-500 hover:text-slate-800 cursor-pointer">
+                Open PMS <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="flex-1 flex flex-col justify-center py-6">
+              <p className="text-[15px] font-medium text-slate-700">Indore numbers aren't connected yet</p>
+              <p className="mt-1.5 text-sm text-slate-500">
+                Indore runs in its own PMS, so today's production, month-to-date and target can't be pulled in here until its data sheet is linked.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
         <SectionLabel>Factory floor</SectionLabel>
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           <KpiCard
@@ -284,24 +446,103 @@ const TodayHome: React.FC<TodayHomeProps> = ({
       </section>
 
       <section>
-        <SectionLabel>Delivery &amp; cash</SectionLabel>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-          <KpiCard
-            title="On-time delivery"
-            value={stats.onTimePct === null ? '—' : `${stats.onTimePct}%`}
-            sub={stats.measured ? `${stats.measured} orders measured this month` : 'No QC data for this month yet'}
-            tone={onTimeTone}
-            icon={Timer}
-            onClick={() => onNavigate('dashboard')}
-          />
-          <KpiCard
-            title="Ready to dispatch"
-            value={`${readyGoodsUnits + readyStockUnits}`}
-            sub={`units · ${readyGoodsUnits} ready goods, ${readyStockUnits} ready stock`}
-            tone="neutral"
-            icon={PackageCheck}
+        <SectionLabel>On-time delivery</SectionLabel>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
+            <PctBlock
+              label="This month"
+              pct={otd?.month?.unitOnTimePct}
+              sub={otd?.month ? `chairs · ${otd.month.orderOnTimePct ?? '—'}% of orders · ${otd.month.delayedOrders} delayed` : qcRecords ? 'No orders due yet' : 'Loading…'}
+            />
+            <PctBlock
+              label="Till date"
+              pct={otd ? otd.overallUnitPct : null}
+              sub={otd ? `chairs · ${otd.overallOrderPct}% of orders` : 'Loading…'}
+            />
+          </div>
+
+          {otd && otd.rows.length > 0 && (
+            <div className="mt-6 pt-5 border-t border-slate-100">
+              <div className="flex items-baseline justify-between">
+                <h4 className="text-sm font-semibold text-slate-900">Order-wise · this month</h4>
+                <span className="text-[13px] text-slate-400">{otd.rows.length} orders</span>
+              </div>
+              <div className="mt-3 overflow-x-auto -mx-1 px-1">
+                <table className="w-full min-w-[520px] text-sm text-left">
+                  <thead className="text-xs text-slate-400">
+                    <tr>
+                      <th className="py-2 font-medium">Order</th>
+                      <th className="py-2 font-medium">Model</th>
+                      <th className="py-2 font-medium text-right">Qty</th>
+                      <th className="py-2 font-medium text-right">Due</th>
+                      <th className="py-2 font-medium text-right">QC passed</th>
+                      <th className="py-2 font-medium text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 tabular-nums">
+                    {(showAllOtd ? otd.rows : otd.rows.slice(0, 8)).map(o => (
+                      <tr key={o.opfNo} className="text-slate-600">
+                        <td className="py-2.5 font-medium text-slate-900">{o.opfNo}</td>
+                        <td className="py-2.5 truncate max-w-[160px]">{o.modelName}</td>
+                        <td className="py-2.5 text-right">{o.totalQty}</td>
+                        <td className="py-2.5 text-right">{formatDisplayDate(o.dispatchYMD, false)}</td>
+                        <td className="py-2.5 text-right">{o.qcPassDateLatest ? formatDisplayDate(o.qcPassDateLatest, false) : '—'}</td>
+                        <td className="py-2.5 text-right">
+                          <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${OTD_PILL[o.status] || 'bg-slate-100 text-slate-600'}`}>
+                            {o.status === 'Partially Delayed' ? 'Part delayed' : o.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {otd.rows.length > 8 && (
+                <button
+                  onClick={() => setShowAllOtd(v => !v)}
+                  className="mt-3 text-[13px] font-medium text-indigo-600 hover:text-indigo-800 cursor-pointer"
+                >
+                  {showAllOtd ? 'Show fewer' : `Show all ${otd.rows.length} orders`}
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section>
+        <SectionLabel>Ready goods &amp; receivables</SectionLabel>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <button
             onClick={() => onNavigate('readyGoods')}
-          />
+            className="lg:col-span-2 text-left bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-slate-300 hover:shadow-md transition-all cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="flex items-center gap-2 text-base font-semibold text-slate-900">
+                <PackageCheck className="w-4 h-4 text-slate-400" /> Ready goods
+              </h3>
+              <ChevronRight className="w-4 h-4 text-slate-300" />
+            </div>
+            <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
+              <div>
+                <div className="text-[13px] text-slate-500">Orders</div>
+                <div className="mt-1.5 text-3xl font-semibold text-slate-900 tabular-nums">{readyGoods.orders}</div>
+              </div>
+              <div>
+                <div className="text-[13px] text-slate-500">Order qty</div>
+                <div className="mt-1.5 text-3xl font-semibold text-slate-900 tabular-nums">{readyGoods.orderQty.toLocaleString()}</div>
+                <div className="text-xs text-slate-400">{readyGoods.readyQty.toLocaleString()} ready</div>
+              </div>
+              <div>
+                <div className="text-[13px] text-slate-500">Amount</div>
+                <div className="mt-1.5 text-3xl font-semibold text-slate-900 tabular-nums">{formatInr(readyGoods.gross)}</div>
+              </div>
+              <div>
+                <div className="text-[13px] text-slate-500">Balance to collect</div>
+                <div className="mt-1.5 text-3xl font-semibold text-slate-900 tabular-nums">{formatInr(readyGoods.balance)}</div>
+              </div>
+            </div>
+          </button>
           <KpiCard
             title="Receivables outstanding"
             value={formatInr(stats.outstanding)}
@@ -311,7 +552,6 @@ const TodayHome: React.FC<TodayHomeProps> = ({
                 : 'Nothing overdue'
             }
             tone={dueTone}
-            className="col-span-2 md:col-span-1"
             icon={ReceiptText}
             onClick={() => onNavigate('receivableList')}
           />

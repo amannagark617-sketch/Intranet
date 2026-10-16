@@ -219,7 +219,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
                   {c.accent && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
                   {c.label}
                 </div>
-                <div className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
+                <div className="mt-2 text-2xl sm:text-3xl whitespace-nowrap font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
                 <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
               </div>
             ))}

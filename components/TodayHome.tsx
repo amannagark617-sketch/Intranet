@@ -2,9 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   Factory,
   PauseCircle,
-  AlertTriangle,
+  Wallet,
   Truck,
   Timer,
+  TrendingUp,
   PackageCheck,
   ReceiptText,
   Sparkles,
@@ -17,8 +18,11 @@ import { STAGE_CONFIGS } from '../constants';
 import { normalizeToYMD, diffDaysYMD, formatDisplayDate } from '../utils/dateUtils';
 import { fetchFinalQcRecords, getMonthlyTarget } from '../services/qcResponsesService';
 import { calculateOnTimePerformance } from '../services/onTimeDeliveryService';
-import type { OnTimeOrderItem } from '../services/onTimeDeliveryService';
 import { getCachedReadyGoods } from '../services/readyGoodsService';
+import { fetchCeoSales } from '../services/ceoSalesService';
+import type { CeoSalesSummary, CeoSalesPeriod } from '../services/ceoSalesService';
+import { fetchIndoreMetrics, pickHeadlineMetrics } from '../services/indoreService';
+import type { IndoreResult } from '../services/indoreService';
 
 export type TodayTarget =
   | 'dashboard'
@@ -27,6 +31,7 @@ export type TodayTarget =
   | 'readyGoods'
   | 'readyStock'
   | 'receivableList'
+  | 'salesReport'
   | 'overtime';
 
 interface TodayHomeProps {
@@ -100,20 +105,21 @@ const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{children}</h3>
 );
 
-const OTD_PILL: Record<string, string> = {
-  'On-Time': 'bg-emerald-50 text-emerald-700',
-  'Partially Delayed': 'bg-amber-50 text-amber-700',
-  Delayed: 'bg-rose-50 text-rose-700',
-  Upcoming: 'bg-slate-100 text-slate-600',
-};
-
-const PctBlock: React.FC<{ label: string; pct: number | null | undefined; sub: string }> = ({ label, pct, sub }) => {
-  const tone: Tone = pct == null ? 'neutral' : pct >= 90 ? 'good' : pct >= 75 ? 'watch' : 'bad';
+const SalesPeriod: React.FC<{
+  label: string;
+  period: CeoSalesPeriod | null;
+  tone: Tone;
+  loading: boolean;
+}> = ({ label, period, tone, loading }) => {
   const t = TONE_STYLES[tone];
+  const pct = period && period.target ? Math.round((period.sales / period.target) * 100) : null;
   return (
     <div>
-      <div className="flex items-center gap-2 text-[13px] font-medium text-slate-500">
-        {label}
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="flex items-center gap-2 text-[13px] font-medium text-slate-500">
+          <TrendingUp className="w-4 h-4 text-slate-400" />
+          {label}{period ? ` · ${period.label}` : ''}
+        </h3>
         {t.label && (
           <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold ${t.pill}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${t.dot}`} />
@@ -121,10 +127,32 @@ const PctBlock: React.FC<{ label: string; pct: number | null | undefined; sub: s
           </span>
         )}
       </div>
-      <div className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900 tabular-nums">
-        {pct == null ? '—' : `${pct}%`}
+      <div className="mt-3 flex flex-wrap items-baseline gap-x-3">
+        <span className="text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900 tabular-nums">
+          {period ? formatInr(period.sales) : loading ? '—' : 'n/a'}
+        </span>
+        {period && period.target ? (
+          <span className="text-base text-slate-400">of {formatInr(period.target)} target</span>
+        ) : null}
       </div>
-      <div className="mt-1.5 text-[13px] text-slate-500">{sub}</div>
+      {period && period.target ? (
+        <div className="mt-5">
+          <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+            <div className={`h-full rounded-full ${t.bar === 'bg-slate-200' ? 'bg-indigo-500' : t.bar}`} style={{ width: `${Math.min(100, pct ?? 0)}%` }} />
+          </div>
+          <div className="mt-2 flex justify-between text-[13px] text-slate-500 tabular-nums">
+            <span>{pct}% of target</span>
+            <span>{formatInr(Math.max(0, period.target - period.sales))} to go</span>
+          </div>
+        </div>
+      ) : (
+        <p className="mt-3 text-[13px] text-slate-400">{loading ? 'Loading…' : 'No target available'}</p>
+      )}
+      {period && (
+        <p className="mt-3 text-[13px] text-slate-500 tabular-nums">
+          {period.orders.toLocaleString()} orders · {period.units.toLocaleString()} chairs
+        </p>
+      )}
     </div>
   );
 };
@@ -155,12 +183,6 @@ const TodayHome: React.FC<TodayHomeProps> = ({
     const wip = open.filter(o => o.overallStatus === 'WIP' && !isHold(o));
     const hold = open.filter(isHold);
 
-    // Late = still on the floor and past its planned dispatch date
-    const late = open.filter(o => {
-      if (isHold(o)) return false;
-      const d = normalizeToYMD(o.dispatchDate);
-      return d ? diffDaysYMD(today, d) > 0 : false;
-    });
 
     const dispatchedMonth = orders.filter(
       o => o.overallStatus === 'Dispatched' && (normalizeToYMD(o.dispatchDate) || '').startsWith(month)
@@ -210,7 +232,6 @@ const TodayHome: React.FC<TodayHomeProps> = ({
     return {
       wip: { count: wip.length, units: units(wip) },
       hold: { count: hold.length, units: units(hold) },
-      late: { count: late.length, units: units(late) },
       dispatchedMonth: { count: dispatchedMonth.length, units: units(dispatchedMonth) },
       onTimePct,
       measured,
@@ -230,8 +251,6 @@ const TodayHome: React.FC<TodayHomeProps> = ({
       .catch(() => { if (alive) setQcRecords([]); });
     return () => { alive = false; };
   }, []);
-
-  const [showAllOtd, setShowAllOtd] = useState(false);
 
   const production = useMemo(() => {
     if (!qcRecords) return null;
@@ -260,12 +279,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
     const month = today.slice(0, 7);
     const metrics = calculateOnTimePerformance(orders, qcRecords, today);
     const m = metrics.monthlySummaries.find(x => x.monthKey === month) || null;
-    const rank = (o: OnTimeOrderItem) =>
-      o.status === 'Delayed' ? 0 : o.status === 'Partially Delayed' ? 1 : o.status === 'Upcoming' ? 2 : 3;
-    const rows = metrics.orderItems
-      .filter(o => o.assignedMonthKey === month && o.status !== 'On Hold')
-      .sort((a, b) => rank(a) - rank(b) || (a.dispatchYMD || '').localeCompare(b.dispatchYMD || ''));
-    return { month: m, overallUnitPct: metrics.overallUnitOnTimePct, overallOrderPct: metrics.overallOrderOnTimePct, rows };
+    return { month: m, overallUnitPct: metrics.overallUnitOnTimePct, overallOrderPct: metrics.overallOrderOnTimePct };
   }, [qcRecords, orders]);
 
   const readyGoods = useMemo(() => {
@@ -279,6 +293,38 @@ const TodayHome: React.FC<TodayHomeProps> = ({
       balance: sum(i => i.balancePayment),
     };
   }, []);
+
+  const [sales, setSales] = useState<CeoSalesSummary | null>(null);
+  const [salesLoaded, setSalesLoaded] = useState(false);
+  const [indore, setIndore] = useState<IndoreResult | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetchCeoSales(todayYMD())
+      .then(r => { if (alive) { setSales(r); setSalesLoaded(true); } })
+      .catch(() => { if (alive) setSalesLoaded(true); });
+    fetchIndoreMetrics()
+      .then(r => { if (alive) setIndore(r); })
+      .catch(() => { if (alive) setIndore({ metrics: [], status: 'unavailable' }); });
+    return () => { alive = false; };
+  }, []);
+
+  // How far through the month / financial year we are, to judge pace against target
+  const monthElapsed = (() => {
+    const d = new Date();
+    return d.getDate() / new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  })();
+  const fyElapsed = (() => {
+    const d = new Date();
+    const startYear = d.getMonth() >= 3 ? d.getFullYear() : d.getFullYear() - 1;
+    const start = new Date(startYear, 3, 1).getTime();
+    return Math.min(1, (d.getTime() - start) / (365 * 86400000));
+  })();
+  const paceTone = (achieved: number, target: number | null, elapsed: number): Tone => {
+    if (!target) return 'neutral';
+    if (achieved >= target) return 'good';
+    const ratio = achieved / target / Math.max(elapsed, 0.05);
+    return ratio >= 0.9 ? 'good' : ratio >= 0.7 ? 'watch' : 'bad';
+  };
 
   const runInsights = async () => {
     setInsightsLoading(true);
@@ -299,33 +345,37 @@ const TodayHome: React.FC<TodayHomeProps> = ({
     year: 'numeric',
   });
 
+  const onTimeVal = otd?.month?.unitOnTimePct;
   const onTimeTone: Tone =
-    stats.onTimePct === null ? 'neutral' : stats.onTimePct >= 90 ? 'good' : stats.onTimePct >= 75 ? 'watch' : 'bad';
-  const lateTone: Tone = stats.late.count === 0 ? 'good' : stats.late.count <= 5 ? 'watch' : 'bad';
+    onTimeVal == null ? 'neutral' : onTimeVal >= 90 ? 'good' : onTimeVal >= 75 ? 'watch' : 'bad';
   const holdTone: Tone = stats.hold.count === 0 ? 'good' : stats.hold.count <= 5 ? 'watch' : 'bad';
   const dueTone: Tone = stats.overdueAmount === 0 ? 'good' : 'bad';
   const maxBottleneck = Math.max(1, ...stats.bottlenecks.map(b => b.orders));
+  const monthTone = sales ? paceTone(sales.month.sales, sales.month.target, monthElapsed) : 'neutral';
+  const fyTone = sales ? paceTone(sales.fy.sales, sales.fy.target, fyElapsed) : 'neutral';
 
   const greeting = (() => {
     const h = new Date().getHours();
     return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
   })();
 
+  const pctOf = (a: number, t: number | null) => (t ? Math.round((a / t) * 100) : null);
+  const monthName = new Date().toLocaleDateString('en-IN', { month: 'long' });
+
   const headline = (() => {
     const parts: string[] = [];
-    if (stats.late.count > 0)
-      parts.push(`${stats.late.count} ${stats.late.count === 1 ? 'order is' : 'orders are'} past the dispatch date`);
-    if (stats.hold.count > 0) parts.push(`${stats.hold.count} on hold`);
-    if (stats.overdueAmount > 0) parts.push(`${formatInr(stats.overdueAmount)} in receivables overdue`);
-    if (parts.length === 0) return 'Everything is on track. Nothing needs attention right now.';
-    return parts.join(' · ');
+    if (sales) {
+      const p = pctOf(sales.month.sales, sales.month.target);
+      parts.push(p === null ? `${formatInr(sales.month.sales)} sold this month` : `Sales at ${p}% of the ${monthName} target`);
+    }
+    if (production && production.target) {
+      parts.push(`Manesar production at ${Math.round((production.monthUnits / production.target) * 100)}% of target`);
+    }
+    if (stats.hold.count > 0) parts.push(`${stats.hold.count} orders on hold`);
+    if (stats.overdueAmount > 0) parts.push(`${formatInr(stats.overdueAmount)} receivables overdue`);
+    return parts.length ? parts.join(' · ') : "Loading today's numbers…";
   })();
-  const headlineTone: Tone =
-    stats.late.count > 5 || stats.overdueAmount > 0
-      ? 'bad'
-      : stats.late.count > 0 || stats.hold.count > 0
-      ? 'watch'
-      : 'good';
+  const headlineTone: Tone = monthTone !== 'neutral' ? monthTone : 'good';
 
   return (
     <div className="max-w-6xl mx-auto space-y-10 pb-6">
@@ -337,6 +387,62 @@ const TodayHome: React.FC<TodayHomeProps> = ({
           {headline}
         </p>
       </div>
+
+      <section>
+        <SectionLabel>Sales</SectionLabel>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <button
+            onClick={() => onNavigate('salesReport')}
+            className="text-left bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-slate-300 hover:shadow-md transition-all cursor-pointer"
+          >
+            <SalesPeriod label="This month" period={sales?.month ?? null} tone={monthTone} loading={!salesLoaded} />
+          </button>
+          <button
+            onClick={() => onNavigate('salesReport')}
+            className="text-left bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-slate-300 hover:shadow-md transition-all cursor-pointer"
+          >
+            <SalesPeriod label="This financial year" period={sales?.fy ?? null} tone={fyTone} loading={!salesLoaded} />
+          </button>
+        </div>
+        {sales && sales.regions.length > 0 && (
+          <button
+            onClick={() => onNavigate('salesReport')}
+            className="mt-4 w-full text-left bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-slate-300 hover:shadow-md transition-all cursor-pointer"
+          >
+            <div className="flex items-baseline justify-between">
+              <h3 className="text-base font-semibold text-slate-900">By showroom · {sales.month.label}</h3>
+              <span className="text-[13px] text-slate-400">sales vs target</span>
+            </div>
+            <ul className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+              {sales.regions.slice(0, 8).map(r => {
+                const pct = r.target > 0 ? Math.round((r.sales / r.target) * 100) : null;
+                return (
+                  <li key={r.name}>
+                    <div className="flex items-baseline justify-between gap-3 text-sm">
+                      <span className="font-medium text-slate-800 truncate">{r.name}</span>
+                      <span className="text-slate-500 tabular-nums shrink-0">
+                        {formatInr(r.sales)}{r.target > 0 ? ` / ${formatInr(r.target)}` : ''}
+                      </span>
+                    </div>
+                    <div className="mt-1.5 flex items-center gap-3">
+                      <div className="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${pct !== null && pct >= 100 ? 'bg-emerald-500' : 'bg-indigo-500/80'}`}
+                          style={{ width: `${Math.min(100, pct ?? 0)}%` }}
+                        />
+                      </div>
+                      <span className="w-10 text-right text-xs font-medium text-slate-500 tabular-nums">{pct !== null ? `${pct}%` : ''}</span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </button>
+        )}
+        {salesLoaded && !sales?.hasTargets && sales && (
+          <p className="mt-3 text-[13px] text-slate-400">Targets couldn't be read, so sales are shown without a target comparison.</p>
+        )}
+      </section>
 
       <section>
         <SectionLabel>Production</SectionLabel>
@@ -390,25 +496,36 @@ const TodayHome: React.FC<TodayHomeProps> = ({
             )}
           </div>
 
-          <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-5 sm:p-6 flex flex-col">
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] flex flex-col">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-semibold text-slate-900">Indore</h3>
               <button onClick={() => onNavigate('pmsIndore')} className="flex items-center gap-0.5 text-[13px] font-medium text-slate-500 hover:text-slate-800 cursor-pointer">
-                Open PMS <ChevronRight className="w-4 h-4" />
+                Details <ChevronRight className="w-4 h-4" />
               </button>
             </div>
-            <div className="flex-1 flex flex-col justify-center py-6">
-              <p className="text-[15px] font-medium text-slate-700">Indore numbers aren't connected yet</p>
-              <p className="mt-1.5 text-sm text-slate-500">
-                Indore runs in its own PMS, so today's production, month-to-date and target can't be pulled in here until its data sheet is linked.
-              </p>
-            </div>
+            {!indore ? (
+              <p className="flex-1 flex items-center text-sm text-slate-500 py-6">Loading…</p>
+            ) : indore.status === 'unavailable' ? (
+              <div className="flex-1 flex flex-col justify-center py-6">
+                <p className="text-[15px] font-medium text-slate-700">Couldn't read the Indore sheet</p>
+                <p className="mt-1.5 text-sm text-slate-500">Check it is shared as "Anyone with the link can view", then refresh.</p>
+              </div>
+            ) : (
+              <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-6">
+                {pickHeadlineMetrics(indore.metrics, 4).map(m => (
+                  <div key={m.label}>
+                    <dt className="text-[13px] font-medium text-slate-500 truncate" title={m.label}>{m.label}</dt>
+                    <dd className="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900 tabular-nums">{m.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
           </div>
         </div>
       </section>
 
       <section>
-        <SectionLabel>Factory floor</SectionLabel>
+        <SectionLabel>Factory &amp; delivery</SectionLabel>
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           <KpiCard
             title="In production"
@@ -416,14 +533,6 @@ const TodayHome: React.FC<TodayHomeProps> = ({
             sub={`units across ${stats.wip.count} orders`}
             tone="neutral"
             icon={Factory}
-            onClick={() => onNavigate('pmsManesar')}
-          />
-          <KpiCard
-            title="Past dispatch date"
-            value={`${stats.late.count}`}
-            sub={`orders · ${stats.late.units} units not yet dispatched`}
-            tone={lateTone}
-            icon={AlertTriangle}
             onClick={() => onNavigate('pmsManesar')}
           />
           <KpiCard
@@ -442,76 +551,19 @@ const TodayHome: React.FC<TodayHomeProps> = ({
             icon={Truck}
             onClick={() => onNavigate('dashboard')}
           />
+          <KpiCard
+            title="On-time delivery"
+            value={onTimeVal == null ? '—' : `${onTimeVal}%`}
+            sub={otd ? `this month · ${otd.overallUnitPct}% till date` : 'Loading…'}
+            tone={onTimeTone}
+            icon={Timer}
+            onClick={() => onNavigate('dashboard')}
+          />
         </div>
       </section>
 
       <section>
-        <SectionLabel>On-time delivery</SectionLabel>
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
-            <PctBlock
-              label="This month"
-              pct={otd?.month?.unitOnTimePct}
-              sub={otd?.month ? `chairs · ${otd.month.orderOnTimePct ?? '—'}% of orders · ${otd.month.delayedOrders} delayed` : qcRecords ? 'No orders due yet' : 'Loading…'}
-            />
-            <PctBlock
-              label="Till date"
-              pct={otd ? otd.overallUnitPct : null}
-              sub={otd ? `chairs · ${otd.overallOrderPct}% of orders` : 'Loading…'}
-            />
-          </div>
-
-          {otd && otd.rows.length > 0 && (
-            <div className="mt-6 pt-5 border-t border-slate-100">
-              <div className="flex items-baseline justify-between">
-                <h4 className="text-sm font-semibold text-slate-900">Order-wise · this month</h4>
-                <span className="text-[13px] text-slate-400">{otd.rows.length} orders</span>
-              </div>
-              <div className="mt-3 overflow-x-auto -mx-1 px-1">
-                <table className="w-full min-w-[520px] text-sm text-left">
-                  <thead className="text-xs text-slate-400">
-                    <tr>
-                      <th className="py-2 font-medium">Order</th>
-                      <th className="py-2 font-medium">Model</th>
-                      <th className="py-2 font-medium text-right">Qty</th>
-                      <th className="py-2 font-medium text-right">Due</th>
-                      <th className="py-2 font-medium text-right">QC passed</th>
-                      <th className="py-2 font-medium text-right">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 tabular-nums">
-                    {(showAllOtd ? otd.rows : otd.rows.slice(0, 8)).map(o => (
-                      <tr key={o.opfNo} className="text-slate-600">
-                        <td className="py-2.5 font-medium text-slate-900">{o.opfNo}</td>
-                        <td className="py-2.5 truncate max-w-[160px]">{o.modelName}</td>
-                        <td className="py-2.5 text-right">{o.totalQty}</td>
-                        <td className="py-2.5 text-right">{formatDisplayDate(o.dispatchYMD, false)}</td>
-                        <td className="py-2.5 text-right">{o.qcPassDateLatest ? formatDisplayDate(o.qcPassDateLatest, false) : '—'}</td>
-                        <td className="py-2.5 text-right">
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${OTD_PILL[o.status] || 'bg-slate-100 text-slate-600'}`}>
-                            {o.status === 'Partially Delayed' ? 'Part delayed' : o.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              {otd.rows.length > 8 && (
-                <button
-                  onClick={() => setShowAllOtd(v => !v)}
-                  className="mt-3 text-[13px] font-medium text-indigo-600 hover:text-indigo-800 cursor-pointer"
-                >
-                  {showAllOtd ? 'Show fewer' : `Show all ${otd.rows.length} orders`}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section>
-        <SectionLabel>Ready goods &amp; receivables</SectionLabel>
+        <SectionLabel>Stock &amp; cash</SectionLabel>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <button
             onClick={() => onNavigate('readyGoods')}

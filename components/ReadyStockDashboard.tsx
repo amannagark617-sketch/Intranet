@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { titleCase } from '../utils/format';
 import {
   fetchReadyStockData,
   getCachedReadyStock,
@@ -75,6 +76,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
 
   // Active View Tab
   const [tabMode, setTabMode] = useState<TabMode>('catalog');
+  const [showMoreFilters, setShowMoreFilters] = useState<boolean>(false);
 
   // Filter States
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -238,366 +240,124 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
 
   return (
     <div className="space-y-6 animate-fade-in text-slate-800">
-      {/* TOP HEADER & TITLE BAR (LIGHT LUXURY THEME) */}
-      <div className="bg-white rounded-2xl p-5 md:p-6 shadow-xs border border-slate-200">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-amber-500/10 text-amber-700 rounded-xl border border-amber-500/20">
-              <Armchair className="w-7 h-7" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h1 className="text-xl md:text-2xl font-black tracking-tight text-slate-900">
-                  Ready Stock Available in Factory
-                </h1>
-                <span className="text-xs bg-emerald-50 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">
-                  Ready For Sales Purpose
-                </span>
-              </div>
-              <p className="text-xs md:text-sm text-slate-500 font-medium mt-0.5">
-                Immediate dispatch availability, model configurations, upholstery specifications & Google Drive photo catalog
-              </p>
-            </div>
-          </div>
-
-          {/* Controls */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            {onBackToDashboard && (
-              <button
-                onClick={onBackToDashboard}
-                className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition border border-slate-300 flex items-center gap-1.5"
-              >
-                ← Back to Production Dashboard
-              </button>
-            )}
-
-            <button
-              onClick={handleExportExcel}
-              className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shadow-xs cursor-pointer"
-              title="Export Ready Stock to Excel (.xlsx)"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export to Excel</span>
-            </button>
-          </div>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">Ready stock</h1>
+          <p className="mt-1 text-sm text-slate-500">Finished chairs available to sell right now</p>
         </div>
-
-        {/* TOP KPI OVERVIEW METRICS (CLICK-TO-FILTER INTERACTIVE) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-5 pt-4 border-t border-slate-100">
-          {/* 1. Total Ready Units */}
-          <div 
-            onClick={handleResetFilters}
-            className={`rounded-xl p-3.5 border transition cursor-pointer hover:shadow-md ${
-              !hasActiveFilters
-                ? 'bg-amber-100/70 border-amber-400 ring-2 ring-amber-500/20'
-                : 'bg-amber-50/60 border-amber-200/80 hover:bg-amber-100/40'
-            }`}
-            title="Click to view all ready stock units"
-          >
-            <span className="text-[11px] font-bold text-amber-900 block uppercase tracking-wider">Total Stock Units</span>
-            <span className="text-2xl font-black font-mono text-amber-950 block mt-0.5">
-              {activeSummary.totalUnits} <span className="text-xs font-bold text-amber-800">Units</span>
-            </span>
-            <span className="text-[10px] text-amber-700 font-medium block mt-0.5">
-              {activeSummary.totalItems} unique line items
-            </span>
-          </div>
-
-          {/* 2. Distinct Models */}
-          <div 
-            onClick={() => setTabMode('analytics')}
-            className={`rounded-xl p-3.5 border transition cursor-pointer hover:shadow-md ${
-              tabMode === 'analytics'
-                ? 'bg-indigo-100/70 border-indigo-400 ring-2 ring-indigo-500/20'
-                : 'bg-indigo-50/60 border-indigo-200/80 hover:bg-indigo-100/40'
-            }`}
-            title="Click to view Model Analytics Breakdown"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-indigo-900 block uppercase tracking-wider">Distinct Models</span>
-              <span className="text-[9px] bg-indigo-200 text-indigo-800 font-bold px-1.5 py-0.2 rounded">View Charts</span>
-            </div>
-            <span className="text-2xl font-black font-mono text-indigo-950 block mt-0.5">
-              {activeSummary.totalModels}
-            </span>
-            <span className="text-[10px] text-indigo-700 font-medium block mt-0.5">
-              Armonia, Helios, Grande, etc.
-            </span>
-          </div>
-
-          {/* 3. Motorised Recliners */}
-          <div 
-            onClick={() => setSelectedFunctionality(prev => prev === 'MOTORIZED' ? 'All' : 'MOTORIZED')}
-            className={`rounded-xl p-3.5 border transition cursor-pointer hover:shadow-md ${
-              selectedFunctionality === 'MOTORIZED'
-                ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-500/30'
-                : 'bg-blue-50/60 border-blue-200/80 hover:bg-blue-100/40'
-            }`}
-            title="Click to filter Motorised Recliner Units"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-blue-900 block uppercase tracking-wider">Motorised Units</span>
-              {selectedFunctionality === 'MOTORIZED' && (
-                <span className="text-[9px] bg-blue-600 text-white font-bold px-1.5 py-0.2 rounded">Active</span>
-              )}
-            </div>
-            <span className="text-2xl font-black font-mono text-blue-950 block mt-0.5">
-              {activeSummary.motorisedUnits}
-            </span>
-            <span className="text-[10px] text-blue-700 font-medium block mt-0.5">
-              {activeSummary.totalUnits > 0 ? `${Math.round((activeSummary.motorisedUnits / activeSummary.totalUnits) * 100)}% of stock` : '0%'}
-            </span>
-          </div>
-
-          {/* 4. Manual Recliners */}
-          <div 
-            onClick={() => setSelectedFunctionality(prev => prev === 'MANUAL' ? 'All' : 'MANUAL')}
-            className={`rounded-xl p-3.5 border transition cursor-pointer hover:shadow-md ${
-              selectedFunctionality === 'MANUAL'
-                ? 'bg-emerald-100 border-emerald-500 ring-2 ring-emerald-500/30'
-                : 'bg-emerald-50/60 border-emerald-200/80 hover:bg-emerald-100/40'
-            }`}
-            title="Click to filter Manual Recliner Units"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-emerald-900 block uppercase tracking-wider">Manual Units</span>
-              {selectedFunctionality === 'MANUAL' && (
-                <span className="text-[9px] bg-emerald-600 text-white font-bold px-1.5 py-0.2 rounded">Active</span>
-              )}
-            </div>
-            <span className="text-2xl font-black font-mono text-emerald-950 block mt-0.5">
-              {activeSummary.manualUnits}
-            </span>
-            <span className="text-[10px] text-emerald-700 font-medium block mt-0.5">
-              {activeSummary.totalUnits > 0 ? `${Math.round((activeSummary.manualUnits / activeSummary.totalUnits) * 100)}% of stock` : '0%'}
-            </span>
-          </div>
-
-          {/* 5. Leatherette Units */}
-          <div 
-            onClick={() => setSelectedUpholsteryType(prev => prev === 'LEATHERETTE' ? 'All' : 'LEATHERETTE')}
-            className={`rounded-xl p-3.5 border transition cursor-pointer hover:shadow-md ${
-              selectedUpholsteryType === 'LEATHERETTE'
-                ? 'bg-orange-100 border-orange-500 ring-2 ring-orange-500/30'
-                : 'bg-orange-50/60 border-orange-200/80 hover:bg-orange-100/40'
-            }`}
-            title="Click to filter Leatherette Material Units"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-orange-900 block uppercase tracking-wider">Leatherette</span>
-              {selectedUpholsteryType === 'LEATHERETTE' && (
-                <span className="text-[9px] bg-orange-600 text-white font-bold px-1.5 py-0.2 rounded">Active</span>
-              )}
-            </div>
-            <span className="text-2xl font-black font-mono text-orange-950 block mt-0.5">
-              {activeSummary.leatheretteUnits} <span className="text-xs font-bold text-orange-800">Units</span>
-            </span>
-            <span className="text-[10px] text-orange-700 font-medium block mt-0.5">
-              Kolors, Opulia Plus, Elvass
-            </span>
-          </div>
-
-          {/* 6. Premium Fabric */}
-          <div 
-            onClick={() => setSelectedUpholsteryType(prev => prev === 'PREMIUM FABRIC' ? 'All' : 'PREMIUM FABRIC')}
-            className={`rounded-xl p-3.5 border transition cursor-pointer hover:shadow-md ${
-              selectedUpholsteryType === 'PREMIUM FABRIC'
-                ? 'bg-purple-100 border-purple-500 ring-2 ring-purple-500/30'
-                : 'bg-purple-50/60 border-purple-200/80 hover:bg-purple-100/40'
-            }`}
-            title="Click to filter Premium Fabric Units"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-purple-900 block uppercase tracking-wider">Premium Fabric</span>
-              {selectedUpholsteryType === 'PREMIUM FABRIC' && (
-                <span className="text-[9px] bg-purple-600 text-white font-bold px-1.5 py-0.2 rounded">Active</span>
-              )}
-            </div>
-            <span className="text-2xl font-black font-mono text-purple-950 block mt-0.5">
-              {activeSummary.fabricUnits} <span className="text-xs font-bold text-purple-800">Units</span>
-            </span>
-            <span className="text-[10px] text-purple-700 font-medium block mt-0.5">
-              Porsche, Godivia, Suede LY
-            </span>
-          </div>
-        </div>
-
-        {/* ACTIVE DRILLDOWN FILTER BANNER */}
-        {hasActiveFilters && (
-          <div className="mt-4 p-3 bg-amber-50/90 border border-amber-300 rounded-xl flex flex-wrap items-center justify-between gap-2.5 text-xs text-amber-950 animate-fade-in">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-black text-amber-900 flex items-center gap-1">
-                <Tag className="w-3.5 h-3.5" />
-                Active Filters:
-              </span>
-              {selectedModel !== 'All' && (
-                <span className="bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-bold">
-                  Model: {selectedModel}
-                </span>
-              )}
-              {selectedFunctionality !== 'All' && (
-                <span className="bg-blue-100 text-blue-900 border border-blue-300 px-2 py-0.5 rounded-full font-bold">
-                  Functionality: {selectedFunctionality}
-                </span>
-              )}
-              {selectedUpholsteryType !== 'All' && (
-                <span className="bg-purple-100 text-purple-900 border border-purple-300 px-2 py-0.5 rounded-full font-bold">
-                  Material: {selectedUpholsteryType}
-                </span>
-              )}
-              {searchTerm && (
-                <span className="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full font-bold">
-                  Search: "{searchTerm}"
-                </span>
-              )}
-              <span className="text-slate-600 font-medium">
-                ({filteredItems.length} configs • {activeSummary.totalUnits} units)
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setTabMode('table')}
-                className="px-2.5 py-1 bg-white hover:bg-slate-100 text-indigo-900 font-bold rounded-lg border border-slate-300 transition cursor-pointer"
-              >
-                View in Ledger →
-              </button>
-              <button
-                onClick={handleResetFilters}
-                className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg transition flex items-center gap-1 shadow-xs cursor-pointer"
-              >
-                <X className="w-3 h-3" />
-                <span>Clear Filters</span>
-              </button>
-            </div>
-          </div>
-        )}
+        <button
+          onClick={handleExportExcel}
+          className="flex items-center gap-1.5 self-start sm:self-auto px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-lg border border-slate-200 transition-colors cursor-pointer"
+        >
+          <Download className="w-4 h-4" />
+          <span>Export</span>
+        </button>
       </div>
 
-      {/* NAVIGATION TABS & FILTER TOOLBAR */}
-      <div className="bg-white rounded-2xl p-4 shadow-xs border border-slate-200 space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-          {/* Tab Switcher */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-            <button
-              onClick={() => setTabMode('catalog')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition ${
-                tabMode === 'catalog'
-                  ? 'bg-white text-indigo-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <LayoutGrid className="w-3.5 h-3.5" />
-              <span>Stock Catalog Grid</span>
-              <span className="text-[10px] bg-slate-200 text-slate-800 px-1.5 py-0.2 rounded-full font-mono">
-                {filteredItems.length}
-              </span>
-            </button>
+      {/* Key numbers */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {[
+          { key: 'all', label: 'Chairs in stock', value: `${activeSummary.totalUnits}`, sub: `${activeSummary.totalItems} configurations`, active: false, onClick: handleResetFilters },
+          { key: 'models', label: 'Models', value: `${activeSummary.totalModels}`, sub: 'see breakdown', active: false, onClick: () => setTabMode('analytics') },
+          { key: 'motor', label: 'Motorised', value: `${activeSummary.motorisedUnits}`, sub: `${activeSummary.totalUnits ? Math.round((activeSummary.motorisedUnits / activeSummary.totalUnits) * 100) : 0}% of stock`, active: selectedFunctionality === 'MOTORIZED', onClick: () => setSelectedFunctionality(prev => (prev === 'MOTORIZED' ? 'All' : 'MOTORIZED')) },
+          { key: 'manual', label: 'Manual', value: `${activeSummary.manualUnits}`, sub: `${activeSummary.totalUnits ? Math.round((activeSummary.manualUnits / activeSummary.totalUnits) * 100) : 0}% of stock`, active: selectedFunctionality === 'MANUAL', onClick: () => setSelectedFunctionality(prev => (prev === 'MANUAL' ? 'All' : 'MANUAL')) },
+        ].map(c => (
+          <button
+            key={c.key}
+            onClick={c.onClick}
+            className={`text-left bg-white rounded-2xl border px-5 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-slate-300 hover:shadow-md transition-all cursor-pointer ${
+              c.active ? 'border-indigo-500 ring-2 ring-indigo-500/20' : 'border-slate-200/80'
+            }`}
+          >
+            <div className="text-[13px] font-medium text-slate-500">{c.label}</div>
+            <div className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
+            <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
+          </button>
+        ))}
+      </div>
 
-            <button
-              onClick={() => setTabMode('analytics')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition ${
-                tabMode === 'analytics'
-                  ? 'bg-white text-indigo-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <BarChart3 className="w-3.5 h-3.5" />
-              <span>Model & Upholstery Analytics</span>
-            </button>
-
-            <button
-              onClick={() => setTabMode('table')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition ${
-                tabMode === 'table'
-                  ? 'bg-white text-indigo-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <TableIcon className="w-3.5 h-3.5" />
-              <span>Inventory Data Sheet</span>
-            </button>
+      {/* Tabs and filters */}
+      <div className="bg-white rounded-2xl p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] border border-slate-200/80 space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center gap-1 overflow-x-auto -mx-1 px-1">
+            {([
+              { id: 'catalog', label: 'Catalogue' },
+              { id: 'table', label: 'List' },
+              { id: 'analytics', label: 'Charts' },
+            ] as const).map(t => (
+              <button
+                key={t.id}
+                onClick={() => setTabMode(t.id)}
+                className={`shrink-0 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                  tabMode === t.id ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
+          <div className="text-sm text-slate-500 flex items-center gap-3">
+            <span>{filteredItems.length} of {items.length} configurations</span>
+            {hasActiveFilters && (
+              <button onClick={handleResetFilters} className="flex items-center gap-1 font-medium text-rose-600 hover:text-rose-700 cursor-pointer">
+                <X className="w-3.5 h-3.5" /> Clear
+              </button>
+            )}
+          </div>
+        </div>
 
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-md">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-              placeholder="Search Model, Code, Color, Upholstery, Dimensions..."
-              className="w-full pl-9 pr-8 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition"
+              placeholder="Search model, colour or material"
+              className="w-full pl-9 pr-8 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 transition"
             />
             {searchTerm && (
-              <button 
-                onClick={() => setSearchTerm('')} 
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-3.5 h-3.5" />
+              <button onClick={() => setSearchTerm('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
+          <select
+            value={selectedModel}
+            onChange={(e) => { setSelectedModel(e.target.value); setCurrentPage(1); }}
+            className="py-2 px-3 text-sm bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-indigo-500"
+          >
+            <option value="All">All models</option>
+            {availableModels.map(m => (<option key={m} value={m}>{m}</option>))}
+          </select>
+          <button
+            onClick={() => setShowMoreFilters(v => !v)}
+            className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 cursor-pointer whitespace-nowrap"
+          >
+            {showMoreFilters ? 'Fewer filters' : 'More filters'}
+          </button>
         </div>
-
-        {/* Filter Dropdowns */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
-          {/* Model Filter */}
-          <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Model</label>
-            <select
-              value={selectedModel}
-              onChange={(e) => { setSelectedModel(e.target.value); setCurrentPage(1); }}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-medium focus:ring-1 focus:ring-amber-500"
-            >
-              <option value="All">All Models ({items.length})</option>
-              {availableModels.map(m => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Functionality Filter */}
-          <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Functionality</label>
+        {showMoreFilters && (
+          <div className="flex flex-col sm:flex-row gap-3">
             <select
               value={selectedFunctionality}
               onChange={(e) => { setSelectedFunctionality(e.target.value); setCurrentPage(1); }}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-medium focus:ring-1 focus:ring-amber-500"
+              className="py-2 px-3 text-sm bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-indigo-500"
             >
-              <option value="All">All Mechanisms</option>
-              {availableFunctionalities.map(f => (
-                <option key={f} value={f}>{f}</option>
-              ))}
+              <option value="All">Any mechanism</option>
+              {availableFunctionalities.map(f => (<option key={f} value={f}>{f}</option>))}
             </select>
-          </div>
-
-          {/* Upholstery Type Filter */}
-          <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Upholstery</label>
             <select
               value={selectedUpholsteryType}
               onChange={(e) => { setSelectedUpholsteryType(e.target.value); setCurrentPage(1); }}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-medium focus:ring-1 focus:ring-amber-500"
+              className="py-2 px-3 text-sm bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-indigo-500"
             >
-              <option value="All">All Materials</option>
-              {availableUpholsteryTypes.map(u => (
-                <option key={u} value={u}>{u}</option>
-              ))}
+              <option value="All">Any material</option>
+              {availableUpholsteryTypes.map(u => (<option key={u} value={u}>{u}</option>))}
             </select>
           </div>
-
-          {/* Reset Filters */}
-          <div className="flex items-end">
-            <button
-              onClick={handleResetFilters}
-              className="w-full py-1.5 px-3 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition flex items-center justify-center gap-1 border border-slate-300"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>Reset Filters</span>
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* ERROR BANNER IF ANY */}
@@ -607,106 +367,43 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
             <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
             <span>{error}</span>
           </div>
-          <button onClick={() => loadData(true)} className="underline font-bold">Retry</button>
+          <button onClick={() => loadData(true)} className="underline font-semibold">Retry</button>
         </div>
       )}
 
-      {/* TAB 1: STOCK CATALOG GRID */}
+      {/* Catalogue */}
       {tabMode === 'catalog' && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-600">
-              Showing <span className="text-slate-900 font-black">{filteredItems.length}</span> Ready Stock configurations ({activeSummary.totalUnits} Units ready for immediate dispatch)
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filteredItems.map((item) => {
-              const isMotorised = (item.functionality || '').toUpperCase().includes('MOTOR');
-              return (
-                <div
-                  key={`${item.srNo}-${item.code}`}
-                  onClick={() => setSelectedItem(item)}
-                  className="bg-white rounded-2xl border border-slate-200 hover:border-amber-400 hover:shadow-md transition-all p-4 space-y-3 cursor-pointer flex flex-col justify-between group"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredItems.map((item) => (
+            <div
+              key={`${item.srNo}-${item.code}`}
+              onClick={() => setSelectedItem(item)}
+              className="bg-white rounded-2xl border border-slate-200/80 hover:border-slate-300 hover:shadow-md transition-all p-4 cursor-pointer flex flex-col"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-base font-semibold text-slate-900 leading-snug">{titleCase(item.model)}</h3>
+                <span className="shrink-0 whitespace-nowrap text-sm font-semibold tabular-nums text-slate-900">
+                  {item.qty} {item.qty === 1 ? 'chair' : 'chairs'}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-slate-500 truncate">{titleCase(item.functionality)}</p>
+              <p className="mt-3 text-sm text-slate-700 truncate">
+                {titleCase([item.upholsteryType, item.upholsteryCode].filter(Boolean).join(' · ')) || '—'}
+              </p>
+              {item.photos && (
+                <a
+                  href={item.photos}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-3 inline-flex items-center gap-1 text-[13px] font-medium text-indigo-600 hover:text-indigo-800 self-start"
                 >
-                  <div className="space-y-2.5">
-                    {/* Header line: SR.NO and QTY Pill */}
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="text-[10px] font-mono font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">
-                        SR #{item.srNo}
-                      </span>
-                      <span className="text-xs font-black font-mono bg-amber-500 text-white px-2.5 py-0.5 rounded-full shadow-xs">
-                        {item.qty} {item.qty === 1 ? 'Unit' : 'Units'} Ready
-                      </span>
-                    </div>
-
-                    {/* Model Name & OPF/Code */}
-                    <div>
-                      <h3 className="text-base font-black text-slate-900 group-hover:text-amber-700 transition-colors">
-                        {item.model}
-                      </h3>
-                      <p className="text-[11px] font-mono text-slate-500 truncate" title={item.code}>
-                        Code: {item.code}
-                      </p>
-                    </div>
-
-                    {/* Mechanism & Functionality Badge */}
-                    <div className="flex items-center gap-1.5">
-                      <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md ${
-                        isMotorised ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      }`}>
-                        {isMotorised && <Zap className="w-3 h-3 text-blue-600" />}
-                        <span>{item.functionality}</span>
-                      </span>
-                    </div>
-
-                    {/* Upholstery & Color Specification */}
-                    <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-100 space-y-1 text-xs">
-                      <div className="flex items-center justify-between text-slate-600">
-                        <span className="text-[10px] font-bold uppercase text-slate-400">Material</span>
-                        <span className="font-semibold text-slate-800">{item.upholsteryType}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-slate-600">
-                        <span className="text-[10px] font-bold uppercase text-slate-400">Color Code</span>
-                        <span className="font-semibold text-amber-800 truncate max-w-[140px]" title={item.upholsteryCode}>
-                          {item.upholsteryCode || '-'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Dimensions & Description if available */}
-                    {(item.dimensions || item.description) && (
-                      <div className="text-[11px] text-slate-600 line-clamp-2 bg-amber-50/40 p-2 rounded-lg border border-amber-100/60">
-                        {item.dimensions || item.description}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Footer Actions */}
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className="text-[11px] font-bold text-indigo-700 group-hover:underline flex items-center gap-1">
-                      <Eye className="w-3 h-3" />
-                      <span>Inspect Specs</span>
-                    </span>
-
-                    {item.photos && (
-                      <a
-                        href={item.photos}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1 text-[11px] text-emerald-700 hover:text-emerald-800 font-bold"
-                        title="View photo on Google Drive"
-                      >
-                        <span>Photos</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  <span>Photos</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+            </div>
+          ))}
         </div>
       )}
 
@@ -722,8 +419,8 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                     <Armchair className="w-4 h-4" />
                   </div>
                   <div>
-                    <h2 className="text-sm font-bold text-slate-900">Stock by Recliner Model</h2>
-                    <p className="text-[11px] text-slate-500">Available finished units by model</p>
+                    <h2 className="text-sm font-semibold text-slate-900">Stock by Recliner Model</h2>
+                    <p className="text-xs text-slate-500">Available finished units by model</p>
                   </div>
                 </div>
               </div>
@@ -781,8 +478,8 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                     <Palette className="w-4 h-4" />
                   </div>
                   <div>
-                    <h2 className="text-sm font-bold text-slate-900">Upholstery Material Split</h2>
-                    <p className="text-[11px] text-slate-500">Share of Leatherette, Premium Fabric & Leather (Click to filter)</p>
+                    <h2 className="text-sm font-semibold text-slate-900">Upholstery Material Split</h2>
+                    <p className="text-xs text-slate-500">Share of Leatherette, Premium Fabric & Leather (Click to filter)</p>
                   </div>
                 </div>
               </div>
@@ -839,12 +536,12 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                     >
                       <div className="flex items-center gap-2">
                         <span className="w-3 h-3 rounded-full" style={{ backgroundColor: UPHOLSTERY_COLORS[u.type] || '#64748b' }} />
-                        <span className={`font-semibold ${isSelected ? 'text-indigo-900 font-bold' : 'text-slate-800'}`}>{u.type}</span>
+                        <span className={`font-semibold ${isSelected ? 'text-indigo-900 font-semibold' : 'text-slate-800'}`}>{u.type}</span>
                         {isSelected && (
-                          <span className="text-[9px] bg-indigo-600 text-white font-bold px-1.5 py-0.2 rounded">Filtered</span>
+                          <span className="text-xs bg-indigo-600 text-white font-semibold px-1.5 py-0.2 rounded">Filtered</span>
                         )}
                       </div>
-                      <span className="font-mono font-bold text-slate-900">{u.units} Units ({u.percentage}%)</span>
+                      <span className="tabular-nums font-semibold text-slate-900">{u.units} Units ({u.percentage}%)</span>
                     </div>
                   );
                 })}
@@ -860,10 +557,10 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
           <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80">
             <div className="flex items-center gap-2">
               <TableIcon className="w-4 h-4 text-amber-700" />
-              <span className="text-sm font-bold text-slate-900">
+              <span className="text-sm font-semibold text-slate-900">
                 Ready Stock Floor Inventory Ledger
               </span>
-              <span className="text-xs bg-amber-100 text-amber-900 font-mono font-bold px-2.5 py-0.5 rounded-full">
+              <span className="text-xs bg-amber-100 text-amber-900 tabular-nums font-semibold px-2.5 py-0.5 rounded-full">
                 Showing {paginatedItems.length} of {sortedItems.length} ({activeSummary.totalUnits} Units)
               </span>
             </div>
@@ -888,7 +585,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-slate-100/90 text-slate-700 border-b border-slate-200 font-bold">
+                <tr className="bg-slate-100/90 text-slate-700 border-b border-slate-200 font-semibold">
                   <th 
                     onClick={() => handleSort('srNo')}
                     className="py-2.5 px-3 cursor-pointer hover:bg-slate-200 transition text-center w-14"
@@ -948,14 +645,14 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                       className="hover:bg-amber-50/40 transition-colors cursor-pointer"
                       onClick={() => setSelectedItem(item)}
                     >
-                      <td className="py-2.5 px-3 text-center font-mono font-bold text-slate-500">
+                      <td className="py-2.5 px-3 text-center tabular-nums font-semibold text-slate-500">
                         {item.srNo}
                       </td>
-                      <td className="py-2.5 px-3 font-mono font-semibold text-slate-800">
+                      <td className="py-2.5 px-3 tabular-nums font-semibold text-slate-800">
                         {item.code}
                       </td>
                       <td 
-                        className="py-2.5 px-3 font-bold text-slate-900 hover:text-amber-600 transition-colors"
+                        className="py-2.5 px-3 font-semibold text-slate-900 hover:text-amber-600 transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedModel(prev => prev === item.model ? 'All' : item.model);
@@ -965,7 +662,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                         {item.model}
                       </td>
                       <td 
-                        className="py-2.5 px-3 text-slate-700 hover:text-blue-600 transition-colors"
+                        className="py-2.5 px-3 text-slate-700 hover:text-indigo-600 transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedFunctionality(prev => prev === item.functionality ? 'All' : item.functionality);
@@ -975,7 +672,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                         {item.functionality}
                       </td>
                       <td 
-                        className="py-2.5 px-3 font-semibold text-slate-800 hover:text-purple-600 transition-colors"
+                        className="py-2.5 px-3 font-semibold text-slate-800 hover:text-indigo-600 transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedUpholsteryType(prev => prev === item.upholsteryType ? 'All' : item.upholsteryType);
@@ -984,15 +681,15 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                       >
                         {item.upholsteryType}
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-amber-800">
+                      <td className="py-2.5 px-3 tabular-nums text-amber-800">
                         {item.upholsteryCode || '-'}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        <span className="px-2 py-0.5 rounded-full font-mono font-black bg-amber-100 text-amber-900 text-xs">
+                        <span className="px-2 py-0.5 rounded-full tabular-nums font-semibold bg-amber-100 text-amber-900 text-xs">
                           {item.qty}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-slate-600 max-w-[200px] truncate text-[11px]" title={item.dimensions || item.description}>
+                      <td className="py-2.5 px-3 text-slate-600 max-w-[200px] truncate text-xs" title={item.dimensions || item.description}>
                         {item.dimensions || item.description || '-'}
                       </td>
                       <td className="py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
@@ -1001,20 +698,20 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                             href={item.photos}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold border border-emerald-200"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded text-xs font-semibold border border-emerald-200"
                             title="Open Google Drive photo"
                           >
                             <span>Photo</span>
                             <ExternalLink className="w-2.5 h-2.5" />
                           </a>
                         ) : (
-                          <span className="text-slate-400 text-[10px]">-</span>
+                          <span className="text-slate-400 text-xs">-</span>
                         )}
                       </td>
                       <td className="py-2.5 px-3 text-center">
                         <button
                           onClick={() => setSelectedItem(item)}
-                          className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] font-bold"
+                          className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold"
                         >
                           Specs
                         </button>
@@ -1030,7 +727,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
           {totalPages > 1 && (
             <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50 text-xs">
               <span className="text-slate-600">
-                Page <span className="font-bold text-slate-900">{currentPage}</span> of <span className="font-bold text-slate-900">{totalPages}</span>
+                Page <span className="font-semibold text-slate-900">{currentPage}</span> of <span className="font-semibold text-slate-900">{totalPages}</span>
               </span>
               <div className="flex items-center gap-1">
                 <button
@@ -1060,9 +757,9 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
             {/* Header */}
             <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white p-5 rounded-t-2xl flex items-start justify-between">
               <div>
-                <span className="text-xs font-mono font-bold text-amber-200">SR.NO #{selectedItem.srNo} • CODE: {selectedItem.code}</span>
-                <h3 className="text-xl font-black text-white mt-0.5">{selectedItem.model}</h3>
-                <span className="inline-block mt-1 px-2.5 py-0.5 bg-white text-amber-900 rounded-full font-black text-xs font-mono">
+                <span className="text-xs tabular-nums font-semibold text-amber-200">SR.NO #{selectedItem.srNo} • CODE: {selectedItem.code}</span>
+                <h3 className="text-xl font-semibold text-white mt-0.5">{selectedItem.model}</h3>
+                <span className="inline-block mt-1 px-2.5 py-0.5 bg-white text-amber-900 rounded-full font-semibold text-xs tabular-nums">
                   {selectedItem.qty} {selectedItem.qty === 1 ? 'Unit Ready' : 'Units Ready for Sales'}
                 </span>
               </div>
@@ -1078,18 +775,18 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
             <div className="p-6 space-y-4 text-xs text-slate-700">
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Functionality</span>
-                  <span className="font-bold text-slate-900 text-sm mt-0.5 block">{selectedItem.functionality}</span>
+                  <span className="text-xs text-slate-400 block font-semibold">Functionality</span>
+                  <span className="font-semibold text-slate-900 text-sm mt-0.5 block">{selectedItem.functionality}</span>
                 </div>
 
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Upholstery Type</span>
-                  <span className="font-bold text-slate-900 text-sm mt-0.5 block">{selectedItem.upholsteryType}</span>
+                  <span className="text-xs text-slate-400 block font-semibold">Upholstery Type</span>
+                  <span className="font-semibold text-slate-900 text-sm mt-0.5 block">{selectedItem.upholsteryType}</span>
                 </div>
 
                 <div className="col-span-2 bg-amber-50/70 p-3 rounded-xl border border-amber-200">
-                  <span className="text-[10px] text-amber-900 block uppercase font-bold">Upholstery Code & Color</span>
-                  <span className="font-mono font-black text-amber-950 text-sm mt-0.5 block">
+                  <span className="text-xs text-amber-900 block font-semibold">Upholstery Code & Color</span>
+                  <span className="tabular-nums font-semibold text-amber-950 text-sm mt-0.5 block">
                     {selectedItem.upholsteryCode || 'Standard Color'}
                   </span>
                 </div>
@@ -1097,14 +794,14 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
 
               {selectedItem.dimensions && (
                 <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold mb-1">Dimensions & Arm Size</span>
+                  <span className="text-xs text-slate-400 block font-semibold mb-1">Dimensions & Arm Size</span>
                   <p className="font-semibold text-slate-800">{selectedItem.dimensions}</p>
                 </div>
               )}
 
               {selectedItem.description && (
                 <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold mb-1">Configuration & Notes</span>
+                  <span className="text-xs text-slate-400 block font-semibold mb-1">Configuration & Notes</span>
                   <p className="text-slate-800">{selectedItem.description}</p>
                 </div>
               )}
@@ -1113,7 +810,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200">
                 <button
                   onClick={() => setSelectedItem(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition text-xs"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition text-xs"
                 >
                   Close
                 </button>
@@ -1122,7 +819,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                     href={selectedItem.photos}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition text-xs flex items-center gap-1.5 shadow-xs"
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition text-xs flex items-center gap-1.5 shadow-xs"
                   >
                     <span>Open Drive Photos</span>
                     <ExternalLink className="w-3.5 h-3.5" />

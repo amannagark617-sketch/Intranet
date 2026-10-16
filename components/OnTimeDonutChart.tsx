@@ -31,7 +31,7 @@ const OnTimeDonutChart: React.FC<OnTimeDonutChartProps> = ({ data }) => {
   return (
     <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs h-full flex flex-col justify-between">
       <div>
-        <h2 className="text-base font-bold text-slate-900">Orders Ready On Time</h2>
+        <h2 className="text-base font-semibold text-slate-900">Orders Ready On Time</h2>
         <p className="text-xs text-slate-500 mt-0.5">Compares QC Pass date with scheduled dispatch date for passed orders.</p>
       </div>
 
@@ -59,7 +59,7 @@ const OnTimeDonutChart: React.FC<OnTimeDonutChartProps> = ({ data }) => {
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-3xl font-extrabold text-slate-900 font-mono">{onTimePercentage}%</span>
+              <span className="text-3xl font-semibold text-slate-900 tabular-nums">{onTimePercentage}%</span>
               <span className="text-xs font-semibold text-slate-500">On Time</span>
             </div>
           </>
@@ -76,7 +76,7 @@ const OnTimeDonutChart: React.FC<OnTimeDonutChartProps> = ({ data }) => {
             <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: entry.color }}></div>
             <div>
               <span className="text-slate-500">{entry.name}</span>
-              <p className="font-bold text-slate-800 font-mono">{entry.value} orders</p>
+              <p className="font-semibold text-slate-800 tabular-nums">{entry.value} orders</p>
             </div>
           </div>
         ))}

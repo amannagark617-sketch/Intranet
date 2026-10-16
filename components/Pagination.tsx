@@ -54,15 +54,15 @@ const Pagination: React.FC<PaginationProps> = ({
       {/* Item Range and Total */}
       <div className="flex items-center gap-2">
         <span className="text-slate-500">
-          Showing <strong className="text-slate-900 font-mono">{startItem} - {endItem}</strong> of{' '}
-          <strong className="text-indigo-700 font-mono">{totalItems}</strong> orders
+          Showing <strong className="text-slate-900 tabular-nums">{startItem} - {endItem}</strong> of{' '}
+          <strong className="text-indigo-700 tabular-nums">{totalItems}</strong> orders
         </span>
       </div>
 
       {/* Page Size Selector & Controls */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-1.5">
-          <span className="text-slate-500 text-[11px]">Per page:</span>
+          <span className="text-slate-500 text-xs">Per page:</span>
           <select
             value={pageSize}
             onChange={(e) => {
@@ -103,7 +103,7 @@ const Pagination: React.FC<PaginationProps> = ({
             {getPageNumbers().map((page, idx) => {
               if (page === '...') {
                 return (
-                  <span key={`dots-${idx}`} className="px-1 text-slate-400 font-mono">
+                  <span key={`dots-${idx}`} className="px-1 text-slate-400 tabular-nums">
                     ...
                   </span>
                 );
@@ -113,7 +113,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 <button
                   key={`page-${page}`}
                   onClick={() => onPageChange(Number(page))}
-                  className={`min-w-7 h-7 px-2 rounded-lg font-mono text-xs font-semibold transition-all ${
+                  className={`min-w-7 h-7 px-2 rounded-lg tabular-nums text-xs font-semibold transition-all ${
                     isCurrent
                       ? 'bg-indigo-600 text-white shadow-xs'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-950 border border-slate-200'

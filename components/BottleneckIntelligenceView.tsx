@@ -316,15 +316,15 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-slate-500">
                   Factory Operations
                 </span>
                 <span className="text-slate-300">•</span>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
                   Root Cause & Delay Audit
                 </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-0.5">
+              <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight mt-0.5">
                 Station Bottleneck & Department Owner Intelligence
               </h1>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -337,7 +337,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               onClick={handleExportExcel}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition-all shadow-xs cursor-pointer"
               title="Export complete Bottlenecks & Owner Audit to Excel (.xlsx)"
             >
               <Download className="w-3.5 h-3.5" />
@@ -349,41 +349,41 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
         {/* 4 Summary KPI Tiles */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mt-5 pt-4 border-t border-slate-100">
           <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-            <div className="text-[11px] font-semibold text-slate-500">Top Bottleneck Stage</div>
-            <div className="text-base font-black text-rose-700 mt-1 truncate" title={topBottleneckStage?.stage}>
+            <div className="text-xs font-semibold text-slate-500">Top Bottleneck Stage</div>
+            <div className="text-base font-semibold text-rose-700 mt-1 truncate" title={topBottleneckStage?.stage}>
               {topBottleneckStage?.stage || 'None'}
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="text-xs text-slate-500 mt-0.5">
               {topBottleneckStage?.delayedOrders || 0} delayed orders ({topBottleneckStage?.responsible})
             </div>
           </div>
 
           <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-            <div className="text-[11px] font-semibold text-slate-500">Highest Workload Lead</div>
-            <div className="text-base font-black text-indigo-900 mt-1 truncate">
+            <div className="text-xs font-semibold text-slate-500">Highest Workload Lead</div>
+            <div className="text-base font-semibold text-indigo-900 mt-1 truncate">
               {topBottleneckOwner?.name || 'None'}
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="text-xs text-slate-500 mt-0.5">
               {topBottleneckOwner?.activeOrders || 0} active WIP orders ({topBottleneckOwner?.stages.length} stages)
             </div>
           </div>
 
           <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-            <div className="text-[11px] font-semibold text-slate-500">Total Delayed Units</div>
-            <div className="text-base font-black font-mono text-amber-700 mt-1">
+            <div className="text-xs font-semibold text-slate-500">Total Delayed Units</div>
+            <div className="text-base font-semibold tabular-nums text-amber-700 mt-1">
               {uniqueDelayedUnits.toLocaleString()} units
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="text-xs text-slate-500 mt-0.5">
               Across {delayedOrdersList.length} delayed / hold work orders
             </div>
           </div>
 
           <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-            <div className="text-[11px] font-semibold text-slate-500">Active WIP Units</div>
-            <div className="text-base font-black font-mono text-emerald-700 mt-1">
+            <div className="text-xs font-semibold text-slate-500">Active WIP Units</div>
+            <div className="text-base font-semibold tabular-nums text-emerald-700 mt-1">
               {uniqueWipUnits.toLocaleString()} units
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="text-xs text-slate-500 mt-0.5">
               Across {activeOrdersCount.length} active floor work orders
             </div>
           </div>
@@ -394,7 +394,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
       <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
         <button
           onClick={() => setActiveTab('stages')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
             activeTab === 'stages'
               ? 'bg-indigo-600 text-white shadow-xs'
               : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -406,7 +406,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
 
         <button
           onClick={() => setActiveTab('owners')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
             activeTab === 'owners'
               ? 'bg-indigo-600 text-white shadow-xs'
               : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -418,7 +418,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
 
         <button
           onClick={() => setActiveTab('delayedOrders')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
             activeTab === 'delayedOrders'
               ? 'bg-indigo-600 text-white shadow-xs'
               : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -449,14 +449,14 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-mono">
+                          <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 tabular-nums">
                             {st.stepCode}
                           </span>
-                          <span className="text-[10px] text-slate-500 font-medium">
+                          <span className="text-xs text-slate-500 font-medium">
                             {st.category}
                           </span>
                         </div>
-                        <h3 className="text-sm font-bold text-slate-900 mt-1">
+                        <h3 className="text-sm font-semibold text-slate-900 mt-1">
                           {st.stage}
                         </h3>
                         <p className="text-xs text-indigo-700 font-semibold mt-0.5">
@@ -465,7 +465,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                       </div>
 
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase shrink-0 ${
+                        className={`text-xs font-semibold px-2 py-0.5 rounded-full  shrink-0 ${
                           st.severity === 'Critical'
                             ? 'bg-rose-100 text-rose-800 border border-rose-200'
                             : st.severity === 'Moderate'
@@ -480,15 +480,15 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                     {/* Metrics */}
                     <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs">
                       <div className="bg-slate-50 p-2 rounded-lg">
-                        <span className="text-[10px] text-slate-400 block font-semibold">Active WIP</span>
-                        <span className="text-sm font-black font-mono text-slate-900">
-                          {st.wipOrders} <span className="text-[10px] font-normal text-slate-500">({st.wipUnits}u)</span>
+                        <span className="text-xs text-slate-400 block font-semibold">Active WIP</span>
+                        <span className="text-sm font-semibold tabular-nums text-slate-900">
+                          {st.wipOrders} <span className="text-xs font-normal text-slate-500">({st.wipUnits}u)</span>
                         </span>
                       </div>
                       <div className={`p-2 rounded-lg ${st.delayedOrders > 0 ? 'bg-rose-50' : 'bg-slate-50'}`}>
-                        <span className="text-[10px] text-slate-400 block font-semibold">Delayed / Overdue</span>
-                        <span className={`text-sm font-black font-mono ${st.delayedOrders > 0 ? 'text-rose-700' : 'text-slate-700'}`}>
-                          {st.delayedOrders} <span className="text-[10px] font-normal text-slate-500">({st.delayedUnits}u)</span>
+                        <span className="text-xs text-slate-400 block font-semibold">Delayed / Overdue</span>
+                        <span className={`text-sm font-semibold tabular-nums ${st.delayedOrders > 0 ? 'text-rose-700' : 'text-slate-700'}`}>
+                          {st.delayedOrders} <span className="text-xs font-normal text-slate-500">({st.delayedUnits}u)</span>
                         </span>
                       </div>
                     </div>
@@ -496,14 +496,14 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                     {/* Root Cause Failure Reasons from Sheet */}
                     {st.topFailureReasons.length > 0 && (
                       <div className="mt-3">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                        <span className="text-xs font-semibold text-slate-500 block mb-1">
                           Recorded Reasons & Remarks:
                         </span>
                         <div className="space-y-1">
                           {st.topFailureReasons.map((r, rIdx) => (
                             <div
                               key={rIdx}
-                              className="text-[11px] text-slate-700 bg-amber-50/70 border border-amber-200/60 px-2 py-1 rounded-lg flex items-start gap-1.5"
+                              className="text-xs text-slate-700 bg-amber-50/70 border border-amber-200/60 px-2 py-1 rounded-lg flex items-start gap-1.5"
                             >
                               <span className="w-1 h-1 rounded-full bg-amber-500 mt-1.5 shrink-0" />
                               <span className="line-clamp-2">{r}</span>
@@ -514,14 +514,14 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                     )}
                   </div>
 
-                  <div className="mt-3 pt-2 text-[11px] text-slate-400 border-t border-slate-100 flex items-center justify-between">
+                  <div className="mt-3 pt-2 text-xs text-slate-400 border-t border-slate-100 flex items-center justify-between">
                     <span>SLA: {st.timeline}</span>
                     <button
                       onClick={() => {
                         setSelectedStageFilter(st.stage);
                         setActiveTab('delayedOrders');
                       }}
-                      className="text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 cursor-pointer"
+                      className="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 cursor-pointer"
                     >
                       <span>View Orders</span>
                       <ChevronRight className="w-3 h-3" />
@@ -552,7 +552,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                   <div>
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h3 className="text-sm font-bold text-slate-900">
+                        <h3 className="text-sm font-semibold text-slate-900">
                           {owner.name}
                         </h3>
                         <p className="text-xs text-slate-500 mt-0.5">
@@ -561,7 +561,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                       </div>
 
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                           owner.delayedOrders > 0
                             ? 'bg-amber-100 text-amber-900 border border-amber-300'
                             : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
@@ -576,7 +576,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                       {owner.stages.map((stName) => (
                         <span
                           key={stName}
-                          className="text-[10px] font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md"
+                          className="text-xs font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md"
                         >
                           {stName.replace('OF UPHOLSTERY', '').replace('QUALITY CONTROL', 'QC')}
                         </span>
@@ -586,22 +586,22 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                     {/* Workload breakdown */}
                     <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs text-center">
                       <div className="bg-slate-50 p-2 rounded-lg">
-                        <span className="text-[10px] text-slate-400 block font-semibold">Active WIP</span>
-                        <span className="text-sm font-black font-mono text-indigo-700">
-                          {owner.activeOrders} <span className="text-[10px] font-normal">({owner.activeUnits}u)</span>
+                        <span className="text-xs text-slate-400 block font-semibold">Active WIP</span>
+                        <span className="text-sm font-semibold tabular-nums text-indigo-700">
+                          {owner.activeOrders} <span className="text-xs font-normal">({owner.activeUnits}u)</span>
                         </span>
                       </div>
 
                       <div className="bg-slate-50 p-2 rounded-lg">
-                        <span className="text-[10px] text-slate-400 block font-semibold">Delayed</span>
-                        <span className="text-sm font-black font-mono text-rose-700">
+                        <span className="text-xs text-slate-400 block font-semibold">Delayed</span>
+                        <span className="text-sm font-semibold tabular-nums text-rose-700">
                           {owner.delayedOrders}
                         </span>
                       </div>
 
                       <div className="bg-slate-50 p-2 rounded-lg">
-                        <span className="text-[10px] text-slate-400 block font-semibold">Completed</span>
-                        <span className="text-sm font-black font-mono text-emerald-700">
+                        <span className="text-xs text-slate-400 block font-semibold">Completed</span>
+                        <span className="text-sm font-semibold tabular-nums text-emerald-700">
                           {owner.completedOrders}
                         </span>
                       </div>
@@ -610,14 +610,14 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                     {/* Top Reasons logged under this owner */}
                     {owner.topReasons.length > 0 && (
                       <div className="mt-3">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                        <span className="text-xs font-semibold text-slate-500 block mb-1">
                           Common Delay Reasons:
                         </span>
                         <div className="space-y-1">
                           {owner.topReasons.slice(0, 3).map((r, idx) => (
                             <div
                               key={idx}
-                              className="text-[11px] text-slate-700 bg-slate-50 px-2 py-1 rounded border border-slate-200/70"
+                              className="text-xs text-slate-700 bg-slate-50 px-2 py-1 rounded border border-slate-200/70"
                             >
                               • {r}
                             </div>
@@ -627,13 +627,13 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                     )}
                   </div>
 
-                  <div className="mt-3 pt-2 text-[11px] border-t border-slate-100 flex items-center justify-end">
+                  <div className="mt-3 pt-2 text-xs border-t border-slate-100 flex items-center justify-end">
                     <button
                       onClick={() => {
                         setSelectedOwnerFilter(owner.name);
                         setActiveTab('delayedOrders');
                       }}
-                      className="text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 cursor-pointer"
+                      className="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 cursor-pointer"
                     >
                       <span>Filter Orders by {owner.name.split(' ')[1] || owner.name}</span>
                       <ChevronRight className="w-3 h-3" />
@@ -698,14 +698,14 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                     setSelectedOwnerFilter('all');
                     setSearchQuery('');
                   }}
-                  className="text-xs text-rose-600 hover:text-rose-800 font-bold underline cursor-pointer"
+                  className="text-xs text-rose-600 hover:text-rose-800 font-semibold underline cursor-pointer"
                 >
                   Clear Filters
                 </button>
               )}
             </div>
 
-            <span className="text-xs font-bold text-slate-600">
+            <span className="text-xs font-semibold text-slate-600">
               Showing {filteredDelayedOrders.length} matching delayed work orders
             </span>
           </div>
@@ -713,7 +713,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-100/80 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
+              <thead className="bg-slate-100/80 text-slate-600 font-semibold border-b border-slate-200">
                 <tr>
                   <th className="py-3 px-4">OPF No</th>
                   <th className="py-3 px-4">Model & Description</th>
@@ -733,36 +733,36 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                       className="hover:bg-slate-50 transition-colors cursor-pointer"
                       onClick={() => onSelectOrder(order)}
                     >
-                      <td className="py-3 px-4 font-bold font-mono text-indigo-700">
+                      <td className="py-3 px-4 font-semibold tabular-nums text-indigo-700">
                         {order.opfNo}
                       </td>
                       <td className="py-3 px-4">
                         <div className="font-semibold text-slate-900">{order.modelName || 'Recliner'}</div>
-                        <div className="text-[11px] text-slate-500 truncate max-w-xs">{order.upholstery || 'Standard'}</div>
+                        <div className="text-xs text-slate-500 truncate max-w-xs">{order.upholstery || 'Standard'}</div>
                       </td>
-                      <td className="py-3 px-4 font-mono font-bold">
+                      <td className="py-3 px-4 tabular-nums font-semibold">
                         {order.quantity}u
                       </td>
                       <td className="py-3 px-4">
-                        <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200 font-medium text-[11px]">
+                        <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200 font-medium text-xs">
                           {order.currentStage || 'Floor WIP'}
                         </span>
                       </td>
                       <td className="py-3 px-4 font-medium text-slate-700">
                         {order.currentResponsible || 'N/A'}
                       </td>
-                      <td className="py-3 px-4 font-mono text-slate-600">
+                      <td className="py-3 px-4 tabular-nums text-slate-600">
                         {order.dispatchDate || 'N/A'}
                       </td>
                       <td className="py-3 px-4">
                         {order.delayedStepsSummary.length > 0 ? (
                           <div className="space-y-1 max-w-sm">
                             {order.delayedStepsSummary.slice(0, 2).map((s, idx) => (
-                              <div key={idx} className="text-[11px]">
-                                <span className="font-bold text-rose-700">{s.stageName}:</span>{' '}
+                              <div key={idx} className="text-xs">
+                                <span className="font-semibold text-rose-700">{s.stageName}:</span>{' '}
                                 <span className="text-slate-600">{s.reason}</span>{' '}
                                 {s.delayDays > 0 && (
-                                  <span className="text-[10px] font-mono text-rose-600 font-bold">
+                                  <span className="text-xs tabular-nums text-rose-600 font-semibold">
                                     (+{s.delayDays}d)
                                   </span>
                                 )}
@@ -770,7 +770,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                             ))}
                           </div>
                         ) : (
-                          <span className="text-slate-400 italic text-[11px]">Status On Hold</span>
+                          <span className="text-slate-400 italic text-xs">Status On Hold</span>
                         )}
                       </td>
                       <td className="py-3 px-4 text-center">
@@ -779,7 +779,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                             e.stopPropagation();
                             onSelectOrder(order);
                           }}
-                          className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold text-[11px] transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-semibold text-xs transition-colors cursor-pointer"
                         >
                           View Detail
                         </button>

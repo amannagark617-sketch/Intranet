@@ -32,7 +32,7 @@ const OrderStepTracker: React.FC<OrderStepTrackerProps> = ({ steps, currentStage
             badgeBg = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
           } else if (isCurrent) {
             barBg = 'bg-indigo-600 hover:bg-indigo-700 border-indigo-700 ring-2 ring-indigo-300 animate-pulse shadow-sm';
-            textColor = 'text-indigo-700 font-bold';
+            textColor = 'text-indigo-700 font-semibold';
             badgeBg = 'bg-indigo-100 text-indigo-800 border border-indigo-300';
           } else if (isDelayed) {
             barBg = 'bg-amber-500 hover:bg-amber-600 border-amber-600 shadow-xs';
@@ -68,7 +68,7 @@ const OrderStepTracker: React.FC<OrderStepTrackerProps> = ({ steps, currentStage
               />
 
               {/* Step code badge */}
-              <span className={`text-[8.5px] font-bold mt-1 tracking-tighter uppercase px-1 py-0.2 rounded font-mono ${badgeBg}`}>
+              <span className={`text-[8.5px] font-semibold mt-1 tracking-tighter  px-1 py-0.2 rounded tabular-nums ${badgeBg}`}>
                 {stepShortCode}
               </span>
 
@@ -90,10 +90,10 @@ const OrderStepTracker: React.FC<OrderStepTrackerProps> = ({ steps, currentStage
                   }}
                 >
                   <div className="flex items-center justify-between border-b border-slate-700 pb-1.5 mb-2">
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-300 border border-indigo-400/40">
+                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-300 border border-indigo-400/40">
                       {step.stepCode || `STEP ${idx + 1}`}
                     </span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                       isCompleted ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
                       isCurrent ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' :
                       isDelayed ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-800 text-slate-400'
@@ -102,14 +102,14 @@ const OrderStepTracker: React.FC<OrderStepTrackerProps> = ({ steps, currentStage
                     </span>
                   </div>
 
-                  <h4 className="font-bold text-white text-xs leading-snug">{step.name}</h4>
+                  <h4 className="font-semibold text-white text-xs leading-snug">{step.name}</h4>
                   
-                  <div className="mt-2.5 space-y-1.5 text-[11px] text-slate-200">
+                  <div className="mt-2.5 space-y-1.5 text-xs text-slate-200">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-400 flex items-center gap-1">
-                        <User className="w-3 h-3 text-pink-400" /> Owner:
+                        <User className="w-3 h-3 text-indigo-400" /> Owner:
                       </span>
-                      <strong className="text-pink-300 font-medium">{step.responsible}</strong>
+                      <strong className="text-indigo-300 font-medium">{step.responsible}</strong>
                     </div>
 
                     <div className="flex items-center justify-between">
@@ -121,12 +121,12 @@ const OrderStepTracker: React.FC<OrderStepTrackerProps> = ({ steps, currentStage
 
                     <div className="flex items-center justify-between pt-1.5 border-t border-slate-700">
                       <span className="text-slate-400">Planned:</span>
-                      <span className="font-mono text-slate-200">{step.plannedDate || 'Pending'}</span>
+                      <span className="tabular-nums text-slate-200">{step.plannedDate || 'Pending'}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <span className="text-slate-400">Actual:</span>
-                      <span className={`font-mono ${step.actualDate ? 'text-emerald-300 font-semibold' : 'text-slate-400'}`}>
+                      <span className={`tabular-nums ${step.actualDate ? 'text-emerald-300 font-semibold' : 'text-slate-400'}`}>
                         {step.actualDate || 'Not Completed'}
                       </span>
                     </div>
@@ -140,14 +140,14 @@ const OrderStepTracker: React.FC<OrderStepTrackerProps> = ({ steps, currentStage
 
                     {step.remarks && (
                       <div className="text-slate-200 bg-slate-800 p-2 rounded text-[10.5px] mt-1.5 border border-slate-700">
-                        <span className="text-slate-400 font-semibold block text-[9px]">QC / REMARKS</span>
+                        <span className="text-slate-400 font-semibold block text-xs">QC / REMARKS</span>
                         {step.remarks}
                       </div>
                     )}
 
                     {step.reasonOfFail && (
                       <div className="text-red-200 bg-red-950/60 p-2 rounded text-[10.5px] mt-1.5 border border-red-800">
-                        <span className="text-red-300 font-semibold block text-[9px]">HOLD REASON</span>
+                        <span className="text-red-300 font-semibold block text-xs">HOLD REASON</span>
                         {step.reasonOfFail}
                       </div>
                     )}

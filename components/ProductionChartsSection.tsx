@@ -154,7 +154,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
             <BarChart3 className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <h2 className="text-base font-semibold text-slate-900 tracking-tight flex items-center gap-2">
               Visual Production &amp; Run-Rate Intelligence
             </h2>
             <p className="text-xs text-slate-500">
@@ -169,7 +169,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
             onClick={() => setActiveChartTab('trends')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
               activeChartTab === 'trends'
-                ? 'bg-white text-indigo-700 shadow-xs font-bold'
+                ? 'bg-white text-indigo-700 shadow-xs font-semibold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -181,7 +181,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
             onClick={() => setActiveChartTab('onTime')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
               activeChartTab === 'onTime'
-                ? 'bg-white text-emerald-700 shadow-xs font-bold'
+                ? 'bg-white text-emerald-700 shadow-xs font-semibold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -193,7 +193,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
             onClick={() => setActiveChartTab('floorQueue')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
               activeChartTab === 'floorQueue'
-                ? 'bg-white text-indigo-700 shadow-xs font-bold'
+                ? 'bg-white text-indigo-700 shadow-xs font-semibold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -205,7 +205,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
             onClick={() => setActiveChartTab('bottlenecks')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
               activeChartTab === 'bottlenecks'
-                ? 'bg-white text-indigo-700 shadow-xs font-bold'
+                ? 'bg-white text-indigo-700 shadow-xs font-semibold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -226,7 +226,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
                 <Target className="w-3.5 h-3.5 text-indigo-600" />
                 Target
               </span>
-              <span className="font-bold font-mono text-slate-900">
+              <span className="font-semibold tabular-nums text-slate-900">
                 {liveProducedTillDate.toLocaleString()} / {productionTarget.toLocaleString()} units ({pctTargetAchieved}%)
               </span>
             </div>
@@ -237,7 +237,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
                 style={{ width: `${Math.min(100, pctNumber)}%` }}
               />
             </div>
-            <div className="flex justify-between text-[11px] text-slate-500">
+            <div className="flex justify-between text-xs text-slate-500">
               <span>{daysElapsed} days elapsed</span>
               <span>{shortfall > 0 ? `${shortfall.toLocaleString()} shortfall` : 'Target Met'}</span>
             </div>
@@ -247,7 +247,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-600">Daily Run-Rate Pace</span>
-              <span className={`font-bold font-mono text-xs px-2 py-0.5 rounded ${
+              <span className={`font-semibold tabular-nums text-xs px-2 py-0.5 rounded ${
                 actualPerDay >= newTargetPerDay ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
               }`}>
                 {actualPerDay >= newTargetPerDay ? 'On Target Pace' : `Deficit: -${Math.max(0, newTargetPerDay - actualPerDay)}/day`}
@@ -255,22 +255,22 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
             </div>
             <div className="flex items-center gap-2 sm:gap-3 pt-1">
               <div className="flex-1 text-center bg-white p-1.5 sm:p-2 rounded-lg border border-slate-200">
-                <div className="text-[9px] sm:text-[10px] text-slate-500 font-semibold uppercase">Actual Output</div>
-                <div className="text-sm sm:text-base font-bold font-mono text-indigo-700">{actualPerDay} <span className="text-[9px] sm:text-[10px] font-normal">/day</span></div>
+                <div className="text-xs sm:text-xs text-slate-500 font-semibold">Actual Output</div>
+                <div className="text-sm sm:text-base font-semibold tabular-nums text-indigo-700">{actualPerDay} <span className="text-xs sm:text-xs font-normal">/day</span></div>
               </div>
               <div className="flex-1 text-center bg-white p-1.5 sm:p-2 rounded-lg border border-slate-200">
-                <div className="text-[9px] sm:text-[10px] text-slate-500 font-semibold uppercase">Required Pace</div>
-                <div className="text-sm sm:text-base font-bold font-mono text-rose-700">{newTargetPerDay} <span className="text-[9px] sm:text-[10px] font-normal">/day</span></div>
+                <div className="text-xs sm:text-xs text-slate-500 font-semibold">Required Pace</div>
+                <div className="text-sm sm:text-base font-semibold tabular-nums text-rose-700">{newTargetPerDay} <span className="text-xs sm:text-xs font-normal">/day</span></div>
               </div>
               <div className="flex-1 text-center bg-white p-1.5 sm:p-2 rounded-lg border border-slate-200">
-                <div className="text-[9px] sm:text-[10px] text-slate-500 font-semibold uppercase">Target</div>
-                <div className="text-sm sm:text-base font-bold font-mono text-slate-800">{targetPerDay} <span className="text-[9px] sm:text-[10px] font-normal">/day</span></div>
+                <div className="text-xs sm:text-xs text-slate-500 font-semibold">Target</div>
+                <div className="text-sm sm:text-base font-semibold tabular-nums text-slate-800">{targetPerDay} <span className="text-xs sm:text-xs font-normal">/day</span></div>
               </div>
             </div>
             {onViewDailyTab && (
               <button
                 onClick={onViewDailyTab}
-                className="w-full text-center text-[11px] font-bold text-indigo-600 hover:text-indigo-800 hover:underline pt-0.5 cursor-pointer flex items-center justify-center gap-1"
+                className="w-full text-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline pt-0.5 cursor-pointer flex items-center justify-center gap-1"
               >
                 <span>View Daily Production &amp; Step Matrix →</span>
               </button>
@@ -281,14 +281,14 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-600">Projected Month-End Output</span>
-              <span className="font-bold text-slate-900 font-mono">{projectedPct}% of Target</span>
+              <span className="font-semibold text-slate-900 tabular-nums">{projectedPct}% of Target</span>
             </div>
             <div className="bg-white p-2.5 rounded-lg border border-slate-200 flex items-center justify-between">
               <div>
-                <div className="text-lg font-bold font-mono text-slate-900">
+                <div className="text-lg font-semibold tabular-nums text-slate-900">
                   {projectedOutput.toLocaleString()} <span className="text-xs font-normal text-slate-500">chairs projected</span>
                 </div>
-                <div className="text-[11px] text-slate-500">
+                <div className="text-xs text-slate-500">
                   Based on current velocity over remaining {daysRemaining} days
                 </div>
               </div>
@@ -304,7 +304,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
           <div className="space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 className="text-sm font-bold text-slate-900">Monthly Target vs. QC Passed vs. Dispatched Performance</h3>
+                <h3 className="text-sm font-semibold text-slate-900">Monthly Target vs. QC Passed vs. Dispatched Performance</h3>
                 <p className="text-xs text-slate-500">Multi-month comparative volume tracking from April 2025 onwards</p>
               </div>
               <div className="flex items-center gap-3 text-xs font-medium">
@@ -352,7 +352,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
           <div className="space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 className="text-sm font-bold text-slate-900">On-Time vs Delayed Delivery Performance</h3>
+                <h3 className="text-sm font-semibold text-slate-900">On-Time vs Delayed Delivery Performance</h3>
                 <p className="text-xs text-slate-500">Calculated from Column G scheduled dispatch date against Final QC pass completion</p>
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -363,7 +363,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
                 {onViewOnTimeTab && (
                   <button
                     onClick={onViewOnTimeTab}
-                    className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                    className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
                   >
                     Open Full On-Time Audit &rarr;
                   </button>
@@ -442,9 +442,9 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
 
               {/* Center Metric */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Total Load</span>
-                <span className="text-2xl font-black font-mono text-slate-900">{totalFactoryChairs.toLocaleString()}</span>
-                <span className="text-[10px] text-slate-500 font-medium">Chairs Across Floor</span>
+                <span className="text-xs font-semibold text-slate-400">Total Load</span>
+                <span className="text-2xl font-semibold tabular-nums text-slate-900">{totalFactoryChairs.toLocaleString()}</span>
+                <span className="text-xs text-slate-500 font-medium">Chairs Across Floor</span>
               </div>
             </div>
 
@@ -459,12 +459,12 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                         {item.name}
                       </span>
-                      <span className="font-mono font-bold text-slate-900">{pct}%</span>
+                      <span className="tabular-nums font-semibold text-slate-900">{pct}%</span>
                     </div>
-                    <div className="text-base font-bold font-mono text-slate-900">
+                    <div className="text-base font-semibold tabular-nums text-slate-900">
                       {item.value.toLocaleString()} <span className="text-xs font-normal text-slate-500">units</span>
                     </div>
-                    <p className="text-[11px] text-slate-500 truncate">{item.desc}</p>
+                    <p className="text-xs text-slate-500 truncate">{item.desc}</p>
                   </div>
                 );
               })}
@@ -477,7 +477,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-slate-900">14-Stage Floor WIP Queue Distribution</h3>
+                <h3 className="text-sm font-semibold text-slate-900">14-Stage Floor WIP Queue Distribution</h3>
                 <p className="text-xs text-slate-500">Live order &amp; chair concentration across production workstations</p>
               </div>
             </div>

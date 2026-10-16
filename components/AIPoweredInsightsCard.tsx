@@ -29,7 +29,7 @@ const AIPoweredInsightsCard: React.FC<AIPoweredInsightsCardProps> = ({ onGenerat
     <div className="bg-white rounded-2xl p-6 flex flex-col h-full border border-slate-200 shadow-xs">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+          <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-indigo-600" />
             AI Production Insights
           </h2>
@@ -91,7 +91,7 @@ const AIPoweredInsightsCard: React.FC<AIPoweredInsightsCardProps> = ({ onGenerat
                   <Lightbulb className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-xs text-slate-900 mb-0.5">{insight.title}</h3>
+                  <h3 className="font-semibold text-xs text-slate-900 mb-0.5">{insight.title}</h3>
                   <p className="text-xs text-slate-600 leading-relaxed">{insight.description}</p>
                 </div>
               </li>

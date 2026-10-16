@@ -4,6 +4,7 @@ import type { Order, ProductionStepName, Insight } from './types';
 import Header from './components/Header';
 import type { ViewMode } from './components/Header';
 import TodayHome from './components/TodayHome';
+import { DailyEnterpriseSummaryView } from './components/DailyEnterpriseSummaryView';
 import ProductionDashboard from './components/ProductionDashboard';
 import ReadyGoodsDashboard from './components/ReadyGoodsDashboard';
 import ReadyStockDashboard from './components/ReadyStockDashboard';
@@ -473,6 +474,8 @@ const App: React.FC = () => {
             onGenerateInsights={handleGenerateInsights}
           />
         )}
+
+        {viewMode === 'dailySummary' && <DailyEnterpriseSummaryView key={`daily-${refreshKey}`} />}
 
         {/* VIEW 1: EXECUTIVE PRODUCTION DASHBOARD */}
         {viewMode === 'dashboard' && (

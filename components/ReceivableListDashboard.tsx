@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { formatInrCompact, titleCase } from '../utils/format';
 import {
   fetchReceivableListData,
   getCachedReceivables,
@@ -81,6 +82,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
 
   // Active View Tab
   const [tabMode, setTabMode] = useState<TabMode>('overview');
+  const [showMoreFilters, setShowMoreFilters] = useState<boolean>(false);
 
   // Filter States
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -256,396 +258,134 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
 
   return (
     <div className="space-y-6 animate-fade-in text-slate-800">
-      {/* TOP HEADER & TITLE BAR (LIGHT REFINED THEME) */}
-      <div className="bg-white rounded-2xl p-5 md:p-6 shadow-xs border border-slate-200">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-amber-500/10 text-amber-700 rounded-xl border border-amber-500/20">
-              <ReceiptText className="w-7 h-7" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h1 className="text-xl md:text-2xl font-black tracking-tight text-slate-900">
-                  Receivable List Dashboard
-                </h1>
-                <span className="text-xs bg-amber-50 text-amber-800 font-bold px-2.5 py-0.5 rounded-full border border-amber-200">
-                  FMS Follow-Up
-                </span>
-              </div>
-              <p className="text-xs md:text-sm text-slate-500 font-medium mt-0.5">
-                Live tracking of Invoice Amounts, Received Payments, Group Outstanding & CRE Daily Follow-Ups
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Actions & Navigation */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            {onBackToDashboard && (
-              <button
-                onClick={onBackToDashboard}
-                className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition border border-slate-300 flex items-center gap-1.5"
-              >
-                ← Back to Production Dashboard
-              </button>
-            )}
-
-            <button
-              onClick={handleExportExcel}
-              className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shadow-xs cursor-pointer"
-              title="Export currently filtered list to Excel (.xlsx)"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export to Excel</span>
-            </button>
-          </div>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">Receivables</h1>
+          <p className="mt-1 text-sm text-slate-500">
+            {activeSummary.totalInvoices} invoices · {activeSummary.pctReceived}% collected
+          </p>
         </div>
-
-        {/* TOP KPI OVERVIEW METRICS (CLICKABLE FILTERS) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-5 pt-4 border-t border-slate-100">
-          {/* Card 1: Total Invoice Amount */}
-          <div 
-            onClick={() => setBalanceFilter('all')}
-            className={`rounded-xl p-3.5 border transition-all cursor-pointer hover:shadow-md ${
-              balanceFilter === 'all' && !hasActiveFilters
-                ? 'bg-slate-100 border-slate-400 ring-2 ring-slate-400/30'
-                : 'bg-slate-50 border-slate-200/80 hover:border-slate-300'
-            }`}
-            title="Click to reset filters and view All Invoices"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Total Invoiced</span>
-              {balanceFilter === 'all' && hasActiveFilters && (
-                <span className="text-[9px] bg-slate-200 text-slate-700 font-bold px-1.5 py-0.2 rounded">Filtered</span>
-              )}
-            </div>
-            <span className="text-xl md:text-2xl font-black font-mono text-slate-900 block mt-0.5">
-              {formatINRInLakhsOrCrores(activeSummary.totalInvoiceAmount)}
-            </span>
-            <span className="text-[10px] text-slate-500 font-mono">
-              ₹{formatCurrency(activeSummary.totalInvoiceAmount)}
-            </span>
-          </div>
-
-          {/* Card 2: Total Invoices Count */}
-          <div 
-            onClick={() => setBalanceFilter('all')}
-            className={`rounded-xl p-3.5 border transition-all cursor-pointer hover:shadow-md ${
-              balanceFilter === 'all'
-                ? 'bg-amber-50 border-amber-300 ring-2 ring-amber-400/20'
-                : 'bg-amber-50/60 border-amber-200/80 hover:border-amber-300'
-            }`}
-            title="Click to view all invoice records"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider block">Total Invoices</span>
-              <span className="text-[9px] text-amber-700 font-bold">Click</span>
-            </div>
-            <span className="text-xl md:text-2xl font-black font-mono text-amber-950 block mt-0.5">
-              {activeSummary.totalInvoices}
-            </span>
-            <span className="text-[10px] text-amber-700 font-mono">
-              {activeSummary.totalInvoices === overallSummary.totalInvoices ? 'All records active' : `of ${overallSummary.totalInvoices} total`}
-            </span>
-          </div>
-
-          {/* Card 3: Received Amount */}
-          <div 
-            onClick={() => setBalanceFilter(prev => prev === 'received' ? 'all' : 'received')}
-            className={`rounded-xl p-3.5 border transition-all cursor-pointer hover:shadow-md ${
-              balanceFilter === 'received'
-                ? 'bg-emerald-100 border-emerald-500 ring-2 ring-emerald-500/30'
-                : 'bg-emerald-50/60 border-emerald-200/80 hover:border-emerald-300'
-            }`}
-            title="Click to filter orders with Collected / Received Payments"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-emerald-900 uppercase tracking-wider block">Received Amount</span>
-              {balanceFilter === 'received' && (
-                <span className="text-[9px] bg-emerald-600 text-white font-bold px-1.5 py-0.2 rounded">Active</span>
-              )}
-            </div>
-            <span className="text-xl md:text-2xl font-black font-mono text-emerald-950 block mt-0.5">
-              {formatINRInLakhsOrCrores(activeSummary.totalReceivedAmount)}
-            </span>
-            <span className="text-[10px] text-emerald-700 font-mono">
-              ₹{formatCurrency(activeSummary.totalReceivedAmount)}
-            </span>
-          </div>
-
-          {/* Card 4: % Received */}
-          <div 
-            onClick={() => setBalanceFilter(prev => prev === 'received' ? 'all' : 'received')}
-            className={`rounded-xl p-3.5 border transition-all cursor-pointer hover:shadow-md ${
-              balanceFilter === 'received'
-                ? 'bg-emerald-100 border-emerald-500 ring-2 ring-emerald-500/30'
-                : 'bg-emerald-50/60 border-emerald-200/80 hover:border-emerald-300'
-            }`}
-            title="Click to filter Collection Rate"
-          >
-            <span className="text-[11px] font-bold text-emerald-900 uppercase tracking-wider block">Collection Rate</span>
-            <span className="text-xl md:text-2xl font-black font-mono text-emerald-950 block mt-0.5">
-              {activeSummary.pctReceived}%
-            </span>
-            <div className="w-full bg-emerald-200 rounded-full h-1.5 mt-2 overflow-hidden">
-              <div 
-                className="bg-emerald-600 h-full rounded-full" 
-                style={{ width: `${Math.min(100, activeSummary.pctReceived)}%` }} 
-              />
-            </div>
-          </div>
-
-          {/* Card 5: Balance Amount (Priority Drill-Down) */}
-          <div 
-            onClick={() => setBalanceFilter(prev => prev === 'due' ? 'all' : 'due')}
-            className={`rounded-xl p-3.5 border transition-all cursor-pointer hover:shadow-md ${
-              balanceFilter === 'due'
-                ? 'bg-rose-100 border-rose-500 ring-2 ring-rose-500/30 shadow-xs'
-                : 'bg-rose-50/70 border-rose-200/80 hover:border-rose-300'
-            }`}
-            title="Click to filter orders with Pending Balance Due"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-rose-900 uppercase tracking-wider block">Balance Due</span>
-              {balanceFilter === 'due' ? (
-                <span className="text-[9px] bg-rose-600 text-white font-bold px-1.5 py-0.2 rounded animate-pulse">Active</span>
-              ) : (
-                <span className="text-[9px] text-rose-700 font-bold bg-rose-100 px-1.5 py-0.2 rounded">Click to Filter</span>
-              )}
-            </div>
-            <span className="text-xl md:text-2xl font-black font-mono text-rose-950 block mt-0.5">
-              {formatINRInLakhsOrCrores(activeSummary.totalBalanceAmount)}
-            </span>
-            <span className="text-[10px] text-rose-700 font-mono">
-              ₹{formatCurrency(activeSummary.totalBalanceAmount)}
-            </span>
-          </div>
-
-          {/* Card 6: % Balance */}
-          <div 
-            onClick={() => setBalanceFilter(prev => prev === 'due' ? 'all' : 'due')}
-            className={`rounded-xl p-3.5 border transition-all cursor-pointer hover:shadow-md ${
-              balanceFilter === 'due'
-                ? 'bg-rose-100 border-rose-500 ring-2 ring-rose-500/30'
-                : 'bg-rose-50/70 border-rose-200/80 hover:border-rose-300'
-            }`}
-            title="Click to filter Outstanding Balances"
-          >
-            <span className="text-[11px] font-bold text-rose-900 uppercase tracking-wider block">% Balance Due</span>
-            <span className="text-xl md:text-2xl font-black font-mono text-rose-950 block mt-0.5">
-              {activeSummary.pctBalance}%
-            </span>
-            <div className="w-full bg-rose-200 rounded-full h-1.5 mt-2 overflow-hidden">
-              <div 
-                className="bg-rose-600 h-full rounded-full" 
-                style={{ width: `${Math.min(100, activeSummary.pctBalance)}%` }} 
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* REAL-TIME DRILL-DOWN SUMMARY BANNER */}
-        {hasActiveFilters && (
-          <div className="mt-4 p-3 bg-amber-50/90 border border-amber-300 rounded-xl flex flex-wrap items-center justify-between gap-2.5 text-xs text-amber-950 animate-fade-in">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-black text-amber-900 flex items-center gap-1">
-                <Filter className="w-3.5 h-3.5" />
-                Active Filter Applied:
-              </span>
-              {balanceFilter === 'due' && (
-                <span className="bg-rose-100 text-rose-900 border border-rose-300 px-2 py-0.5 rounded-full font-bold">
-                  Balance Due (&gt; ₹0): {filteredItems.length} orders (₹{formatINRInLakhsOrCrores(activeSummary.totalBalanceAmount)})
-                </span>
-              )}
-              {balanceFilter === 'received' && (
-                <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded-full font-bold">
-                  Settled / Received: {filteredItems.length} orders
-                </span>
-              )}
-              {selectedGroup !== 'All' && (
-                <span className="bg-indigo-100 text-indigo-900 border border-indigo-300 px-2 py-0.5 rounded-full font-bold">
-                  Group: {selectedGroup}
-                </span>
-              )}
-              {selectedSalesPerson !== 'All' && (
-                <span className="bg-blue-100 text-blue-900 border border-blue-300 px-2 py-0.5 rounded-full font-bold">
-                  Salesperson: {selectedSalesPerson}
-                </span>
-              )}
-              {selectedCreSales !== 'All' && (
-                <span className="bg-purple-100 text-purple-900 border border-purple-300 px-2 py-0.5 rounded-full font-bold">
-                  CRE: {selectedCreSales}
-                </span>
-              )}
-              {selectedStatus !== 'All' && (
-                <span className="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full font-bold">
-                  Status: {selectedStatus}
-                </span>
-              )}
-              {searchTerm && (
-                <span className="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full font-bold">
-                  Search: "{searchTerm}"
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setTabMode('table')}
-                className="px-2.5 py-1 bg-white hover:bg-slate-100 text-indigo-900 font-bold rounded-lg border border-slate-300 transition"
-              >
-                View {filteredItems.length} in Table →
-              </button>
-              <button
-                onClick={handleResetFilters}
-                className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg transition flex items-center gap-1 shadow-xs cursor-pointer"
-              >
-                <X className="w-3 h-3" />
-                <span>Clear Filters</span>
-              </button>
-            </div>
-          </div>
-        )}
+        <button
+          onClick={handleExportExcel}
+          className="flex items-center gap-1.5 self-start sm:self-auto px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-lg border border-slate-200 transition-colors cursor-pointer"
+        >
+          <Download className="w-4 h-4" />
+          <span>Export</span>
+        </button>
       </div>
 
-      {/* NAVIGATION TABS & FILTER TOOLBAR */}
-      <div className="bg-white rounded-xl p-4 shadow-xs border border-slate-200 space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-          {/* Tab Switcher */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
-            <button
-              onClick={() => setTabMode('overview')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold transition ${
-                tabMode === 'overview'
-                  ? 'bg-white text-indigo-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>Overview & Group FMS</span>
-            </button>
+      {/* Key numbers (tap to filter) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {[
+          { key: 'due', label: 'Still to collect', value: formatInrCompact(activeSummary.totalBalanceAmount), sub: `${activeSummary.pctBalance}% of invoiced`, active: balanceFilter === 'due', onClick: () => setBalanceFilter(balanceFilter === 'due' ? 'all' : 'due') },
+          { key: 'inv', label: 'Invoiced', value: formatInrCompact(activeSummary.totalInvoiceAmount), sub: `${activeSummary.totalInvoices} invoices`, active: false, onClick: () => { setBalanceFilter('all'); } },
+          { key: 'rec', label: 'Collected', value: formatInrCompact(activeSummary.totalReceivedAmount), sub: `${activeSummary.pctReceived}% of invoiced`, active: balanceFilter === 'received', onClick: () => setBalanceFilter(balanceFilter === 'received' ? 'all' : 'received') },
+          { key: 'rate', label: 'Collection rate', value: `${activeSummary.pctReceived}%`, sub: `${activeSummary.pctBalance}% outstanding`, active: false, onClick: () => setBalanceFilter('all') },
+        ].map(c => (
+          <button
+            key={c.key}
+            onClick={c.onClick}
+            className={`text-left bg-white rounded-2xl border px-5 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-slate-300 hover:shadow-md transition-all cursor-pointer ${
+              c.active ? 'border-indigo-500 ring-2 ring-indigo-500/20' : 'border-slate-200/80'
+            }`}
+          >
+            <div className="text-[13px] font-medium text-slate-500">{c.label}</div>
+            <div className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
+            <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
+          </button>
+        ))}
+      </div>
 
-            <button
-              onClick={() => setTabMode('analytics')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold transition ${
-                tabMode === 'analytics'
-                  ? 'bg-white text-indigo-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <BarChart3 className="w-3.5 h-3.5" />
-              <span>Analytics & Charts</span>
-            </button>
-
-            <button
-              onClick={() => setTabMode('table')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold transition ${
-                tabMode === 'table'
-                  ? 'bg-white text-indigo-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <TableIcon className="w-3.5 h-3.5" />
-              <span>All Invoices Table</span>
-              <span className="text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded-full font-mono">
-                {filteredItems.length}
-              </span>
-            </button>
+      {/* Tabs and filters */}
+      <div className="bg-white rounded-2xl p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] border border-slate-200/80 space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center gap-1 overflow-x-auto -mx-1 px-1">
+            {([
+              { id: 'overview', label: 'Overview' },
+              { id: 'table', label: 'All invoices' },
+              { id: 'analytics', label: 'Charts' },
+            ] as const).map(t => (
+              <button
+                key={t.id}
+                onClick={() => setTabMode(t.id)}
+                className={`shrink-0 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                  tabMode === t.id ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
+          <div className="text-sm text-slate-500 flex items-center gap-3">
+            <span>{filteredItems.length} of {items.length} invoices</span>
+            {(hasActiveFilters || balanceFilter !== 'all') && (
+              <button onClick={handleResetFilters} className="flex items-center gap-1 font-medium text-rose-600 hover:text-rose-700 cursor-pointer">
+                <X className="w-3.5 h-3.5" /> Clear
+              </button>
+            )}
+          </div>
+        </div>
 
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-md">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-              placeholder="Search Customer, OPF, Invoice #, Salesperson, Remarks..."
-              className="w-full pl-9 pr-8 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+              placeholder="Search customer or invoice"
+              className="w-full pl-9 pr-8 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 transition"
             />
             {searchTerm && (
-              <button 
-                onClick={() => setSearchTerm('')} 
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-3.5 h-3.5" />
+              <button onClick={() => setSearchTerm('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
+          <select
+            value={selectedGroup}
+            onChange={(e) => { setSelectedGroup(e.target.value); setCurrentPage(1); }}
+            className="py-2 px-3 text-sm bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-indigo-500"
+          >
+            <option value="All">All groups</option>
+            {availableGroups.map(g => (<option key={g} value={g}>{g}</option>))}
+          </select>
+          <select
+            value={selectedSalesPerson}
+            onChange={(e) => { setSelectedSalesPerson(e.target.value); setCurrentPage(1); }}
+            className="py-2 px-3 text-sm bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-indigo-500"
+          >
+            <option value="All">All salespeople</option>
+            {availableSalesPersons.map(sp => (<option key={sp} value={sp}>{sp}</option>))}
+          </select>
+          <button
+            onClick={() => setShowMoreFilters(v => !v)}
+            className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 cursor-pointer whitespace-nowrap"
+          >
+            {showMoreFilters ? 'Fewer filters' : 'More filters'}
+          </button>
         </div>
-
-        {/* Secondary Filter Dropdowns */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2.5 pt-1">
-          {/* Group Filter */}
-          <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Group</label>
-            <select
-              value={selectedGroup}
-              onChange={(e) => { setSelectedGroup(e.target.value); setCurrentPage(1); }}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-md px-2 py-1.5 text-slate-800 font-medium focus:ring-1 focus:ring-indigo-500"
-            >
-              <option value="All">All Groups ({items.length})</option>
-              {availableGroups.map(g => (
-                <option key={g} value={g}>{g}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* CRE / Sales Follow-Up Person Filter */}
-          <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">CRE / Sales</label>
+        {showMoreFilters && (
+          <div className="flex flex-col sm:flex-row gap-3">
             <select
               value={selectedCreSales}
               onChange={(e) => { setSelectedCreSales(e.target.value); setCurrentPage(1); }}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-md px-2 py-1.5 text-slate-800 font-medium focus:ring-1 focus:ring-indigo-500"
+              className="py-2 px-3 text-sm bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-indigo-500"
             >
-              <option value="All">All CRE / Sales</option>
-              {availableCreSales.map(c => (
-                <option key={c} value={c}>{c}</option>
-              ))}
+              <option value="All">All follow-up owners</option>
+              {availableCreSales.map(c => (<option key={c} value={c}>{c}</option>))}
             </select>
-          </div>
-
-          {/* Salesperson Filter */}
-          <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Sales Person</label>
-            <select
-              value={selectedSalesPerson}
-              onChange={(e) => { setSelectedSalesPerson(e.target.value); setCurrentPage(1); }}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-md px-2 py-1.5 text-slate-800 font-medium focus:ring-1 focus:ring-indigo-500"
-            >
-              <option value="All">All Sales Persons</option>
-              {availableSalesPersons.map(sp => (
-                <option key={sp} value={sp}>{sp}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Status Filter */}
-          <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Status</label>
             <select
               value={selectedStatus}
               onChange={(e) => { setSelectedStatus(e.target.value); setCurrentPage(1); }}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-md px-2 py-1.5 text-slate-800 font-medium focus:ring-1 focus:ring-indigo-500"
+              className="py-2 px-3 text-sm bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-indigo-500"
             >
-              <option value="All">All Statuses</option>
-              {availableStatuses.map(s => (
-                <option key={s} value={s}>{s}</option>
-              ))}
+              <option value="All">Any status</option>
+              {availableStatuses.map(st => (<option key={st} value={st}>{st}</option>))}
             </select>
           </div>
-
-          {/* Reset Filters */}
-          <div className="flex items-end">
-            <button
-              onClick={handleResetFilters}
-              className="w-full py-1.5 px-3 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-md transition flex items-center justify-center gap-1 border border-slate-300"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>Reset Filters</span>
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* ERROR BANNER IF ANY */}
@@ -655,233 +395,63 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
             <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
             <span>{error}</span>
           </div>
-          <button onClick={() => loadData(true)} className="underline font-bold">Retry</button>
+          <button onClick={() => loadData(true)} className="underline font-semibold">Retry</button>
         </div>
       )}
 
-      {/* TAB 1: OVERVIEW & GROUP FMS */}
+      {/* Overview */}
       {tabMode === 'overview' && (
-        <div className="space-y-6">
-          {/* GROUP SUMMARY BREAKDOWN & CARDS */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left 2 Cols: Group Summary Table */}
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-xs border border-slate-200 p-5 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-indigo-50 text-indigo-700 rounded-lg">
-                    <Building2 className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Group Breakdown & Balances</h2>
-                    <p className="text-[11px] text-slate-500">Breakdown across key customer account groups</p>
-                  </div>
-                </div>
-                <span className="text-xs bg-indigo-50 text-indigo-800 font-bold px-2 py-0.5 rounded border border-indigo-200">
-                  {groupSummaries.length} Groups
-                </span>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-slate-50 text-slate-700 border-b border-slate-200 font-bold">
-                      <th className="py-2.5 px-3">Group</th>
-                      <th className="py-2.5 px-3 text-right">Invoices</th>
-                      <th className="py-2.5 px-3 text-right">Invoice Amount</th>
-                      <th className="py-2.5 px-3 text-right">Received</th>
-                      <th className="py-2.5 px-3 text-right">Balance Due</th>
-                      <th className="py-2.5 px-3 text-right">% of Total Bal</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {groupSummaries.map((grp) => {
-                      const isSelected = selectedGroup === grp.group;
-                      return (
-                        <tr 
-                          key={grp.group}
-                          onClick={() => setSelectedGroup(isSelected ? 'All' : grp.group)}
-                          className={`cursor-pointer transition-colors ${
-                            isSelected 
-                              ? 'bg-indigo-50/80 font-bold text-indigo-950' 
-                              : 'hover:bg-slate-50/80 text-slate-700'
-                          }`}
-                        >
-                          <td className="py-2.5 px-3 font-semibold flex items-center gap-2">
-                            <span 
-                              className="w-2.5 h-2.5 rounded-full shrink-0" 
-                              style={{ backgroundColor: GROUP_COLORS[grp.group] || '#64748b' }} 
-                            />
-                            <span>{grp.group}</span>
-                            {isSelected && <span className="text-[10px] text-indigo-600 font-mono">(Active Filter)</span>}
-                          </td>
-                          <td className="py-2.5 px-3 text-right font-mono">{grp.count}</td>
-                          <td className="py-2.5 px-3 text-right font-mono font-medium">₹{formatCurrency(grp.invoiceAmount)}</td>
-                          <td className="py-2.5 px-3 text-right font-mono text-emerald-700">₹{formatCurrency(grp.receivedAmount)}</td>
-                          <td className="py-2.5 px-3 text-right font-mono font-bold text-amber-700">₹{formatCurrency(grp.balanceAmount)}</td>
-                          <td className="py-2.5 px-3 text-right font-mono font-bold">
-                            <span className="px-2 py-0.5 bg-slate-100 rounded text-slate-800">
-                              {grp.pctBalanceAmount}%
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                  <tfoot>
-                    <tr className="bg-slate-900 text-white font-black border-t-2 border-slate-700 text-xs">
-                      <td className="py-2.5 px-3">Grand Total</td>
-                      <td className="py-2.5 px-3 text-right font-mono">{activeSummary.totalInvoices}</td>
-                      <td className="py-2.5 px-3 text-right font-mono">₹{formatCurrency(activeSummary.totalInvoiceAmount)}</td>
-                      <td className="py-2.5 px-3 text-right font-mono text-emerald-400">₹{formatCurrency(activeSummary.totalReceivedAmount)}</td>
-                      <td className="py-2.5 px-3 text-right font-mono text-amber-300">₹{formatCurrency(activeSummary.totalBalanceAmount)}</td>
-                      <td className="py-2.5 px-3 text-right font-mono text-white">100%</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
-
-            {/* Right 1 Col: Balance Distribution Chart */}
-            <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-5 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-amber-50 text-amber-700 rounded-lg">
-                    <PieChart className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Balance Share</h2>
-                    <p className="text-[11px] text-slate-500">Click slice to filter by Group</p>
-                  </div>
-                </div>
-                {selectedGroup !== 'All' && (
-                  <button
-                    onClick={() => setSelectedGroup('All')}
-                    className="text-[10px] font-bold text-rose-600 hover:underline"
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+          <div className="lg:col-span-3 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <h2 className="text-base font-semibold text-slate-900">By customer group</h2>
+            <p className="text-[13px] text-slate-500 mt-0.5">Tap a group to filter</p>
+            <ul className="mt-4 divide-y divide-slate-100">
+              {groupSummaries.map((grp) => {
+                const isSelected = selectedGroup === grp.group;
+                return (
+                  <li
+                    key={grp.group}
+                    onClick={() => setSelectedGroup(isSelected ? 'All' : grp.group)}
+                    className={`py-3 px-2 -mx-2 rounded-lg cursor-pointer transition-colors ${isSelected ? 'bg-indigo-50' : 'hover:bg-slate-50'}`}
                   >
-                    Clear Group Filter
-                  </button>
-                )}
-              </div>
-
-              <div className="h-56 w-full flex items-center justify-center cursor-pointer">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RechartsPieChart>
-                    <Pie
-                      data={groupSummaries}
-                      dataKey="balanceAmount"
-                      nameKey="group"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={75}
-                      innerRadius={45}
-                      paddingAngle={2}
-                      onClick={(entry: any) => {
-                        if (entry && entry.group) {
-                          setSelectedGroup(selectedGroup === entry.group ? 'All' : entry.group);
-                          setCurrentPage(1);
-                        }
-                      }}
-                    >
-                      {groupSummaries.map((entry) => (
-                        <Cell 
-                          key={`cell-${entry.group}`} 
-                          fill={GROUP_COLORS[entry.group] || '#64748b'} 
-                          stroke={selectedGroup === entry.group ? '#000' : '#fff'}
-                          strokeWidth={selectedGroup === entry.group ? 2 : 1}
-                          className="cursor-pointer hover:opacity-80 transition"
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      formatter={(val: number) => [`₹${formatCurrency(val)}`, 'Balance Due (Click to filter)']}
-                    />
-                  </RechartsPieChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Legend with direct filter triggers */}
-              <div className="space-y-1.5 text-xs">
-                {groupSummaries.map(g => (
-                  <div 
-                    key={g.group} 
-                    onClick={() => { setSelectedGroup(selectedGroup === g.group ? 'All' : g.group); setCurrentPage(1); }}
-                    className={`flex items-center justify-between cursor-pointer p-1.5 rounded-lg transition ${
-                      selectedGroup === g.group ? 'bg-indigo-50 font-bold border border-indigo-200' : 'hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: GROUP_COLORS[g.group] || '#64748b' }} />
-                      <span className="font-medium text-slate-700">{g.group}</span>
-                      {selectedGroup === g.group && <span className="text-[10px] text-indigo-600 font-mono">✓</span>}
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-sm font-medium text-slate-800">{grp.group}</span>
+                      <span className="text-sm tabular-nums text-slate-600">
+                        <span className="font-semibold text-slate-900">{formatInrCompact(grp.balanceAmount)}</span>
+                        <span className="text-slate-400"> · {grp.count} invoices</span>
+                      </span>
                     </div>
-                    <span className="font-mono font-bold text-slate-900">₹{formatINRInLakhsOrCrores(g.balanceAmount)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                    <div className="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                      <div className="h-full rounded-full bg-indigo-500/80" style={{ width: `${Math.min(100, grp.pctBalanceAmount)}%` }} />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
-          {/* TOP 5 HIGH BALANCE INVOICES CALLOUT */}
-          <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-5 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-red-50 text-red-700 rounded-lg">
-                  <AlertTriangle className="w-4 h-4" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900">Highest Outstanding Receivables</h2>
-                  <p className="text-[11px] text-slate-500">Top invoices requiring priority collection follow-up</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setTabMode('table')}
-                className="text-xs font-bold text-indigo-700 hover:text-indigo-900"
-              >
-                View All {sortedItems.length} Invoices →
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="flex items-baseline justify-between">
+              <h2 className="text-base font-semibold text-slate-900">Largest balances</h2>
+              <button onClick={() => setTabMode('table')} className="text-[13px] font-medium text-indigo-600 hover:text-indigo-800 cursor-pointer">
+                See all
               </button>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <ul className="mt-4 divide-y divide-slate-100">
               {sortedItems.slice(0, 6).map((inv) => (
-                <div
+                <li
                   key={inv.id + inv.sNo}
                   onClick={() => setSelectedItem(inv)}
-                  className="bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-lg p-3.5 space-y-2 cursor-pointer transition"
+                  className="py-3 flex items-baseline justify-between gap-3 cursor-pointer hover:bg-slate-50 -mx-2 px-2 rounded-lg"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs font-black text-slate-900 line-clamp-1">{inv.customerName}</span>
-                    <span className="text-[10px] font-mono font-bold bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded shrink-0">
-                      S.No {inv.sNo}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] text-slate-600">
-                    <span className="font-mono">OPF: {inv.opfNo}</span>
-                    <span className="font-semibold text-indigo-700">{inv.group}</span>
-                  </div>
-
-                  <div className="bg-white rounded p-2 border border-slate-200/80 flex items-center justify-between">
-                    <div>
-                      <span className="text-[9px] text-slate-400 block uppercase font-bold">Balance Due</span>
-                      <span className="text-sm font-black font-mono text-red-700">
-                        ₹{formatCurrency(inv.balanceAmount)}
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-[9px] text-slate-400 block uppercase font-bold">Invoice Amt</span>
-                      <span className="text-xs font-mono font-bold text-slate-700">
-                        ₹{formatCurrency(inv.invoiceAmount)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1">
-                    <span>CRE: {inv.creSales || 'Unassigned'}</span>
-                    {inv.dueDate && <span>Due: {inv.dueDate}</span>}
-                  </div>
-                </div>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-medium text-slate-800 truncate">{titleCase(inv.customerName)}</span>
+                    <span className="block text-xs text-slate-400 truncate">{inv.dueDate ? `Due ${inv.dueDate}` : inv.opfNo}</span>
+                  </span>
+                  <span className="shrink-0 text-sm font-semibold tabular-nums text-slate-900">{formatInrCompact(inv.balanceAmount)}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       )}
@@ -898,14 +468,14 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                     <User className="w-4 h-4" />
                   </div>
                   <div>
-                    <h2 className="text-sm font-bold text-slate-900">Salesperson Outstanding</h2>
-                    <p className="text-[11px] text-slate-500">Click bar to filter by Salesperson</p>
+                    <h2 className="text-sm font-semibold text-slate-900">Salesperson Outstanding</h2>
+                    <p className="text-xs text-slate-500">Click bar to filter by Salesperson</p>
                   </div>
                 </div>
                 {selectedSalesPerson !== 'All' && (
                   <button
                     onClick={() => setSelectedSalesPerson('All')}
-                    className="text-[10px] font-bold text-rose-600 hover:underline"
+                    className="text-xs font-semibold text-rose-600 hover:underline"
                   >
                     Clear Filter ({selectedSalesPerson})
                   </button>
@@ -958,14 +528,14 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                     <TrendingUp className="w-4 h-4" />
                   </div>
                   <div>
-                    <h2 className="text-sm font-bold text-slate-900">Group Invoiced vs Received</h2>
-                    <p className="text-[11px] text-slate-500">Click bar to filter by Customer Group</p>
+                    <h2 className="text-sm font-semibold text-slate-900">Group Invoiced vs Received</h2>
+                    <p className="text-xs text-slate-500">Click bar to filter by Customer Group</p>
                   </div>
                 </div>
                 {selectedGroup !== 'All' && (
                   <button
                     onClick={() => setSelectedGroup('All')}
-                    className="text-[10px] font-bold text-rose-600 hover:underline"
+                    className="text-xs font-semibold text-rose-600 hover:underline"
                   >
                     Clear Filter ({selectedGroup})
                   </button>
@@ -1017,10 +587,10 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
           <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50">
             <div className="flex items-center gap-2">
               <TableIcon className="w-4 h-4 text-indigo-700" />
-              <span className="text-sm font-bold text-slate-900">
+              <span className="text-sm font-semibold text-slate-900">
                 Receivables Invoices Ledger
               </span>
-              <span className="text-xs bg-indigo-100 text-indigo-800 font-mono font-bold px-2 py-0.5 rounded">
+              <span className="text-xs bg-indigo-100 text-indigo-800 tabular-nums font-semibold px-2 py-0.5 rounded">
                 Showing {paginatedItems.length} of {sortedItems.length}
               </span>
             </div>
@@ -1045,7 +615,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-slate-100 text-slate-700 border-b border-slate-200 font-bold">
+                <tr className="bg-slate-100 text-slate-700 border-b border-slate-200 font-semibold">
                   <th 
                     onClick={() => handleSort('sNo')}
                     className="py-2.5 px-3 cursor-pointer hover:bg-slate-200 transition text-center w-12"
@@ -1118,36 +688,36 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                       className="hover:bg-indigo-50/40 transition-colors cursor-pointer group"
                       onClick={() => setSelectedItem(item)}
                     >
-                      <td className="py-2.5 px-3 text-center font-mono font-bold text-slate-500">
+                      <td className="py-2.5 px-3 text-center tabular-nums font-semibold text-slate-500">
                         {item.sNo}
                       </td>
                       <td className="py-2.5 px-3 font-semibold text-slate-900 max-w-[200px] truncate" title={item.customerName}>
                         {item.customerName}
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-slate-600">
+                      <td className="py-2.5 px-3 tabular-nums text-slate-600">
                         {item.opfNo}
                       </td>
                       <td className="py-2.5 px-3 text-slate-700">
                         {item.salesPerson}
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-slate-600 whitespace-nowrap">
+                      <td className="py-2.5 px-3 tabular-nums text-slate-600 whitespace-nowrap">
                         {item.invoiceDate}
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-slate-600 max-w-[140px] truncate" title={item.invoiceNo}>
+                      <td className="py-2.5 px-3 tabular-nums text-slate-600 max-w-[140px] truncate" title={item.invoiceNo}>
                         {item.invoiceNo}
                       </td>
-                      <td className="py-2.5 px-3 text-right font-mono font-medium text-slate-800 whitespace-nowrap">
+                      <td className="py-2.5 px-3 text-right tabular-nums font-medium text-slate-800 whitespace-nowrap">
                         ₹{formatCurrency(item.invoiceAmount)}
                       </td>
-                      <td className="py-2.5 px-3 text-right font-mono text-emerald-700 whitespace-nowrap font-medium">
+                      <td className="py-2.5 px-3 text-right tabular-nums text-emerald-700 whitespace-nowrap font-medium">
                         {item.receivedAmount > 0 ? `₹${formatCurrency(item.receivedAmount)}` : '-'}
                       </td>
-                      <td className="py-2.5 px-3 text-right font-mono font-black text-amber-800 whitespace-nowrap">
+                      <td className="py-2.5 px-3 text-right tabular-nums font-semibold text-amber-800 whitespace-nowrap">
                         ₹{formatCurrency(item.balanceAmount)}
                       </td>
                       <td className="py-2.5 px-3">
                         <span 
-                          className="px-2 py-0.5 rounded text-[10px] font-bold"
+                          className="px-2 py-0.5 rounded text-xs font-semibold"
                           style={{
                             backgroundColor: `${GROUP_COLORS[item.group] || '#64748b'}20`,
                             color: GROUP_COLORS[item.group] || '#334155'
@@ -1159,7 +729,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                       <td className="py-2.5 px-3 text-slate-600 whitespace-nowrap">
                         {item.creSales}
                       </td>
-                      <td className="py-2.5 px-3 text-slate-600 max-w-[180px] truncate text-[11px]" title={item.remarks}>
+                      <td className="py-2.5 px-3 text-slate-600 max-w-[180px] truncate text-xs" title={item.remarks}>
                         {item.remarks || '-'}
                       </td>
                       <td className="py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
@@ -1168,7 +738,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                             href={item.formLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded text-[10px] font-bold transition border border-indigo-200"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded text-xs font-semibold transition border border-indigo-200"
                             title="Open FMS Google Form to log follow-up"
                           >
                             <span>Form</span>
@@ -1177,7 +747,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                         ) : (
                           <button
                             onClick={() => setSelectedItem(item)}
-                            className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] font-bold"
+                            className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold"
                           >
                             View
                           </button>
@@ -1194,7 +764,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
           {totalPages > 1 && (
             <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50 text-xs">
               <span className="text-slate-600">
-                Page <span className="font-bold text-slate-900">{currentPage}</span> of <span className="font-bold text-slate-900">{totalPages}</span>
+                Page <span className="font-semibold text-slate-900">{currentPage}</span> of <span className="font-semibold text-slate-900">{totalPages}</span>
               </span>
               <div className="flex items-center gap-1">
                 <button
@@ -1224,9 +794,9 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
             {/* Modal Header */}
             <div className="bg-slate-900 text-white p-5 rounded-t-2xl flex items-start justify-between">
               <div>
-                <span className="text-xs font-mono font-bold text-amber-400">S.No #{selectedItem.sNo}</span>
-                <h3 className="text-lg font-black text-white mt-0.5">{selectedItem.customerName}</h3>
-                <p className="text-xs text-slate-300 font-mono">OPF: {selectedItem.opfNo}</p>
+                <span className="text-xs tabular-nums font-semibold text-amber-400">S.No #{selectedItem.sNo}</span>
+                <h3 className="text-lg font-semibold text-white mt-0.5">{selectedItem.customerName}</h3>
+                <p className="text-xs text-slate-300 tabular-nums">OPF: {selectedItem.opfNo}</p>
               </div>
               <button
                 onClick={() => setSelectedItem(null)}
@@ -1241,22 +811,22 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
               {/* Key Financial Badges */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Invoice Amount</span>
-                  <span className="text-base font-black font-mono text-slate-900 block mt-0.5">
+                  <span className="text-xs text-slate-500 font-semibold block">Invoice Amount</span>
+                  <span className="text-base font-semibold tabular-nums text-slate-900 block mt-0.5">
                     ₹{formatCurrency(selectedItem.invoiceAmount)}
                   </span>
                 </div>
 
                 <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-center">
-                  <span className="text-[10px] text-emerald-700 font-bold block uppercase">Received</span>
-                  <span className="text-base font-black font-mono text-emerald-800 block mt-0.5">
+                  <span className="text-xs text-emerald-700 font-semibold block">Received</span>
+                  <span className="text-base font-semibold tabular-nums text-emerald-800 block mt-0.5">
                     ₹{formatCurrency(selectedItem.receivedAmount)}
                   </span>
                 </div>
 
                 <div className="bg-amber-50 p-3 rounded-xl border border-amber-300 text-center">
-                  <span className="text-[10px] text-amber-800 font-bold block uppercase">Balance Due</span>
-                  <span className="text-base font-black font-mono text-amber-900 block mt-0.5">
+                  <span className="text-xs text-amber-800 font-semibold block">Balance Due</span>
+                  <span className="text-base font-semibold tabular-nums text-amber-900 block mt-0.5">
                     ₹{formatCurrency(selectedItem.balanceAmount)}
                   </span>
                 </div>
@@ -1265,38 +835,38 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
               {/* Order & Billing Details */}
               <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <div>
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Sales Person</span>
+                  <span className="text-xs text-slate-400 block font-semibold">Sales Person</span>
                   <span className="font-semibold text-slate-800 text-xs">{selectedItem.salesPerson || '-'}</span>
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Group</span>
+                  <span className="text-xs text-slate-400 block font-semibold">Group</span>
                   <span className="font-semibold text-indigo-700 text-xs">{selectedItem.group || '-'}</span>
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Invoice Date</span>
-                  <span className="font-mono text-slate-800 text-xs">{selectedItem.invoiceDate || '-'}</span>
+                  <span className="text-xs text-slate-400 block font-semibold">Invoice Date</span>
+                  <span className="tabular-nums text-slate-800 text-xs">{selectedItem.invoiceDate || '-'}</span>
                 </div>
 
                 <div>
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Due Date</span>
-                  <span className="font-mono text-slate-800 text-xs">{selectedItem.dueDate || '-'}</span>
+                  <span className="text-xs text-slate-400 block font-semibold">Due Date</span>
+                  <span className="tabular-nums text-slate-800 text-xs">{selectedItem.dueDate || '-'}</span>
                 </div>
 
                 <div className="col-span-2">
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Invoice Number(s)</span>
-                  <span className="font-mono text-slate-800 text-xs break-all">{selectedItem.invoiceNo || '-'}</span>
+                  <span className="text-xs text-slate-400 block font-semibold">Invoice Number(s)</span>
+                  <span className="tabular-nums text-slate-800 text-xs break-all">{selectedItem.invoiceNo || '-'}</span>
                 </div>
               </div>
 
               {/* Follow-Up & Remarks */}
               <div className="space-y-3">
                 <div className="bg-indigo-50/60 p-3.5 rounded-xl border border-indigo-100">
-                  <span className="text-[10px] font-bold text-indigo-900 uppercase block mb-1">CRE / Sales Follow-Up</span>
+                  <span className="text-xs font-semibold text-indigo-900 block mb-1">CRE / Sales Follow-Up</span>
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-indigo-950">Follow-Up By: {selectedItem.creSales || 'Not Assigned'}</span>
-                    <span className="font-mono bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-800">
+                    <span className="tabular-nums bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-800">
                       Status: {selectedItem.status || 'Pending'}
                     </span>
                   </div>
@@ -1309,7 +879,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
 
                 {selectedItem.remarks && (
                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">General Remarks</span>
+                    <span className="text-xs font-semibold text-slate-500 block mb-1">General Remarks</span>
                     <p className="text-slate-800 text-xs">{selectedItem.remarks}</p>
                   </div>
                 )}
@@ -1319,7 +889,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
                 <button
                   onClick={() => setSelectedItem(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition text-xs"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition text-xs"
                 >
                   Close
                 </button>
@@ -1328,7 +898,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                     href={selectedItem.formLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg transition text-xs flex items-center gap-1.5 shadow-xs"
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition text-xs flex items-center gap-1.5 shadow-xs"
                   >
                     <span>Open Follow-Up Google Form</span>
                     <ExternalLink className="w-3.5 h-3.5" />

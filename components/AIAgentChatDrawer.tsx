@@ -268,7 +268,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
         {isDragging && (
           <div className="absolute inset-0 z-50 bg-indigo-600/90 backdrop-blur-xs flex flex-col items-center justify-center text-white p-6 text-center animate-fade-in">
             <FileSpreadsheet className="w-16 h-16 mb-4 animate-bounce" />
-            <h3 className="text-xl font-bold mb-1">Drop your file here</h3>
+            <h3 className="text-xl font-semibold mb-1">Drop your file here</h3>
             <p className="text-sm text-indigo-100 max-w-sm">
               Supports Excel (.xlsx, .xls), CSV, JSON, and text datasets. The AI will analyze and ground answers in your uploaded data.
             </p>
@@ -282,8 +282,8 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
               <Bot className="w-4 h-4" />
             </div>
             <div className="min-w-0">
-              <h2 className="font-bold text-sm text-slate-900 leading-tight">Operations Assistant</h2>
-              <p className="text-[11px] text-slate-500 leading-tight">Ask questions about orders or files</p>
+              <h2 className="font-semibold text-sm text-slate-900 leading-tight">Operations Assistant</h2>
+              <p className="text-xs text-slate-500 leading-tight">Ask questions about orders or files</p>
             </div>
           </div>
 
@@ -320,7 +320,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
             <div className="flex items-center gap-2 min-w-0">
               <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
               <span className="truncate font-medium">{uploadedDataset.fileName}</span>
-              <span className="text-slate-400 text-[11px] shrink-0">({uploadedDataset.rowCount} rows)</span>
+              <span className="text-slate-400 text-xs shrink-0">({uploadedDataset.rowCount} rows)</span>
             </div>
             <button
               onClick={() => setUploadedDataset(null)}
@@ -383,7 +383,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
                     {msg.content}
                   </div>
 
-                  <div className={`text-[10px] mt-1.5 font-medium ${msg.author === 'user' ? 'text-slate-400' : 'text-slate-400'}`}>
+                  <div className={`text-xs mt-1.5 font-medium ${msg.author === 'user' ? 'text-slate-400' : 'text-slate-400'}`}>
                     {msg.timestamp}
                   </div>
                 </div>
@@ -440,7 +440,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-1 text-[11px] font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 px-2 py-1 rounded-md transition-colors cursor-pointer"
+                  className="flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 px-2 py-1 rounded-md transition-colors cursor-pointer"
                   title="Attach Excel or CSV file"
                 >
                   <Paperclip className="w-3.5 h-3.5" />

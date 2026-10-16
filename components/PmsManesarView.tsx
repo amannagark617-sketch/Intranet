@@ -143,10 +143,10 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg md:text-xl font-black text-slate-900 tracking-tight">
+                <h1 className="text-lg md:text-xl font-semibold text-slate-900 tracking-tight">
                   PMS @ Manesar Plant
                 </h1>
-                <span className="text-[10px] bg-indigo-100 text-indigo-900 font-bold px-2 py-0.5 rounded-full border border-indigo-200 font-mono">
+                <span className="text-xs bg-indigo-100 text-indigo-900 font-semibold px-2 py-0.5 rounded-full border border-indigo-200 tabular-nums">
                   {orders.length} Active Work Orders
                 </span>
               </div>
@@ -161,7 +161,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             {/* 1. Cards Pipeline */}
             <button
               onClick={() => setActiveSubTab('cards')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
                 activeSubTab === 'cards'
                   ? 'bg-white text-indigo-700 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -169,7 +169,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             >
               <LayoutGrid className="w-3.5 h-3.5" />
               <span>Pipeline Cards</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold bg-slate-200 text-slate-700">
+              <span className="text-xs px-1.5 py-0.2 rounded-full tabular-nums font-semibold bg-slate-200 text-slate-700">
                 {filteredOrders.length}
               </span>
             </button>
@@ -177,7 +177,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             {/* 2. Planning Calendar */}
             <button
               onClick={() => setActiveSubTab('planner')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
                 activeSubTab === 'planner'
                   ? 'bg-white text-indigo-700 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -190,7 +190,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             {/* 3. Hold Orders */}
             <button
               onClick={() => setActiveSubTab('hold')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
                 activeSubTab === 'hold'
                   ? 'bg-amber-500 text-white shadow-xs'
                   : 'text-amber-800 hover:text-amber-950 hover:bg-amber-100/60'
@@ -199,7 +199,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
               <AlertTriangle className={`w-3.5 h-3.5 ${activeSubTab === 'hold' ? 'text-white' : 'text-amber-600'}`} />
               <span>Hold Orders</span>
               {holdOrdersCount > 0 && (
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                <span className={`text-xs px-1.5 py-0.2 rounded-full tabular-nums font-semibold ${
                   activeSubTab === 'hold' ? 'bg-amber-700 text-white' : 'bg-amber-100 text-amber-900 border border-amber-300'
                 }`}>
                   {holdOrdersCount}
@@ -210,7 +210,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             {/* 4. Bottlenecks & Owners */}
             <button
               onClick={() => setActiveSubTab('stages')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
                 activeSubTab === 'stages'
                   ? 'bg-white text-indigo-700 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -223,7 +223,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             {/* 5. Data Sheet Matrix */}
             <button
               onClick={() => setActiveSubTab('table')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
                 activeSubTab === 'table'
                   ? 'bg-white text-indigo-700 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
@@ -236,7 +236,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             {/* Excel Export Button */}
             <button
               onClick={() => exportOrdersToExcel(filteredOrders, `PMS_Manesar_Orders_${new Date().toISOString().slice(0, 10)}.xlsx`)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs ml-1 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs ml-1 cursor-pointer"
               title="Export currently filtered PMS orders to formatted Excel (.xlsx)"
             >
               <Download className="w-3.5 h-3.5" />
@@ -291,8 +291,8 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
               value={kpis.wip.count.toString()} 
               units={`${kpis.wip.units} (units) in stages`} 
               icon={<Clock className="w-6 h-6" />} 
-              iconBgColor="bg-blue-50" 
-              iconColor="text-blue-600" 
+              iconBgColor="bg-indigo-50" 
+              iconColor="text-indigo-600" 
             />
             <StatCard 
               title="On Hold / Attention" 
@@ -307,8 +307,8 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
               value={kpis.ready.count.toString()} 
               units={`${kpis.ready.units} (units) packed & ready`} 
               icon={<CheckCircle2 className="w-6 h-6" />} 
-              iconBgColor="bg-teal-50" 
-              iconColor="text-teal-600" 
+              iconBgColor="bg-indigo-50" 
+              iconColor="text-indigo-600" 
             />
             <StatCard 
               title="Dispatched" 
@@ -332,7 +332,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
           <div className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-base md:text-lg font-bold text-slate-900 flex items-center gap-2">
+                <h2 className="text-base md:text-lg font-semibold text-slate-900 flex items-center gap-2">
                   <LayoutGrid className="w-5 h-5 text-indigo-600" />
                   Orders Pipeline ({filteredOrders.length})
                 </h2>
@@ -365,7 +365,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
                 ))
               ) : (
                 <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 text-slate-500 shadow-xs">
-                  <p className="font-bold text-base text-slate-800">No matching production orders</p>
+                  <p className="font-semibold text-base text-slate-800">No matching production orders</p>
                   <p className="text-xs text-slate-400 mt-1">Try adjusting your multi-filters or click "Reset Filters".</p>
                 </div>
               )}

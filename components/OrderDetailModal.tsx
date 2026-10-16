@@ -27,12 +27,12 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
         <div className="p-6 border-b border-slate-200 bg-slate-50 flex justify-between items-start">
           <div>
             <div className="flex items-center gap-3">
-              <span className="text-xs font-mono font-extrabold px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-700 border border-indigo-200">
+              <span className="text-xs tabular-nums font-semibold px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-700 border border-indigo-200">
                 {order.opfNo}
               </span>
-              <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                 order.overallStatus === 'Dispatched' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
-                order.overallStatus === 'Ready' ? 'bg-teal-100 text-teal-800 border border-teal-200' :
+                order.overallStatus === 'Ready' ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' :
                 order.overallStatus === 'On Hold' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
                 'bg-indigo-100 text-indigo-800 border border-indigo-200'
               }`}>
@@ -44,7 +44,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                 </span>
               )}
             </div>
-            <h2 className="text-xl font-bold text-slate-900 mt-2">{order.modelName}</h2>
+            <h2 className="text-xl font-semibold text-slate-900 mt-2">{order.modelName}</h2>
             <p className="text-sm text-slate-500 mt-0.5">
               <span className="text-slate-400 font-medium">Upholstery:</span> <strong className="text-slate-700">{order.upholstery}</strong>
             </p>
@@ -63,19 +63,19 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50/50 border-b border-slate-200 text-xs">
           <div>
             <span className="text-slate-400 block font-medium">Quantity (Qty)</span>
-            <span className="text-sm font-bold text-slate-800 font-mono">{order.quantity} (units)</span>
+            <span className="text-sm font-semibold text-slate-800 tabular-nums">{order.quantity} (units)</span>
           </div>
           <div>
             <span className="text-slate-400 block font-medium">OPF Receive Date</span>
-            <span className="text-sm font-bold text-slate-800 font-mono">{formatDateDDMMMYYYY(order.opfReceiveDate)}</span>
+            <span className="text-sm font-semibold text-slate-800 tabular-nums">{formatDateDDMMMYYYY(order.opfReceiveDate)}</span>
           </div>
           <div>
             <span className="text-slate-400 block font-medium">Target Dispatch Date</span>
-            <span className="text-sm font-bold text-slate-800 font-mono">{formatDateDDMMMYYYY(order.dispatchDate)}</span>
+            <span className="text-sm font-semibold text-slate-800 tabular-nums">{formatDateDDMMMYYYY(order.dispatchDate)}</span>
           </div>
           <div>
             <span className="text-slate-400 block font-medium">Current Stage / Owner</span>
-            <span className="text-sm font-bold text-indigo-700">
+            <span className="text-sm font-semibold text-indigo-700">
               {order.overallStatus === 'Dispatched' ? 'Completed & Dispatched' : 
                order.overallStatus === 'Ready' ? 'Ready for Dispatch (Mr. Umesh)' :
                order.currentStage ? `${order.currentStage} (${order.currentResponsible || 'N/A'})` : 'Complete'}
@@ -85,7 +85,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
 
         {/* 14 PMS Production Stages Breakdown */}
         <div className="p-6 overflow-y-auto flex-1 space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          <h3 className="text-xs font-semibold text-slate-500">
             PMS 14-Stage Production Tracking {order.isArchived && <span className="text-slate-400 font-normal lowercase">(all steps verified completed in archive)</span>}
           </h3>
 
@@ -108,15 +108,15 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-mono">
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 tabular-nums">
                         {step.stepCode}
                       </span>
-                      <h4 className="text-xs font-bold text-slate-800">
+                      <h4 className="text-xs font-semibold text-slate-800">
                         {step.name}
                       </h4>
                     </div>
 
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 ${
                       isCompleted ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
                       isCurrent ? 'bg-indigo-100 text-indigo-800 border border-indigo-200 animate-pulse' :
                       isDelayed ? 'bg-amber-100 text-amber-800 border border-amber-200' :
@@ -129,9 +129,9 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                   </div>
 
                   {/* Stage Attributes */}
-                  <div className="mt-2.5 grid grid-cols-2 gap-2 text-[11px] text-slate-600 border-t border-slate-100 pt-2">
+                  <div className="mt-2.5 grid grid-cols-2 gap-2 text-xs text-slate-600 border-t border-slate-100 pt-2">
                     <div className="flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-pink-600 shrink-0" />
+                      <User className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                       <span className="truncate text-slate-700 font-medium">{step.responsible}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -140,17 +140,17 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>Plan: <strong className="text-slate-800 font-mono">{formatDateDDMMMYYYY(step.plannedDate)}</strong></span>
+                      <span>Plan: <strong className="text-slate-800 tabular-nums">{formatDateDDMMMYYYY(step.plannedDate)}</strong></span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>Act: <strong className="text-slate-800 font-mono">{formatDateDDMMMYYYY(step.actualDate)}</strong></span>
+                      <span>Act: <strong className="text-slate-800 tabular-nums">{formatDateDDMMMYYYY(step.actualDate)}</strong></span>
                     </div>
                   </div>
 
                   {/* Additional Metadata: Remarks, Qty Pass, Reason of Fail, Attachment */}
                   {step.remarks && (
-                    <div className="mt-2 text-[11px] bg-slate-50 p-2 rounded-lg border border-slate-200 text-slate-700 flex items-start gap-1.5">
+                    <div className="mt-2 text-xs bg-slate-50 p-2 rounded-lg border border-slate-200 text-slate-700 flex items-start gap-1.5">
                       <FileText className="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5" />
                       <div>
                         <strong className="text-slate-800">QC Remarks:</strong> {step.remarks}
@@ -159,7 +159,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                   )}
 
                   {step.reasonOfFail && (
-                    <div className="mt-2 text-[11px] bg-rose-50 p-2 rounded-lg border border-rose-200 text-rose-800 flex items-start gap-1.5">
+                    <div className="mt-2 text-xs bg-rose-50 p-2 rounded-lg border border-rose-200 text-rose-800 flex items-start gap-1.5">
                       <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0 mt-0.5" />
                       <div>
                         <strong className="text-rose-900">Hold Reason / QC Defect:</strong> {step.reasonOfFail}
@@ -168,7 +168,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                   )}
 
                   {step.qtyPass !== null && step.qtyPass !== undefined && (
-                    <div className="mt-1.5 text-[11px] text-emerald-700 font-semibold">
+                    <div className="mt-1.5 text-xs text-emerald-700 font-semibold">
                       ✓ Passed Quantity: {step.qtyPass} / {order.quantity} (units)
                     </div>
                   )}
@@ -180,17 +180,17 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                         alt="Product Picture" 
                         className="w-12 h-12 object-cover rounded-lg border border-slate-300 shadow-xs" 
                       />
-                      <span className="text-[11px] text-slate-600 flex items-center gap-1 font-medium">
+                      <span className="text-xs text-slate-600 flex items-center gap-1 font-medium">
                         <ImageIcon className="w-3.5 h-3.5 text-indigo-600" />
                         Picture Verified
                       </span>
                     </div>
                   )}
 
-                  <div className="mt-2 flex justify-between text-[10px] text-slate-400">
+                  <div className="mt-2 flex justify-between text-xs text-slate-400">
                     <span>How: {step.how}</span>
                     {step.delay !== null && step.delay > 0 && (
-                      <span className="text-amber-700 font-bold">Delay: +{step.delay}d</span>
+                      <span className="text-amber-700 font-semibold">Delay: +{step.delay}d</span>
                     )}
                   </div>
                 </div>

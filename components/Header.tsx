@@ -17,6 +17,7 @@ import {
 
 export type ViewMode =
   | 'today'
+  | 'dailySummary'
   | 'dashboard'
   | 'readyGoods'
   | 'readyStock'
@@ -74,7 +75,10 @@ const Header: React.FC<HeaderProps> = ({
       id: 'today',
       label: 'Today',
       icon: Home,
-      pages: [{ id: 'today', label: 'Today', icon: Home }],
+      pages: [
+        { id: 'today', label: 'Overview', icon: Home },
+        { id: 'dailySummary', label: 'Daily summary', icon: Home },
+      ],
     },
     {
       id: 'production',

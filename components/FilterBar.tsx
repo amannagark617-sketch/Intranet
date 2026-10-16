@@ -160,7 +160,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               onClick={() => onSourceChange('all')}
               className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                 sourceFilter === 'all'
-                  ? 'bg-white text-slate-900 shadow-xs font-bold'
+                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -170,7 +170,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               onClick={() => onSourceChange('live')}
               className={`px-2.5 py-1 rounded-lg font-medium transition-all flex items-center gap-1 ${
                 sourceFilter === 'live'
-                  ? 'bg-white text-indigo-700 shadow-xs font-bold'
+                  ? 'bg-white text-indigo-700 shadow-xs font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -181,7 +181,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               onClick={() => onSourceChange('archive')}
               className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                 sourceFilter === 'archive'
-                  ? 'bg-white text-slate-900 shadow-xs font-bold'
+                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -193,7 +193,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
           <div className="relative" ref={filterPopoverRef}>
             <button
               onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
                 totalActiveFilterCount > 0
                   ? 'bg-indigo-50 border border-indigo-300 text-indigo-700 shadow-sm'
                   : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 shadow-xs'
@@ -202,7 +202,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               <SlidersHorizontal className="w-3.5 h-3.5 text-indigo-600" />
               <span>Multi-Filters</span>
               {totalActiveFilterCount > 0 && (
-                <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-mono">
+                <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center tabular-nums">
                   {totalActiveFilterCount}
                 </span>
               )}
@@ -216,7 +216,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <div className="flex items-center gap-2">
                     <Filter className="w-4 h-4 text-indigo-600" />
-                    <h3 className="text-sm font-bold text-slate-900">Unified Multi-Filter Matrix</h3>
+                    <h3 className="text-sm font-semibold text-slate-900">Unified Multi-Filter Matrix</h3>
                   </div>
                   <div className="flex items-center gap-2 text-xs">
                     <button
@@ -238,10 +238,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
                 {/* Section 1: Order Statuses Multi-Select */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">
+                    <span className="text-xs font-semibold text-slate-700">
                       1. Status Filter:
                     </span>
-                    <div className="flex items-center gap-2 text-[11px]">
+                    <div className="flex items-center gap-2 text-xs">
                       <button onClick={onSelectAllStatuses} className="text-indigo-600 hover:underline font-medium">
                         All
                       </button>
@@ -275,7 +275,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                         >
                           <div className="flex items-center gap-1.5 truncate">
                             <div
-                              className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-[9px] ${
+                              className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-xs ${
                                 isSelected
                                   ? 'bg-indigo-600 border-indigo-600 text-white'
                                   : 'border-slate-300 bg-white text-transparent'
@@ -285,7 +285,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                             </div>
                             <span className="truncate">{opt.label}</span>
                           </div>
-                          <span className="font-mono text-[10px] text-slate-500">{count}</span>
+                          <span className="tabular-nums text-xs text-slate-500">{count}</span>
                         </button>
                       );
                     })}
@@ -297,11 +297,11 @@ const FilterBar: React.FC<FilterBarProps> = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                       <Layers className="w-3.5 h-3.5 text-indigo-600" />
-                      <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">
+                      <span className="text-xs font-semibold text-slate-700">
                         2. Stages ({selectedStages.length === 0 ? 'All 14' : `${selectedStages.length} Selected`}):
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-[11px]">
+                    <div className="flex items-center gap-2 text-xs">
                       <button onClick={onSelectAllStages} className="text-indigo-600 hover:underline font-medium">
                         All
                       </button>
@@ -335,7 +335,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                           }`}
                         >
                           <div
-                            className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-[9px] shrink-0 ${
+                            className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-xs shrink-0 ${
                               isChecked
                                 ? 'bg-indigo-600 border-indigo-600 text-white'
                                 : 'border-slate-300 bg-white text-transparent'
@@ -346,7 +346,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                           <div className="truncate flex-1">
                             <span className="text-xs">{stage}</span>
                             {cfg && (
-                              <span className="text-[10px] text-slate-400 block truncate">
+                              <span className="text-xs text-slate-400 block truncate">
                                 {cfg.stepCode} • {cfg.responsible}
                               </span>
                             )}
@@ -362,10 +362,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
                   {/* Owners */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1">
-                        <User className="w-3 h-3 text-pink-600" /> Owner:
+                      <span className="text-xs font-semibold text-slate-700 flex items-center gap-1">
+                        <User className="w-3 h-3 text-indigo-600" /> Owner:
                       </span>
-                      <div className="flex items-center gap-1 text-[10px]">
+                      <div className="flex items-center gap-1 text-xs">
                         <button onClick={onSelectAllResponsibles} className="text-indigo-600 hover:underline">All</button>
                         <span>•</span>
                         <button onClick={onClearResponsibles} className="text-slate-500 hover:underline">Clear</button>
@@ -379,17 +379,17 @@ const FilterBar: React.FC<FilterBarProps> = ({
                             key={person}
                             onClick={() => onResponsibleToggle(person)}
                             className={`flex items-center gap-1.5 p-1 rounded text-xs cursor-pointer ${
-                              isChecked ? 'bg-pink-50 text-pink-900 font-semibold' : 'text-slate-600 hover:bg-slate-100'
+                              isChecked ? 'bg-indigo-50 text-indigo-900 font-semibold' : 'text-slate-600 hover:bg-slate-100'
                             }`}
                           >
                             <div
-                              className={`w-3 h-3 rounded flex items-center justify-center border text-[8px] shrink-0 ${
-                                isChecked ? 'bg-pink-600 border-pink-600 text-white' : 'border-slate-300 bg-white'
+                              className={`w-3 h-3 rounded flex items-center justify-center border text-xs shrink-0 ${
+                                isChecked ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-300 bg-white'
                               }`}
                             >
                               <Check className="w-2 h-2" />
                             </div>
-                            <span className="truncate text-[11px]">{person}</span>
+                            <span className="truncate text-xs">{person}</span>
                           </div>
                         );
                       })}
@@ -398,7 +398,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
                   {/* Dispatch Month */}
                   <div className="space-y-1.5">
-                    <span className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1">
+                    <span className="text-xs font-semibold text-slate-700 flex items-center gap-1">
                       <Calendar className="w-3 h-3 text-indigo-600" /> Dispatch Month:
                     </span>
                     <select
@@ -416,12 +416,12 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
                 {/* Popover Footer */}
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-xs text-slate-500 font-mono">
+                  <span className="text-xs text-slate-500 tabular-nums">
                     {totalActiveFilterCount} filters active
                   </span>
                   <button
                     onClick={() => setIsFilterDropdownOpen(false)}
-                    className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors"
+                    className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl shadow-sm transition-colors"
                   >
                     Done
                   </button>
@@ -444,10 +444,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
       {/* Active Filter Badges Bar */}
       {(selectedStages.length > 0 || selectedResponsibles.length > 0 || dispatchMonthFilter !== 'All' || sourceFilter !== 'all' || (!isDefaultActive && selectedStatuses.length !== 4)) && (
         <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100 text-xs">
-          <span className="text-slate-400 text-[11px] font-medium">Active Filters:</span>
+          <span className="text-slate-400 text-xs font-medium">Active Filters:</span>
 
           {sourceFilter !== 'all' && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-[11px]">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs">
               <span>Source: {sourceFilter.toUpperCase()}</span>
               <button onClick={() => onSourceChange('all')} className="hover:text-slate-900">
                 <X className="w-3 h-3" />
@@ -456,7 +456,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
           )}
 
           {dispatchMonthFilter !== 'All' && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-[11px]">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs">
               <span>Month: {dispatchMonthFilter}</span>
               <button onClick={() => onDispatchMonthChange('All')} className="hover:text-indigo-900">
                 <X className="w-3 h-3" />
@@ -467,10 +467,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
           {selectedStages.map(stg => (
             <span
               key={stg}
-              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-[11px]"
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs"
             >
               <span>{stg}</span>
-              <button onClick={() => onStageToggle(stg)} className="hover:text-purple-900">
+              <button onClick={() => onStageToggle(stg)} className="hover:text-indigo-900">
                 <X className="w-3 h-3" />
               </button>
             </span>
@@ -479,10 +479,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
           {selectedResponsibles.map(resp => (
             <span
               key={resp}
-              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-pink-50 border border-pink-200 text-pink-700 text-[11px]"
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs"
             >
               <span>{resp}</span>
-              <button onClick={() => onResponsibleToggle(resp)} className="hover:text-pink-900">
+              <button onClick={() => onResponsibleToggle(resp)} className="hover:text-indigo-900">
                 <X className="w-3 h-3" />
               </button>
             </span>
@@ -490,7 +490,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
           <button
             onClick={onResetFilters}
-            className="text-[11px] text-slate-500 hover:text-indigo-600 font-medium ml-1"
+            className="text-xs text-slate-500 hover:text-indigo-600 font-medium ml-1"
           >
             Clear all
           </button>

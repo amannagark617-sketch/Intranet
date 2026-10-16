@@ -1079,10 +1079,10 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="p-1.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-200/60">
               <Layers className="w-4 h-4" />
             </div>
-            <span className="font-bold text-xs uppercase tracking-wider text-slate-800">
+            <span className="font-semibold text-xs text-slate-800">
               Live Final QC Response Batch Submissions {qcViewScope === 'all' ? '(All Responses)' : `(${selectedMonthDisplay})`}
             </span>
-            <span className="bg-amber-50 text-amber-900 border border-amber-200 text-[11px] px-2.5 py-0.5 rounded-full font-mono font-semibold">
+            <span className="bg-amber-50 text-amber-900 border border-amber-200 text-xs px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
               {filteredBatchRecords.length} Submissions • {filteredBatchRecords.filter(r => r.status === 'Pass' || r.passQuantity > 0).reduce((acc, r) => acc + r.passQuantity, 0).toLocaleString()} Passed (Units)
             </span>
           </div>
@@ -1102,7 +1102,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
                   <button
                     onClick={() => setQcViewScope('month')}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                    className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                       qcViewScope === 'month' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                     }`}
                   >
@@ -1110,7 +1110,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   </button>
                   <button
                     onClick={() => setQcViewScope('all')}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                    className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                       qcViewScope === 'all' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                     }`}
                     title="View all recorded responses in the sheet archive"
@@ -1123,7 +1123,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
                   <button
                     onClick={() => setBatchFilterStatus('all')}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                    className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                       batchFilterStatus === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
@@ -1131,7 +1131,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   </button>
                   <button
                     onClick={() => setBatchFilterStatus('pass')}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all flex items-center gap-1.5 ${
+                    className={`px-3 py-1 rounded-lg font-semibold transition-all flex items-center gap-1.5 ${
                       batchFilterStatus === 'pass' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-emerald-700'
                     }`}
                   >
@@ -1140,7 +1140,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   </button>
                   <button
                     onClick={() => setBatchFilterStatus('rejected')}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all flex items-center gap-1.5 ${
+                    className={`px-3 py-1 rounded-lg font-semibold transition-all flex items-center gap-1.5 ${
                       batchFilterStatus === 'rejected' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600 hover:text-rose-700'
                     }`}
                   >
@@ -1171,7 +1171,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             ) : (
               <div className="overflow-x-auto max-h-80 overflow-y-auto border border-slate-200/80 rounded-xl">
                 <table className="w-full text-xs text-left border-collapse bg-white">
-                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-bold text-slate-600 uppercase text-[10px] tracking-wider z-10">
+                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-xs  z-10">
                     <tr>
                       <th className="p-2.5">Timestamp</th>
                       <th className="p-2.5">OPF No</th>
@@ -1185,24 +1185,24 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                       <th className="p-2.5 text-center">Photos</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-sans text-[11px]">
+                  <tbody className="divide-y divide-slate-100 font-sans text-xs">
                     {filteredBatchRecords.map((rec, idx) => (
                       <tr key={`${rec.opfNo}-${rec.timestamp}-${idx}`} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="p-2.5 text-slate-500 text-[10px] font-mono whitespace-nowrap">{rec.timestamp}</td>
-                        <td className="p-2.5 font-bold text-indigo-700 font-mono">{rec.opfNo}</td>
-                        <td className="p-2.5 text-slate-600 font-mono">{rec.factoryNo || '-'}</td>
-                        <td className="p-2.5 text-right font-mono font-semibold text-slate-900">{rec.totalQuantity}</td>
-                        <td className="p-2.5 text-right font-mono font-bold text-emerald-700">{rec.passQuantity}</td>
-                        <td className="p-2.5 text-right font-mono text-rose-600">{rec.rejectedQuantity || 0}</td>
+                        <td className="p-2.5 text-slate-500 text-xs tabular-nums whitespace-nowrap">{rec.timestamp}</td>
+                        <td className="p-2.5 font-semibold text-indigo-700 tabular-nums">{rec.opfNo}</td>
+                        <td className="p-2.5 text-slate-600 tabular-nums">{rec.factoryNo || '-'}</td>
+                        <td className="p-2.5 text-right tabular-nums font-semibold text-slate-900">{rec.totalQuantity}</td>
+                        <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-700">{rec.passQuantity}</td>
+                        <td className="p-2.5 text-right tabular-nums text-rose-600">{rec.rejectedQuantity || 0}</td>
                         <td className="p-2.5">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
                             rec.status === 'Pass' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
                           }`}>
                             {rec.status}
                           </span>
                         </td>
                         <td className="p-2.5 text-slate-700 font-medium">{rec.qcInspector}</td>
-                        <td className="p-2.5 text-slate-600 text-[10px] max-w-xs truncate" title={rec.passRemarks}>
+                        <td className="p-2.5 text-slate-600 text-xs max-w-xs truncate" title={rec.passRemarks}>
                           {rec.passRemarks || '-'}
                         </td>
                         <td className="p-2.5 text-center">
@@ -1211,13 +1211,13 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                               href={rec.productImageUrls[0]}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-indigo-600 hover:underline inline-flex items-center gap-0.5 text-[10px] font-medium"
+                              className="text-indigo-600 hover:underline inline-flex items-center gap-0.5 text-xs font-medium"
                             >
                               <span>{rec.productImageUrls.length} pic(s)</span>
                               <ExternalLink className="w-2.5 h-2.5" />
                             </a>
                           ) : (
-                            <span className="text-slate-400 text-[10px]">-</span>
+                            <span className="text-slate-400 text-xs">-</span>
                           )}
                         </td>
                       </tr>
@@ -1240,10 +1240,10 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="p-1.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-200/60">
               <Layers className="w-4 h-4" />
             </div>
-            <span className="font-bold text-xs uppercase tracking-wider text-slate-800">
+            <span className="font-semibold text-xs text-slate-800">
               Chairs in Queue Orders Audit
             </span>
-            <span className="bg-amber-50 text-amber-900 border border-amber-200 text-[11px] px-2.5 py-0.5 rounded-full font-mono font-semibold">
+            <span className="bg-amber-50 text-amber-900 border border-amber-200 text-xs px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
               {floorMetrics.inQueueCurrent.toLocaleString()} Cur. Month • {floorMetrics.backlogChairs.toLocaleString()} Backlog • {floorMetrics.holdChairs.toLocaleString()} On Hold • {floorMetrics.nextMonthChairs.toLocaleString()} Next Month
             </span>
           </div>
@@ -1262,7 +1262,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               <div className="flex flex-wrap items-center gap-1.5 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
                 <button
                   onClick={() => setQueueFilterCategory('current')}
-                  className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                  className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                     queueFilterCategory === 'current' ? 'bg-amber-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                   }`}
                 >
@@ -1270,7 +1270,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </button>
                 <button
                   onClick={() => setQueueFilterCategory('backlog')}
-                  className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                  className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                     queueFilterCategory === 'backlog' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                   }`}
                 >
@@ -1278,15 +1278,15 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </button>
                 <button
                   onClick={() => setQueueFilterCategory('hold')}
-                  className={`px-3 py-1 rounded-lg font-bold transition-all ${
-                    queueFilterCategory === 'hold' ? 'bg-orange-600 text-white shadow-xs' : 'text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200'
+                  className={`px-3 py-1 rounded-lg font-semibold transition-all ${
+                    queueFilterCategory === 'hold' ? 'bg-amber-600 text-white shadow-xs' : 'text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200'
                   }`}
                 >
                   ⚡ On Hold ({floorMetrics.holdChairs.toLocaleString()} Units • {floorMetrics.holdOrdersCount} Orders)
                 </button>
                 <button
                   onClick={() => setQueueFilterCategory('next')}
-                  className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                  className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                     queueFilterCategory === 'next' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                   }`}
                 >
@@ -1294,7 +1294,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </button>
                 <button
                   onClick={() => setQueueFilterCategory('all')}
-                  className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                  className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                     queueFilterCategory === 'all' ? 'bg-slate-800 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                   }`}
                 >
@@ -1323,7 +1323,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             ) : (
               <div className="overflow-x-auto max-h-80 overflow-y-auto border border-slate-200/80 rounded-xl">
                 <table className="w-full text-xs text-left border-collapse bg-white">
-                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-bold text-slate-600 uppercase text-[10px] tracking-wider z-10">
+                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-xs  z-10">
                     <tr>
                       <th className="p-2.5">OPF No</th>
                       <th className="p-2.5">Model Name</th>
@@ -1332,12 +1332,12 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                       <th className="p-2.5 text-right">Total Qty</th>
                       <th className="p-2.5 text-right">QC Pass</th>
                       <th className="p-2.5 text-center">QC Status</th>
-                      <th className="p-2.5 text-right bg-amber-50 text-amber-900 font-bold">Remaining in Queue</th>
+                      <th className="p-2.5 text-right bg-amber-50 text-amber-900 font-semibold">Remaining in Queue</th>
                       <th className="p-2.5">Queue Bucket</th>
                       <th className="p-2.5">Overall Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-sans text-[11px]">
+                  <tbody className="divide-y divide-slate-100 font-sans text-xs">
                     {filteredQueueOrders.map((item, idx) => (
                       <tr 
                         key={`${item.opfNo}-${idx}`} 
@@ -1345,18 +1345,18 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                         className={`hover:bg-slate-50/80 transition-colors ${onSelectOrder ? 'cursor-pointer' : ''}`}
                         title={onSelectOrder ? 'Click to view order stage progress details' : undefined}
                       >
-                        <td className="p-2.5 font-bold text-indigo-700 font-mono">{item.opfNo}</td>
+                        <td className="p-2.5 font-semibold text-indigo-700 tabular-nums">{item.opfNo}</td>
                         <td className="p-2.5 text-slate-900 font-medium">{item.modelName}</td>
-                        <td className="p-2.5 text-slate-600 font-mono text-[10px]">{item.dispatchDate || 'HOLD'}</td>
+                        <td className="p-2.5 text-slate-600 tabular-nums text-xs">{item.dispatchDate || 'HOLD'}</td>
                         <td className="p-2.5 text-slate-700">
-                          <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-semibold text-slate-800">
+                          <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-xs font-semibold text-slate-800">
                             {item.currentStage}
                           </span>
                         </td>
-                        <td className="p-2.5 text-right font-mono font-semibold text-slate-700">{item.totalQty}</td>
-                        <td className="p-2.5 text-right font-mono font-bold text-emerald-700">{item.qtyPass}</td>
+                        <td className="p-2.5 text-right tabular-nums font-semibold text-slate-700">{item.totalQty}</td>
+                        <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-700">{item.qtyPass}</td>
                         <td className="p-2.5 text-center">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
                             (item.qcStatus || '').toLowerCase() === 'pass'
                               ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                               : (item.qcStatus || '').toLowerCase().includes('wip')
@@ -1366,28 +1366,28 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                             {item.qcStatus || 'Pending'}
                           </span>
                         </td>
-                        <td className="p-2.5 text-right font-mono font-bold text-amber-950 bg-amber-50/60 text-xs">
+                        <td className="p-2.5 text-right tabular-nums font-semibold text-amber-950 bg-amber-50/60 text-xs">
                           {item.remainingQueue}
                         </td>
                         <td className="p-2.5">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-bold uppercase ${
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-semibold  ${
                             item.category === 'current'
                               ? 'bg-amber-50 text-amber-900 border border-amber-200'
                               : item.category === 'backlog'
                               ? 'bg-rose-50 text-rose-900 border border-rose-200'
                               : item.category === 'hold'
-                              ? 'bg-orange-50 text-orange-900 border border-orange-200'
+                              ? 'bg-amber-50 text-amber-900 border border-amber-200'
                               : item.category === 'next'
-                              ? 'bg-blue-50 text-blue-900 border border-blue-200'
+                              ? 'bg-indigo-50 text-indigo-900 border border-indigo-200'
                               : 'bg-slate-100 text-slate-700 border border-slate-200'
                           }`}>
                             {item.category === 'current' ? 'Current Month' : item.category === 'backlog' ? 'Backlog (Past Due)' : item.category === 'hold' ? '⚡ On Hold' : item.category === 'next' ? 'Next Month' : 'Future'}
                           </span>
                         </td>
                         <td className="p-2.5">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                             item.category === 'hold'
-                              ? 'bg-amber-50 text-amber-900 border border-amber-200 font-bold'
+                              ? 'bg-amber-50 text-amber-900 border border-amber-200 font-semibold'
                               : 'bg-slate-100 text-slate-800'
                           }`}>
                             {item.overallStatus}
@@ -1413,10 +1413,10 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="p-1.5 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-200/60">
               <Truck className="w-4 h-4" />
             </div>
-            <span className="font-bold text-xs uppercase tracking-wider text-slate-800">
+            <span className="font-semibold text-xs text-slate-800">
               Dispatch Response Entries {dispatchViewScope === 'all' ? '(All Responses)' : `(${selectedMonthDisplay})`}
             </span>
-            <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] px-2.5 py-0.5 rounded-full font-mono font-semibold">
+            <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
               {filteredDispatchRecords.reduce((acc, r) => acc + r.quantity, 0).toLocaleString()} Boxes Dispatched • {filteredDispatchRecords.length} Entries
             </span>
           </div>
@@ -1435,7 +1435,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
                   <button
                     onClick={() => setDispatchViewScope('month')}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                    className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                       dispatchViewScope === 'month' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                     }`}
                   >
@@ -1443,7 +1443,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   </button>
                   <button
                     onClick={() => setDispatchViewScope('all')}
-                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                    className={`px-3 py-1 rounded-lg font-semibold transition-all ${
                       dispatchViewScope === 'all' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                     }`}
                     title="View all recorded responses in the dispatch sheet archive"
@@ -1473,37 +1473,37 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             ) : (
               <div className="overflow-x-auto max-h-80 overflow-y-auto border border-slate-200/80 rounded-xl">
                 <table className="w-full text-xs text-left border-collapse bg-white">
-                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-bold text-slate-600 uppercase text-[10px] tracking-wider z-10">
+                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-xs  z-10">
                     <tr>
                       <th className="p-2.5 w-12 text-center">#</th>
                       <th className="p-2.5">Timestamp</th>
-                      <th className="p-2.5 font-bold">OPF No.</th>
+                      <th className="p-2.5 font-semibold">OPF No.</th>
                       <th className="p-2.5 text-right">Number of Boxes / Qty</th>
                       <th className="p-2.5">Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-sans text-[11px]">
+                  <tbody className="divide-y divide-slate-100 font-sans text-xs">
                     {filteredDispatchRecords.map((item, idx) => (
                       <tr key={`${item.id}-${idx}`} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="p-2.5 text-slate-400 text-[10px] font-mono text-center">
+                        <td className="p-2.5 text-slate-400 text-xs tabular-nums text-center">
                           {idx + 1}
                         </td>
-                        <td className="p-2.5 text-slate-600 font-mono text-[10px] whitespace-nowrap">
+                        <td className="p-2.5 text-slate-600 tabular-nums text-xs whitespace-nowrap">
                           {item.timestamp}
                         </td>
-                        <td className="p-2.5 font-mono font-bold text-indigo-700 text-xs whitespace-nowrap">
+                        <td className="p-2.5 tabular-nums font-semibold text-indigo-700 text-xs whitespace-nowrap">
                           {item.opfNo ? (
-                            <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-800 border border-indigo-200 font-bold">
+                            <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
                               {item.opfNo}
                             </span>
                           ) : (
                             <span className="text-slate-400 font-normal">-</span>
                           )}
                         </td>
-                        <td className="p-2.5 text-right font-mono font-bold text-emerald-800 text-xs">
+                        <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-800 text-xs">
                           {item.quantity.toLocaleString()}
                         </td>
-                        <td className="p-2.5 text-slate-600 text-[11px]">
+                        <td className="p-2.5 text-slate-600 text-xs">
                           {item.modelName || `Dispatched on ${item.dateYMD}`}
                         </td>
                       </tr>
@@ -1532,7 +1532,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   <PackageCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+                  <h3 className="text-sm sm:text-base font-semibold text-slate-900 tracking-tight">
                     QC Passed, Not Dispatched — Order Reconciliation
                   </h3>
                   <p className="text-xs text-slate-500 font-medium">
@@ -1553,12 +1553,12 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               {/* Formula explanation */}
               <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl p-3 text-xs text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div className="space-y-0.5">
-                  <span className="font-bold block text-amber-900">OPF-Level Factory Inventory Methodology:</span>
-                  <p className="text-[11px] text-slate-700 leading-snug">
+                  <span className="font-semibold block text-amber-900">OPF-Level Factory Inventory Methodology:</span>
+                  <p className="text-xs text-slate-700 leading-snug">
                     Evaluates each OPF with Final QC completed in <strong>{selectedMonthDisplay}</strong>. Checks whether the OPF was dispatched in the same period to calculate exact units still held on the factory floor.
                   </p>
                 </div>
-                <div className="text-[11px] text-amber-900 font-bold bg-amber-100 px-3 py-1 rounded-lg border border-amber-200 whitespace-nowrap">
+                <div className="text-xs text-amber-900 font-semibold bg-amber-100 px-3 py-1 rounded-lg border border-amber-200 whitespace-nowrap">
                   {qcReconciliation.notDispatchedOpfs} OPF(s) Pending Dispatch
                 </div>
               </div>
@@ -1566,31 +1566,31 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               {/* 3 Metric Summary Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200/80 text-center">
-                  <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">1. Total QC Passed</span>
-                  <span className="text-xl sm:text-2xl font-bold font-mono text-emerald-950 block mt-0.5">
+                  <span className="text-xs font-semibold text-emerald-800 block">1. Total QC Passed</span>
+                  <span className="text-xl sm:text-2xl font-semibold tabular-nums text-emerald-950 block mt-0.5">
                     {qcReconciliation.totalQcPassedUnits.toLocaleString()}
                   </span>
-                  <span className="text-[10px] text-emerald-700 font-semibold block">
+                  <span className="text-xs text-emerald-700 font-semibold block">
                     {qcReconciliation.totalQcPassedOpfs} OPFs inspected
                   </span>
                 </div>
 
                 <div className="p-3 rounded-xl bg-indigo-50/60 border border-indigo-200/80 text-center">
-                  <span className="text-[10px] font-bold text-indigo-800 uppercase tracking-wider block">2. Total Dispatched</span>
-                  <span className="text-xl sm:text-2xl font-bold font-mono text-indigo-950 block mt-0.5">
+                  <span className="text-xs font-semibold text-indigo-800 block">2. Total Dispatched</span>
+                  <span className="text-xl sm:text-2xl font-semibold tabular-nums text-indigo-950 block mt-0.5">
                     {qcReconciliation.dispatchedUnits.toLocaleString()}
                   </span>
-                  <span className="text-[10px] text-indigo-700 font-semibold block">
+                  <span className="text-xs text-indigo-700 font-semibold block">
                     {qcReconciliation.dispatchedOpfs} OPFs shipped
                   </span>
                 </div>
 
                 <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-300 text-center shadow-xs">
-                  <span className="text-[10px] font-bold text-amber-900 uppercase tracking-wider block">3. Left In Factory</span>
-                  <span className="text-xl sm:text-2xl font-bold font-mono text-amber-950 block mt-0.5">
+                  <span className="text-xs font-semibold text-amber-900 block">3. Left In Factory</span>
+                  <span className="text-xl sm:text-2xl font-semibold tabular-nums text-amber-950 block mt-0.5">
                     {floorMetrics.qcPassedNotDispatched.toLocaleString()}
                   </span>
-                  <span className="text-[10px] text-amber-800 font-bold block">
+                  <span className="text-xs text-amber-800 font-semibold block">
                     {qcReconciliation.notDispatchedOpfs} OPFs awaiting dispatch
                   </span>
                 </div>
@@ -1602,7 +1602,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               <div className="flex items-center gap-1.5 w-full sm:w-auto">
                 <button
                   onClick={() => setReconciliationFilter('pending')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     reconciliationFilter === 'pending'
                       ? 'bg-amber-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200/60'
@@ -1612,7 +1612,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </button>
                 <button
                   onClick={() => setReconciliationFilter('dispatched')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     reconciliationFilter === 'dispatched'
                       ? 'bg-emerald-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200/60'
@@ -1622,7 +1622,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </button>
                 <button
                   onClick={() => setReconciliationFilter('all')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     reconciliationFilter === 'all'
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200/60'
@@ -1659,26 +1659,26 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               ) : (
                 <div className="border border-slate-200/80 rounded-xl overflow-hidden shadow-xs">
                   <table className="w-full text-left border-collapse text-xs">
-                    <thead className="bg-slate-50 text-slate-600 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200 sticky top-0 z-10">
+                    <thead className="bg-slate-50 text-slate-600 font-semibold text-xs  border-b border-slate-200 sticky top-0 z-10">
                       <tr>
                         <th className="p-2.5">OPF No</th>
                         <th className="p-2.5">Model / Customer</th>
                         <th className="p-2.5">QC Date & Inspector</th>
                         <th className="p-2.5 text-right">QC Pass</th>
                         <th className="p-2.5 text-right">Dispatched</th>
-                        <th className="p-2.5 text-right font-bold text-amber-950">Left in Factory</th>
+                        <th className="p-2.5 text-right font-semibold text-amber-950">Left in Factory</th>
                         <th className="p-2.5 text-center">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 font-sans text-[11px]">
+                    <tbody className="divide-y divide-slate-100 font-sans text-xs">
                       {filteredReconciliationItems.map((item, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
                           <td className="p-2.5">
-                            <div className="font-mono font-bold text-indigo-700">
+                            <div className="tabular-nums font-semibold text-indigo-700">
                               {item.opfNo || '-'}
                             </div>
                             {item.factoryNo && (
-                              <span className="inline-block text-[9px] font-semibold bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded mt-0.5 border border-slate-200">
+                              <span className="inline-block text-xs font-semibold bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded mt-0.5 border border-slate-200">
                                 {item.factoryNo}
                               </span>
                             )}
@@ -1687,42 +1687,42 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                             <div className="font-semibold text-slate-900 leading-tight">
                               {item.modelName || '-'}
                             </div>
-                            <div className="text-[10px] text-slate-500 truncate max-w-xs mt-0.5">
+                            <div className="text-xs text-slate-500 truncate max-w-xs mt-0.5">
                               {item.customerName || '-'}
                             </div>
                           </td>
                           <td className="p-2.5 text-slate-600 whitespace-nowrap">
-                            <div className="font-mono text-[10px] text-slate-700 font-medium">
+                            <div className="tabular-nums text-xs text-slate-700 font-medium">
                               {item.qcTimestamp || '-'}
                             </div>
                             {item.qcInspector && (
-                              <div className="text-[10px] text-slate-400">
+                              <div className="text-xs text-slate-400">
                                 Inspected by: {item.qcInspector}
                               </div>
                             )}
                           </td>
-                          <td className="p-2.5 text-right font-mono font-bold text-emerald-700 text-xs">
+                          <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-700 text-xs">
                             {item.qcPassedQty}
                           </td>
-                          <td className="p-2.5 text-right font-mono font-bold text-indigo-700 text-xs">
+                          <td className="p-2.5 text-right tabular-nums font-semibold text-indigo-700 text-xs">
                             {item.dispatchedQty}
                           </td>
-                          <td className="p-2.5 text-right font-mono font-bold text-amber-950 text-xs bg-amber-50/40">
+                          <td className="p-2.5 text-right tabular-nums font-semibold text-amber-950 text-xs bg-amber-50/40">
                             {item.remainingInFactory}
                           </td>
                           <td className="p-2.5 text-center whitespace-nowrap">
                             {item.status === 'Dispatched' ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                 Dispatched
                               </span>
                             ) : item.status === 'Partially Dispatched' ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200">
                                 <AlertTriangle className="w-3 h-3 text-amber-700" />
                                 Partial ({item.dispatchedQty}/{item.qcPassedQty})
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200">
                                 <PackageCheck className="w-3 h-3 text-rose-600" />
                                 In Factory
                               </span>

@@ -102,10 +102,10 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+                <h1 className="text-xl font-semibold text-slate-900 tracking-tight">
                   On Hold Production Orders Control
                 </h1>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-100 text-amber-900 border border-amber-300">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300">
                   {metrics.totalUnits} Units • {metrics.totalOrders} Orders
                 </span>
               </div>
@@ -118,11 +118,11 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
           <div className="flex items-center gap-2 text-xs font-semibold">
             <div className="bg-white border border-amber-200 px-3 py-1.5 rounded-xl shadow-xs text-slate-700">
               <span className="text-slate-400">Total Held: </span>
-              <strong className="text-amber-700 font-mono text-sm">{metrics.totalUnits} Units</strong>
+              <strong className="text-amber-700 tabular-nums text-sm">{metrics.totalUnits} Units</strong>
             </div>
             <div className="bg-white border border-amber-200 px-3 py-1.5 rounded-xl shadow-xs text-slate-700">
               <span className="text-slate-400">Orders: </span>
-              <strong className="text-slate-900 font-mono text-sm">{metrics.totalOrders}</strong>
+              <strong className="text-slate-900 tabular-nums text-sm">{metrics.totalOrders}</strong>
             </div>
           </div>
         </div>
@@ -132,66 +132,66 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total On Hold</span>
+            <span className="text-xs font-semibold text-slate-500">Total On Hold</span>
             <span className="p-2 rounded-xl bg-amber-50 text-amber-600">
               <AlertTriangle className="w-5 h-5" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-black font-mono text-slate-900">{metrics.totalUnits}</span>
+            <span className="text-3xl font-semibold tabular-nums text-slate-900">{metrics.totalUnits}</span>
             <span className="text-xs font-semibold text-slate-500">Chairs / Units</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1 font-medium">Across {metrics.totalOrders} distinct OPF batches</p>
+          <p className="text-xs text-slate-500 mt-1 font-medium">Across {metrics.totalOrders} distinct OPF batches</p>
         </div>
 
         <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Stages with Holds</span>
+            <span className="text-xs font-semibold text-slate-500">Stages with Holds</span>
             <span className="p-2 rounded-xl bg-indigo-50 text-indigo-600">
               <Layers className="w-5 h-5" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-black font-mono text-indigo-600">
+            <span className="text-3xl font-semibold tabular-nums text-indigo-600">
               {Object.keys(metrics.stageBreakdown).length}
             </span>
             <span className="text-xs font-semibold text-slate-500">Active Stations</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1 font-medium">
+          <p className="text-xs text-slate-500 mt-1 font-medium">
             Top: {(Object.entries(metrics.stageBreakdown) as [string, { count: number; units: number }][]).sort((a, b) => b[1].units - a[1].units)[0]?.[0] || 'None'}
           </p>
         </div>
 
         <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Department In-Charge</span>
+            <span className="text-xs font-semibold text-slate-500">Department In-Charge</span>
             <span className="p-2 rounded-xl bg-rose-50 text-rose-600">
               <User className="w-5 h-5" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-black font-mono text-rose-600">
+            <span className="text-3xl font-semibold tabular-nums text-rose-600">
               {Object.keys(metrics.responsibleBreakdown).length}
             </span>
             <span className="text-xs font-semibold text-slate-500">Assignees</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1 font-medium">
+          <p className="text-xs text-slate-500 mt-1 font-medium">
             Coordinator: PC Kanishka
           </p>
         </div>
 
         <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Status Rule</span>
+            <span className="text-xs font-semibold text-slate-500">Status Rule</span>
             <span className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
               <ShieldAlert className="w-5 h-5" />
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-lg font-black font-mono text-emerald-700">Excluded</span>
+            <span className="text-lg font-semibold tabular-nums text-emerald-700">Excluded</span>
             <span className="text-xs font-semibold text-slate-500">from Queue</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1 font-medium">
+          <p className="text-xs text-slate-500 mt-1 font-medium">
             Zero impact on monthly daily run-rate targets
           </p>
         </div>
@@ -233,7 +233,7 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
             </div>
             <button
               onClick={() => exportOrdersToExcel(filteredHoldOrders, `Hold_Orders_Report_${new Date().toISOString().slice(0, 10)}.xlsx`, 'On Hold Orders')}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-all cursor-pointer"
               title="Export Hold Orders to Excel"
             >
               <Download className="w-3.5 h-3.5" />
@@ -246,13 +246,13 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
         {filteredHoldOrders.length === 0 ? (
           <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-slate-500">
             <AlertTriangle className="w-8 h-8 text-amber-400 mx-auto mb-2" />
-            <p className="font-bold text-sm text-slate-800">No Hold Orders matching your search criteria</p>
+            <p className="font-semibold text-sm text-slate-800">No Hold Orders matching your search criteria</p>
             <p className="text-xs text-slate-400 mt-1">Try clearing filters or search terms.</p>
           </div>
         ) : (
           <div className="overflow-x-auto border border-slate-200 rounded-xl shadow-xs">
             <table className="w-full text-xs border-collapse bg-white">
-              <thead className="bg-[#fef9c3] border-b-2 border-black text-black font-black text-left">
+              <thead className="bg-[#fef9c3] border-b-2 border-black text-black font-semibold text-left">
                 <tr>
                   <th className="p-3 border-r border-slate-300">OPF No</th>
                   <th className="p-3 border-r border-slate-300">Model Name</th>
@@ -276,7 +276,7 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
                       onClick={() => onSelectOrder && onSelectOrder(order)}
                       className={`hover:bg-amber-50/60 transition-colors ${onSelectOrder ? 'cursor-pointer' : ''}`}
                     >
-                      <td className="p-3 font-bold font-mono text-indigo-700 border-r border-slate-200">
+                      <td className="p-3 font-semibold tabular-nums text-indigo-700 border-r border-slate-200">
                         <div className="flex items-center gap-1.5">
                           <span>{order.opfNo}</span>
                           <span className="w-2 h-2 rounded-full bg-amber-500"></span>
@@ -285,26 +285,26 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
                       <td className="p-3 font-medium text-slate-900 border-r border-slate-200 max-w-xs truncate">
                         {order.modelName}
                       </td>
-                      <td className="p-3 text-slate-600 border-r border-slate-200 max-w-xs truncate text-[11px]">
+                      <td className="p-3 text-slate-600 border-r border-slate-200 max-w-xs truncate text-xs">
                         {order.upholstery}
                       </td>
                       <td className="p-3 text-center border-r border-slate-200">
-                        <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-800 font-bold text-[10px]">
+                        <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-800 font-semibold text-xs">
                           {order.currentStage || 'Pending'}
                         </span>
                       </td>
-                      <td className="p-3 text-right font-mono font-black text-slate-900 border-r border-slate-200 text-sm">
+                      <td className="p-3 text-right tabular-nums font-semibold text-slate-900 border-r border-slate-200 text-sm">
                         {order.quantity}
                       </td>
-                      <td className="p-3 text-slate-700 border-r border-slate-200 text-[11px]">
+                      <td className="p-3 text-slate-700 border-r border-slate-200 text-xs">
                         {order.currentResponsible || 'Unassigned'}
                       </td>
-                      <td className="p-3 text-center border-r border-slate-200 font-mono text-[11px] font-bold text-amber-800">
+                      <td className="p-3 text-center border-r border-slate-200 tabular-nums text-xs font-semibold text-amber-800">
                         <span className="px-2 py-0.5 rounded bg-amber-100 border border-amber-300">
                           {order.dispatchDate || 'HOLD'}
                         </span>
                       </td>
-                      <td className="p-3 text-slate-600 border-r border-slate-200 text-[11px] max-w-xs">
+                      <td className="p-3 text-slate-600 border-r border-slate-200 text-xs max-w-xs">
                         <span className="italic">{holdRemark}</span>
                       </td>
                       <td className="p-3 text-center">
@@ -313,7 +313,7 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
                             e.stopPropagation();
                             if (onSelectOrder) onSelectOrder(order);
                           }}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] rounded-lg border border-indigo-200 transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs rounded-lg border border-indigo-200 transition-colors"
                         >
                           <span>Details</span>
                           <ArrowRight className="w-3 h-3" />

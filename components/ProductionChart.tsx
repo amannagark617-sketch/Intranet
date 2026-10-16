@@ -21,18 +21,18 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="bg-slate-900 text-white p-3.5 rounded-xl shadow-xl border border-slate-700 animate-fade-in max-w-xs">
         <div className="flex items-center justify-between gap-2 mb-1.5 border-b border-slate-700 pb-1">
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-300">
+          <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-300">
             {cfg?.stepCode || 'Stage'}
           </span>
-          <span className="text-[10px] text-pink-300 font-medium">
+          <span className="text-xs text-indigo-300 font-medium">
             {cfg?.responsible}
           </span>
         </div>
-        <p className="text-xs font-bold text-white">{label}</p>
+        <p className="text-xs font-semibold text-white">{label}</p>
         <p className="text-xs text-amber-300 font-semibold mt-1">
           Active WIP Orders: {payload[0].value}
         </p>
-        <p className="text-[10px] text-slate-300 mt-1">
+        <p className="text-xs text-slate-300 mt-1">
           Timeline Target: {cfg?.timeline}
         </p>
       </div>

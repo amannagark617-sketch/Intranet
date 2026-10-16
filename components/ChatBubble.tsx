@@ -49,8 +49,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ messages, isLoading, isOpen, se
               <Bot className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-slate-900">Production AI Assistant</h3>
-              <p className="text-[11px] text-emerald-600 flex items-center gap-1 font-medium">
+              <h3 className="font-semibold text-sm text-slate-900">Production AI Assistant</h3>
+              <p className="text-xs text-emerald-600 flex items-center gap-1 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> Online • Little Nap PMS
               </p>
             </div>

@@ -90,3 +90,47 @@ export const fetchIndoreMetrics = async (): Promise<IndoreResult> => {
   }
   return { metrics: [], status: 'unavailable' };
 };
+
+export interface IndoreProduction {
+  today: number | null;
+  month: number | null;
+  target: number | null;
+  labels: { today?: string; month?: string; target?: string };
+}
+
+const toNumber = (v: string): number | null => {
+  const n = parseFloat(v.replace(/[,₹\s]/g, '').replace(/[^0-9.\-]/g, ''));
+  return Number.isFinite(n) ? n : null;
+};
+
+/**
+ * Picks "produced today", "produced this month" and "monthly target" out of the Dashboard tab
+ * by matching header names, so the Indore card can look exactly like the Manesar one.
+ * Returns null when neither a today nor a month figure can be found.
+ */
+export const extractIndoreProduction = (metrics: IndoreMetric[]): IndoreProduction | null => {
+  const usable = metrics.filter(m => m.value !== '—' && toNumber(m.value) !== null);
+  const isPct = (l: string) => /%|percent|achiev(?:ed)?\s*(?:pct|%)|\bpct\b/i.test(l);
+  const isPerDay = (l: string) => /per\s*day|\/\s*day|daily|avg|average|required|remaining|short|balance|left/i.test(l);
+
+  const used = new Set<IndoreMetric>();
+  const pick = (test: (l: string) => boolean): IndoreMetric | undefined => {
+    const m = usable.find(x => !used.has(x) && test(x.label));
+    if (m) used.add(m);
+    return m;
+  };
+
+  const today = pick(l => /today/i.test(l) && !isPct(l) && !/target|dispatch/i.test(l));
+  const target = pick(l => /target/i.test(l) && !isPct(l) && !isPerDay(l) && !/today/i.test(l));
+  const month =
+    pick(l => /(month|mtd|till\s*date|to\s*date|cumulative|total)/i.test(l) && /(produc|output|achiev|actual|made|done|pass|qc|inspect|complet|total)/i.test(l) && !/target|today|dispatch/i.test(l) && !isPct(l) && !isPerDay(l)) ||
+    pick(l => /(produc|output|actual|achiev)/i.test(l) && !/target|today|dispatch/i.test(l) && !isPct(l) && !isPerDay(l));
+
+  if (!today && !month) return null;
+  return {
+    today: today ? toNumber(today.value) : null,
+    month: month ? toNumber(month.value) : null,
+    target: target ? toNumber(target.value) : null,
+    labels: { today: today?.label, month: month?.label, target: target?.label },
+  };
+};

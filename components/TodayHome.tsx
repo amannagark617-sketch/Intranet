@@ -21,7 +21,7 @@ import { calculateOnTimePerformance } from '../services/onTimeDeliveryService';
 import { getCachedReadyGoods } from '../services/readyGoodsService';
 import { fetchCeoSales } from '../services/ceoSalesService';
 import type { CeoSalesSummary, CeoSalesPeriod } from '../services/ceoSalesService';
-import { fetchIndoreMetrics, pickHeadlineMetrics } from '../services/indoreService';
+import { fetchIndoreMetrics, pickHeadlineMetrics, extractIndoreProduction } from '../services/indoreService';
 import type { IndoreResult } from '../services/indoreService';
 
 export type TodayTarget =
@@ -349,6 +349,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
   const onTimeTone: Tone =
     onTimeVal == null ? 'neutral' : onTimeVal >= 90 ? 'good' : onTimeVal >= 75 ? 'watch' : 'bad';
   const dueTone: Tone = stats.overdueAmount === 0 ? 'good' : 'bad';
+  const indoreProd = indore && indore.status === 'ok' ? extractIndoreProduction(indore.metrics) : null;
   const maxBottleneck = Math.max(1, ...stats.bottlenecks.map(b => b.orders));
   const monthTone = sales ? paceTone(sales.month.sales, sales.month.target, monthElapsed) : 'neutral';
   const fyTone = sales ? paceTone(sales.fy.sales, sales.fy.target, fyElapsed) : 'neutral';
@@ -508,6 +509,41 @@ const TodayHome: React.FC<TodayHomeProps> = ({
                 <p className="text-[15px] font-medium text-slate-700">Couldn't read the Indore sheet</p>
                 <p className="mt-1.5 text-sm text-slate-500">Check it is shared as "Anyone with the link can view", then refresh.</p>
               </div>
+            ) : indoreProd ? (
+              <>
+                <div className="mt-5 grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="text-[13px] font-medium text-slate-500">Produced today</div>
+                    <div className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900 tabular-nums">
+                      {indoreProd.today !== null ? indoreProd.today.toLocaleString() : '—'}
+                    </div>
+                    <div className="mt-1.5 text-[13px] text-slate-500">chairs</div>
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-medium text-slate-500">Produced this month</div>
+                    <div className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900 tabular-nums">
+                      {indoreProd.month !== null ? indoreProd.month.toLocaleString() : '—'}
+                    </div>
+                    <div className="mt-1.5 text-[13px] text-slate-500">
+                      {indoreProd.target !== null ? `of ${indoreProd.target.toLocaleString()} target` : 'no target set'}
+                    </div>
+                  </div>
+                </div>
+                {indoreProd.target !== null && indoreProd.target > 0 && indoreProd.month !== null && (
+                  <div className="mt-6">
+                    <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-indigo-500"
+                        style={{ width: `${Math.min(100, (indoreProd.month / indoreProd.target) * 100)}%` }}
+                      />
+                    </div>
+                    <div className="mt-2 flex justify-between text-[13px] text-slate-500 tabular-nums">
+                      <span>{Math.round((indoreProd.month / indoreProd.target) * 100)}% of target</span>
+                      <span>{Math.max(0, indoreProd.target - indoreProd.month).toLocaleString()} to go</span>
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
               <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-6">
                 {pickHeadlineMetrics(indore.metrics, 4).map(m => (

@@ -9,6 +9,9 @@ const LIVE_SHEET_ID = '1SCbARqE4Yc6ELPoq8eIrWQ0zkiTQ3JB1SzFKPZMrBe8';
 // re-ordered or newly added tab can never be read by mistake.
 const LIVE_PMS_TAB_GID = '852646666';
 const LIVE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${LIVE_SHEET_ID}/export?format=csv&gid=${LIVE_PMS_TAB_GID}`;
+// The "Ready Goods" tab of the same workbook holds PMS order data too (orders that have moved on from the PMS tab).
+const LIVE_READY_GOODS_TAB_GID = '620154471';
+const LIVE_READY_GOODS_TAB_URL = `https://docs.google.com/spreadsheets/d/${LIVE_SHEET_ID}/export?format=csv&gid=${LIVE_READY_GOODS_TAB_GID}`;
 // Last-resort fallback (first tab of the workbook), used only if the PMS tab cannot be fetched.
 const LIVE_SHEET_FIRST_TAB_URL = `https://docs.google.com/spreadsheets/d/${LIVE_SHEET_ID}/export?format=csv`;
 
@@ -562,9 +565,10 @@ export const fetchAndParseData = async (): Promise<Order[]> => {
   let archiveOrders: Order[] = [];
 
   // Fetch Live and Archive sheets in parallel with realistic timeouts
-  const [livePmsCsv, archivePubCsv] = await Promise.all([
+  const [livePmsCsv, archivePubCsv, liveReadyCsv] = await Promise.all([
     fetchWithTimeout(LIVE_SHEET_CSV_URL, 6000),
     fetchWithTimeout(ARCHIVE_SHEET_PUB_CSV_URL, 10000),
+    fetchWithTimeout(LIVE_READY_GOODS_TAB_URL, 6000),
   ]);
   const liveCsv = livePmsCsv && livePmsCsv.trim().length > 0
     ? livePmsCsv
@@ -575,6 +579,20 @@ export const fetchAndParseData = async (): Promise<Order[]> => {
       liveOrders = parseCsvLines(liveCsv, false);
     } catch (e) {
       console.warn("Error parsing live sheet csv:", e);
+    }
+  }
+
+  // Orders from the "Ready Goods" tab: added only if the PMS tab does not already have that order
+  if (liveReadyCsv && liveReadyCsv.trim().length > 0 && !/^\s*<!doctype html|<html/i.test(liveReadyCsv)) {
+    try {
+      const seen = new Set(liveOrders.map(o => o.opfNo.toUpperCase().replace(/[^A-Z0-9]/g, '')));
+      const readyTabOrders = parseCsvLines(liveReadyCsv, false).filter(o => {
+        const k = o.opfNo.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        return k && !seen.has(k);
+      });
+      liveOrders = liveOrders.concat(readyTabOrders);
+    } catch (e) {
+      console.warn("Error parsing Ready Goods tab csv:", e);
     }
   }
 

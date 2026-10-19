@@ -517,7 +517,7 @@ export const calculateOnTimePerformance = (
     orderItems.push(item);
 
     // Aggregate by calendar month (from Feb 2026 onwards)
-    if (assignedMonthKey && assignedMonthKey >= '2026-02' && assignedMonthKey <= '2026-12') {
+    if (assignedMonthKey && assignedMonthKey >= '2026-02' && assignedMonthKey <= '2099-12') {
       if (!monthlyMap.has(assignedMonthKey)) {
         monthlyMap.set(assignedMonthKey, {
           totalOrders: 0,

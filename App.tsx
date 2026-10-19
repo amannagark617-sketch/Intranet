@@ -47,6 +47,17 @@ const App: React.FC = () => {
 
   // View Mode: 'today' (CEO home) | 'dashboard' | 'readyGoods' | 'readyStock' | 'receivableList' | 'pmsManesar' | 'pmsIndore' | 'overtime' | 'serviceComplaints' | 'salesReport' | 'executiveHub' | 'grossProfit'
   const [viewMode, setViewMode] = useState<ViewMode>('today');
+  const [dashboardTab, setDashboardTab] = useState<'overview' | 'daily' | 'onTime'>('overview');
+  // Today tiles: open the right page (and tab) in Production
+  const handleTodayNavigate = (t: string) => {
+    setDashboardTab(t === 'onTime' ? 'onTime' : 'overview');
+    setViewMode(t === 'onTime' ? 'dashboard' : (t as ViewMode));
+  };
+  // Header navigation always lands on the default tab
+  const handleHeaderNavigate = (m: ViewMode) => {
+    if (m === 'dashboard') setDashboardTab('overview');
+    setViewMode(m);
+  };
 
   // Detail Modal for Selected Order
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -444,7 +455,7 @@ const App: React.FC = () => {
       {/* Header with Production title, PC Kanishka badge, View switcher, and universal live sync */}
       <Header 
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
+        onViewModeChange={handleHeaderNavigate}
         onRefresh={() => loadData(true)}
         isRefreshing={isRefreshing}
         totalOrders={orders.length}
@@ -470,7 +481,7 @@ const App: React.FC = () => {
             readyGoodsUnits={readyGoodsCount}
             readyStockUnits={readyStockCount}
             receivables={getCachedReceivables()}
-            onNavigate={setViewMode}
+            onNavigate={handleTodayNavigate}
             onGenerateInsights={handleGenerateInsights}
           />
         )}
@@ -480,7 +491,8 @@ const App: React.FC = () => {
         {/* VIEW 1: EXECUTIVE PRODUCTION DASHBOARD */}
         {viewMode === 'dashboard' && (
           <ProductionDashboard 
-            key={`dashboard-${refreshKey}`}
+            key={`dashboard-${refreshKey}-${dashboardTab}`}
+            initialSubTab={dashboardTab}
             orders={orders}
             onRefresh={() => loadData(true)}
             isRefreshing={isRefreshing}

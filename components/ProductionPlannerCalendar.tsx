@@ -77,15 +77,18 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
   orders, 
   onSelectOrder 
 }) => {
-  // Reference Operational Date: '2026-09-01' (1st September 2026)
-  const todayYMD = '2026-09-01';
+  // Today's real date (local)
+  const todayYMD = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })();
 
   // Navigation State: Year & Month (1-12)
-  const [currentYear, setCurrentYear] = useState<number>(2026);
-  const [currentMonth, setCurrentMonth] = useState<number>(9); // 9 = September
+  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
 
   // Selected Date on Calendar: defaults to today
-  const [selectedDateStr, setSelectedDateStr] = useState<string>('2026-09-01');
+  const [selectedDateStr, setSelectedDateStr] = useState<string>(todayYMD);
 
   // Sub-tab inside planner: 'month' | 'backlog' | '7day' | 'stage-matrix'
   const [plannerTab, setPlannerTab] = useState<'month' | 'backlog' | '7day' | 'stage-matrix'>('month');

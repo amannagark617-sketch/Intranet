@@ -51,6 +51,14 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
   const [weekScopeFilter, setWeekScopeFilter] = useState<string | null>(null);
   const [chartMetricMode, setChartMetricMode] = useState<'units' | 'orders'>('units');
 
+  // The page-level month picker drives this view
+  React.useEffect(() => {
+    if (selectedMonth) {
+      setMonthScopeFilter(selectedMonth);
+      setWeekScopeFilter(null);
+    }
+  }, [selectedMonth]);
+
   // Available weeks in current selected month (if month is specific)
   const availableWeeksInMonth = useMemo(() => {
     if (monthScopeFilter === 'all') return [];
@@ -149,7 +157,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
     const unitOnTimePct = dueUnits > 0 ? Math.round((onTimeUnits / dueUnits) * 100) : 0;
     const orderOnTimePct = dueOrders > 0 ? Math.round((onTimeOrders / dueOrders) * 100) : 0;
 
-    const isFutureScope = monthScopeFilter !== 'all' && monthScopeFilter > '2026-09';
+    const isFutureScope = monthScopeFilter !== 'all' && monthScopeFilter > new Date().toISOString().slice(0, 7);
 
     return {
       totalOrders,
@@ -246,6 +254,9 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
               className="bg-transparent text-sm font-medium text-slate-800 focus:outline-hidden cursor-pointer"
             >
               <option value="all">All months</option>
+              {monthScopeFilter !== 'all' && !onTimeMetrics.monthlySummaries.some(m => m.monthKey === monthScopeFilter) && (
+                <option value={monthScopeFilter}>{monthScopeFilter}</option>
+              )}
               {onTimeMetrics.monthlySummaries.map((m) => (
                 <option key={m.monthKey} value={m.monthKey}>{m.monthDisplay}</option>
               ))}

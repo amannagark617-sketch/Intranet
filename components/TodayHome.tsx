@@ -16,7 +16,10 @@ import type { Order, Insight, FinalQcRecord } from '../types';
 import type { ReceivableItem } from '../services/receivableListService';
 import { STAGE_CONFIGS } from '../constants';
 import { normalizeToYMD, diffDaysYMD, formatDisplayDate } from '../utils/dateUtils';
-import { fetchFinalQcRecords, getMonthlyTarget } from '../services/qcResponsesService';
+import { fetchFinalQcRecords, getMonthlyTarget, calculateQcPassedDispatchedReconciliation } from '../services/qcResponsesService';
+import { fetchDispatchRecords } from '../services/dispatchResponseService';
+import type { DispatchRecord } from '../services/dispatchResponseService';
+import { computeFloorMetrics } from '../services/floorMetrics';
 import { calculateOnTimePerformance } from '../services/onTimeDeliveryService';
 import { getCachedReadyGoods } from '../services/readyGoodsService';
 import { fetchCeoSales } from '../services/ceoSalesService';
@@ -26,6 +29,7 @@ import type { IndoreResult } from '../services/indoreService';
 
 export type TodayTarget =
   | 'dashboard'
+  | 'onTime'
   | 'pmsManesar'
   | 'pmsIndore'
   | 'readyGoods'
@@ -244,11 +248,15 @@ const TodayHome: React.FC<TodayHomeProps> = ({
 
   // Final QC sheet drives production + on-time numbers
   const [qcRecords, setQcRecords] = useState<FinalQcRecord[] | null>(null);
+  const [dispatchRecords, setDispatchRecords] = useState<DispatchRecord[] | null>(null);
   useEffect(() => {
     let alive = true;
     fetchFinalQcRecords(false)
       .then(r => { if (alive) setQcRecords(r); })
       .catch(() => { if (alive) setQcRecords([]); });
+    fetchDispatchRecords(false)
+      .then(r => { if (alive) setDispatchRecords(r); })
+      .catch(() => { if (alive) setDispatchRecords([]); });
     return () => { alive = false; };
   }, []);
 
@@ -272,6 +280,21 @@ const TodayHome: React.FC<TodayHomeProps> = ({
       lastUnits,
     };
   }, [qcRecords]);
+
+  // Same calculation the Production Overview uses, so the numbers always match when you open it
+  const floor = useMemo(() => {
+    if (!qcRecords || !dispatchRecords || !production) return null;
+    const month = todayYMD().slice(0, 7);
+    const monthQc = qcRecords.filter(r => r.monthKey === month);
+    const qcReconciliation = calculateQcPassedDispatchedReconciliation(month, monthQc, dispatchRecords, orders);
+    return computeFloorMetrics({
+      orders,
+      dispatchRecords,
+      monthKey: month,
+      liveProducedTillDate: production.monthUnits,
+      qcReconciliation,
+    });
+  }, [qcRecords, dispatchRecords, production, orders]);
 
   const otd = useMemo(() => {
     if (!qcRecords) return null;
@@ -562,17 +585,17 @@ const TodayHome: React.FC<TodayHomeProps> = ({
         <SectionLabel>Factory &amp; delivery</SectionLabel>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <KpiCard
-            title="In production"
-            value={`${stats.wip.units}`}
-            sub={`units across ${stats.wip.count} orders`}
+            title="In queue"
+            value={floor ? floor.totalChairsInQueue.toLocaleString() : '—'}
+            sub={floor ? `chairs still to make · ${floor.inQueueCurrent.toLocaleString()} due this month` : 'Loading…'}
             tone="neutral"
             icon={Factory}
-            onClick={() => onNavigate('pmsManesar')}
+            onClick={() => onNavigate('dashboard')}
           />
           <KpiCard
             title="Dispatched this month"
-            value={`${stats.dispatchedMonth.units}`}
-            sub={`units across ${stats.dispatchedMonth.count} orders`}
+            value={floor ? floor.dispatchedThisMonth.toLocaleString() : '—'}
+            sub={floor ? 'chairs sent out' : 'Loading…'}
             tone="neutral"
             icon={Truck}
             onClick={() => onNavigate('dashboard')}
@@ -583,7 +606,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
             sub={otd ? `this month · ${otd.overallUnitPct}% till date` : 'Loading…'}
             tone={onTimeTone}
             icon={Timer}
-            onClick={() => onNavigate('dashboard')}
+            onClick={() => onNavigate('onTime')}
           />
         </div>
       </section>

@@ -11,6 +11,7 @@ import {
   type QcOpfReconciliationItem
 } from '../services/qcResponsesService';
 import { fetchDispatchRecords, DispatchRecord } from '../services/dispatchResponseService';
+import { computeFloorMetrics } from '../services/floorMetrics';
 import { fetchReadyGoodsData, type ReadyGoodItem } from '../services/readyGoodsService';
 import { fetchReadyStockData, getCachedReadyStock, type ReadyStockItem } from '../services/readyStockService';
 import { generateProductionAIAnalysis, computeBaselineHeuristicAnalysis } from '../services/geminiService';
@@ -51,6 +52,7 @@ interface ProductionDashboardProps {
   onSelectOrder?: (order: Order) => void;
   onNavigateToReadyGoods?: () => void;
   onNavigateToReadyStock?: () => void;
+  initialSubTab?: 'overview' | 'daily' | 'onTime';
 }
 
 const StatTile: React.FC<{
@@ -106,7 +108,8 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
   isRefreshing = false,
   onSelectOrder,
   onNavigateToReadyGoods,
-  onNavigateToReadyStock
+  onNavigateToReadyStock,
+  initialSubTab = 'overview'
 }) => {
   // Final QC sheet records state
   const [qcRecords, setQcRecords] = useState<FinalQcRecord[]>([]);
@@ -120,7 +123,11 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
   const [dispatchSearchTerm, setDispatchSearchTerm] = useState<string>('');
 
   // Month selector (format: YYYY-MM, e.g. "2026-09")
-  const [selectedMonth, setSelectedMonth] = useState<string>('2026-09');
+  const currentMonthKey = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  })();
+  const [selectedMonth, setSelectedMonth] = useState<string>(currentMonthKey);
   
   // Customizable production target (defaults to 1400)
   const [customTarget, setCustomTarget] = useState<number | null>(null);
@@ -151,7 +158,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
   const [reconciliationSearch, setReconciliationSearch] = useState<string>('');
 
   // Dashboard Sub-Tab: 'overview' | 'daily' | 'onTime'
-  const [activeDashboardSubTab, setActiveDashboardSubTab] = useState<'overview' | 'daily' | 'onTime'>('overview');
+  const [activeDashboardSubTab, setActiveDashboardSubTab] = useState<'overview' | 'daily' | 'onTime'>(initialSubTab);
 
   // Collapsible sections (kept closed by default for a calmer page)
   const [showAI, setShowAI] = useState<boolean>(false);
@@ -174,15 +181,6 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
       setDispatchRecords(dispatches);
       setReadyGoodsItems(readyGoods);
       setReadyStockItems(readyStock);
-      if (records.length > 0) {
-        const available = Array.from(new Set(records.map(r => r.monthKey).filter(Boolean)))
-          .filter(m => m >= '2025-04')
-          .sort();
-        if (available.length > 0) {
-          const latest = available[available.length - 1];
-          setSelectedMonth(prev => (prev < '2025-04' || (prev === '2026-09' && !records.some(r => r.monthKey === '2026-09'))) ? latest : prev);
-        }
-      }
     } catch (err: any) {
       console.error('Failed to load Final inspection responses or Dispatch records:', err);
       setQcError(err?.message || 'Could not load Final inspection data');
@@ -235,7 +233,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
     } catch {
       // fallback
     }
-    return '2026-09-05';
+    return `${currentMonthKey}-01`;
   }, []);
   const todayParsed = parseYMD(todayYMD) || { year: 2026, month: 9, day: 5 };
   
@@ -257,7 +255,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
   // Clamp selectedMonth if it is ever set to before Apr-2025
   useEffect(() => {
     if (selectedMonth < '2025-04') {
-      setSelectedMonth('2026-09');
+      setSelectedMonth(currentMonthKey);
     }
   }, [selectedMonth]);
 
@@ -283,7 +281,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
       }
     });
     const filtered = Array.from(set).filter(m => m >= '2025-04').sort().reverse();
-    if (filtered.length === 0) filtered.push('2026-09');
+    if (!filtered.includes(currentMonthKey)) filtered.unshift(currentMonthKey);
     return filtered;
   }, [qcRecords, dispatchRecords, orders]);
 
@@ -328,169 +326,13 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
   // - Next Month Chairs: Orders whose dispatch date falls in the next month
   // - Backlog: Orders whose dispatch date is before selected month, or on HOLD / unassigned date with queue > 0
   // - Total Chairs in Queue: Current Month + Backlog + Next Month
-  const queueOrdersData = useMemo(() => {
-    const currentPrefix = `${selectedYear}-${String(selectedMonthNum).padStart(2, '0')}`;
-    const nextPrefix = `${nextYearNum}-${String(nextMonthNum).padStart(2, '0')}`;
-
-    // Map of OPF -> Dispatched quantity from Dispatch Response sheet
-    const dispatchByOpf = new Map<string, number>();
-    dispatchRecords.forEach((d) => {
-      dispatchByOpf.set(d.opfNo, (dispatchByOpf.get(d.opfNo) || 0) + d.quantity);
-    });
-
-    const detailedOrders: Array<{
-      order: Order;
-      opfNo: string;
-      modelName: string;
-      dispatchDate: string | null;
-      dispatchYMD: string | null;
-      totalQty: number; // Col C
-      qtyPass: number; // Col AZ
-      qcStatus: string; // Col AV / BA / Step 9 Status
-      remainingQueue: number; // Col C - Col AZ (when <> Pass)
-      category: 'current' | 'next' | 'backlog' | 'hold' | 'future' | 'completed';
-      currentStage: string;
-      overallStatus: string;
-    }> = [];
-
-    let inQueueCurrentMonth = 0;
-    let nextMonthChairs = 0;
-    let backlogChairs = 0;
-    let holdChairs = 0;
-    let holdOrdersCount = 0;
-    let otherFutureChairs = 0;
-    let dispatchedThisMonth = 0;
-    let readyGoodsUnits = 0;
-    let readyStockUnits = 0;
-
-    orders.forEach((order) => {
-      const orderDispYMD = order.dispatchDate ? normalizeToYMD(order.dispatchDate) : null;
-      const dispatchedQtyFromSheet = dispatchByOpf.get(order.opfNo) || 0;
-      const isDispatched = order.overallStatus === 'Dispatched' || 
-        !!order.isArchived || 
-        (dispatchedQtyFromSheet >= (order.quantity || 0) && (order.quantity || 0) > 0);
-      const totalQty = Math.max(0, order.quantity || 0);
-
-      // Check if order is on Hold
-      const isHold = order.overallStatus === 'On Hold' || 
-        (order.dispatchDate ? order.dispatchDate.toUpperCase().includes('HOLD') : false) ||
-        (!order.dispatchDate && order.steps.some(s => s.remarks && s.remarks.toUpperCase().includes('HOLD')));
-
-      // Dispatched in this month (from PMS order dates)
-      if (isDispatched && orderDispYMD && orderDispYMD.startsWith(currentPrefix)) {
-        dispatchedThisMonth += totalQty;
-      }
-
-      // Ready Goods / Stock
-      if (order.overallStatus === 'Ready' || order.currentStage === 'PACKING' || order.currentStage === 'DISPATCH') {
-        readyGoodsUnits += totalQty;
-      }
-      if (order.overallStatus === 'Dispatched' || (order.steps.find((s) => s.name === 'PICTURE SHARING')?.status === 'Completed')) {
-        readyStockUnits += totalQty;
-      }
-
-      // Live PMS Step 9 QC Qty Pass (Col AZ) & QC Status (Col BA / Step 9 Status)
-      const qcStep = order.steps.find((s) => s.name === 'QUALITY CONTROL');
-      const qtyPass = qcStep?.qtyPass ?? order.finalQcQtyPass ?? 0;
-      const qcStatus = (order.finalQcStatus || qcStep?.status || 'Pending').trim();
-      const isQcPassed = qcStatus.toLowerCase() === 'pass' || (qtyPass >= totalQty && totalQty > 0);
-
-      let remainingQueue = 0;
-      let category: 'current' | 'next' | 'backlog' | 'hold' | 'future' | 'completed' = 'completed';
-
-      if (!isDispatched) {
-        if (totalQty <= 0 || isQcPassed) {
-          remainingQueue = 0;
-          category = 'completed';
-        } else if (isHold) {
-          // Status is <> "Pass" but order is on HOLD: isolated from standard in-queue backlog/current metrics
-          remainingQueue = Math.max(0, totalQty - qtyPass);
-          category = 'hold';
-          holdChairs += remainingQueue;
-          holdOrdersCount += 1;
-        } else {
-          // Status is <> "Pass": calculate remaining in queue = Total (Col C) - Pass (Col AZ)
-          remainingQueue = Math.max(0, totalQty - qtyPass);
-
-          if (remainingQueue === 0) {
-            category = 'completed';
-          } else if (!orderDispYMD || orderDispYMD < `${currentPrefix}-01`) {
-            // Overdue past date and NOT on hold -> Backlog!
-            category = 'backlog';
-            backlogChairs += remainingQueue;
-          } else if (orderDispYMD.startsWith(currentPrefix)) {
-            category = 'current';
-            inQueueCurrentMonth += remainingQueue;
-          } else if (orderDispYMD.startsWith(nextPrefix)) {
-            category = 'next';
-            nextMonthChairs += remainingQueue;
-          } else {
-            category = 'future';
-            otherFutureChairs += remainingQueue;
-          }
-        }
-      }
-
-      if (remainingQueue > 0 || !isDispatched || isHold) {
-        detailedOrders.push({
-          order,
-          opfNo: order.opfNo,
-          modelName: order.modelName || 'Model Standard',
-          dispatchDate: order.dispatchDate,
-          dispatchYMD: orderDispYMD,
-          totalQty,
-          qtyPass,
-          qcStatus,
-          remainingQueue,
-          category,
-          currentStage: order.currentStage || 'Pending',
-          overallStatus: isHold ? 'On Hold' : order.overallStatus,
-        });
-      }
-    });
-
-    // From July 2026 onwards, calculate Dispatched This Month directly from Dispatch Response Google Sheet
-    const dispatchUnitsFromSheetForMonth = dispatchRecords
-      .filter((r) => r.monthKey === currentPrefix)
-      .reduce((acc, r) => acc + r.quantity, 0);
-
-    let effectiveDispatchedThisMonth = 0;
-    if (MANUAL_MONTHLY_DATA_BEFORE_AUG_2025[currentPrefix]) {
-      effectiveDispatchedThisMonth = MANUAL_MONTHLY_DATA_BEFORE_AUG_2025[currentPrefix].dispatched;
-    } else if (HISTORICAL_MONTHLY_DISPATCHED[currentPrefix] !== undefined) {
-      effectiveDispatchedThisMonth = HISTORICAL_MONTHLY_DISPATCHED[currentPrefix];
-    } else if (currentPrefix >= '2026-07' && dispatchRecords.length > 0) {
-      effectiveDispatchedThisMonth = dispatchUnitsFromSheetForMonth;
-    } else {
-      effectiveDispatchedThisMonth = dispatchedThisMonth;
-    }
-
-    const currentMonthPlusBacklog = inQueueCurrentMonth + backlogChairs;
-    // Total Chairs in Queue = Current Month + Backlog + Next Month
-    const totalChairsInQueue = inQueueCurrentMonth + backlogChairs + nextMonthChairs;
-    
-    // OPF-level reconciliation calculation:
-    // If QC passed records exist for this month, use OPF-level reconciliation count
-    // Otherwise fallback to Math.max(0, liveProducedTillDate - effectiveDispatchedThisMonth)
-    const qcPassedNotDispatched = qcReconciliation.totalQcPassedOpfs > 0
-      ? qcReconciliation.notDispatchedUnits
-      : Math.max(0, liveProducedTillDate - effectiveDispatchedThisMonth);
-
-    return {
-      detailedOrders,
-      dispatchedThisMonth: effectiveDispatchedThisMonth,
-      inQueueCurrent: inQueueCurrentMonth,
-      nextMonthChairs,
-      backlogChairs,
-      holdChairs,
-      holdOrdersCount,
-      currentMonthPlusBacklog,
-      totalChairsInQueue,
-      readyGoodsUnits,
-      readyStockUnits,
-      qcPassedNotDispatched,
-    };
-  }, [orders, selectedYear, selectedMonthNum, nextYearNum, nextMonthNum, liveProducedTillDate, dispatchRecords, qcReconciliation]);
+  const queueOrdersData = useMemo(() => computeFloorMetrics({
+    orders,
+    dispatchRecords,
+    monthKey: `${selectedYear}-${String(selectedMonthNum).padStart(2, '0')}`,
+    liveProducedTillDate,
+    qcReconciliation,
+  }), [orders, selectedYear, selectedMonthNum, liveProducedTillDate, dispatchRecords, qcReconciliation]);
 
   const floorMetrics = queueOrdersData;
 

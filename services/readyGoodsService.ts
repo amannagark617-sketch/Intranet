@@ -1,9 +1,5 @@
-// Ready Goods now lives in the "Ready Goods" tab of the Live PMS spreadsheet (pinned by gid).
-const LIVE_SPREADSHEET_ID = '1SCbARqE4Yc6ELPoq8eIrWQ0zkiTQ3JB1SzFKPZMrBe8';
-const READY_GOODS_TAB_GID = '620154471';
-export const READY_GOODS_TAB_CSV_URL = `https://docs.google.com/spreadsheets/d/${LIVE_SPREADSHEET_ID}/export?format=csv&gid=${READY_GOODS_TAB_GID}`;
-
-// Previous standalone published sheet; kept only as a fallback if the tab cannot be read.
+// Ready Goods page data: the dedicated Ready Goods sheet (NOT the 'Ready Goods' tab inside the Live PMS
+// spreadsheet, which holds PMS order data and is read by googleSheetService).
 export const READY_GOODS_SHEET_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5BLvJ43V0mGuTuVMlZCRAiGGPBdiKagCsKrTPtBSisW5Ksyr6nptWEokiYTYJ3Le02_ySm84PYCif/pub?gid=223115185&single=true&output=csv';
 
 export interface ReadyGoodItem {
@@ -207,11 +203,7 @@ export const fetchReadyGoodsData = async (force = false): Promise<ReadyGoodItem[
     }
   };
 
-  // Primary: the Ready Goods tab. Fallback: the old standalone sheet.
-  let items = parseReadyGoodsCsv(await fetchCsv(READY_GOODS_TAB_CSV_URL));
-  if (items.length === 0) {
-    items = parseReadyGoodsCsv(await fetchCsv(READY_GOODS_SHEET_PUB_CSV_URL));
-  }
+  const items = parseReadyGoodsCsv(await fetchCsv(READY_GOODS_SHEET_PUB_CSV_URL));
   if (items.length === 0) {
     return cachedReadyGoods && cachedReadyGoods.length > 0 ? cachedReadyGoods : INITIAL_READY_GOODS_ITEMS;
   }

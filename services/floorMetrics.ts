@@ -53,7 +53,7 @@ export const computeFloorMetrics = ({
     category: 'current' | 'next' | 'backlog' | 'hold' | 'future' | 'completed';
     currentStage: string;
     overallStatus: string;
-    isHold: boolean; // counted in the queue like any other order; flagged for information
+    isHold: boolean; // Hold orders are excluded from the queue
   }> = [];
 
   let inQueueCurrentMonth = 0;
@@ -102,12 +102,8 @@ export const computeFloorMetrics = ({
     let category: 'current' | 'next' | 'backlog' | 'hold' | 'future' | 'completed' = 'completed';
 
     if (!isDispatched) {
-      // The sheet's own "QC QTY PENDING" column is the source of truth when present;
-      // otherwise fall back to Total qty - QC qty passed.
-      const pending = order.qcQtyPending;
-      remainingQueue = pending !== null && pending !== undefined
-        ? pending
-        : (totalQty <= 0 || isQcPassed ? 0 : Math.max(0, totalQty - qtyPass));
+      // Pending = Total qty (col C) - QC Qty Pass. Hold orders are left out of the queue.
+      remainingQueue = isHold ? 0 : Math.max(0, totalQty - (order.finalQcQtyPass ?? qtyPass));
 
       if (remainingQueue <= 0) {
         remainingQueue = 0;
@@ -126,11 +122,6 @@ export const computeFloorMetrics = ({
         category = 'future';
         otherFutureChairs += remainingQueue;
       }
-    }
-
-    if (isHold && remainingQueue > 0) {
-      holdChairs += remainingQueue;
-      holdOrdersCount += 1;
     }
 
     if (remainingQueue > 0 || !isDispatched || isHold) {

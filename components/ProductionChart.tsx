@@ -21,18 +21,18 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="bg-slate-900 text-white p-3.5 rounded-xl shadow-xl border border-slate-700 animate-fade-in max-w-xs">
         <div className="flex items-center justify-between gap-2 mb-1.5 border-b border-slate-700 pb-1">
-          <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-300">
+          <span className="text-[13px] font-semibold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-300">
             {cfg?.stepCode || 'Stage'}
           </span>
-          <span className="text-xs text-indigo-300 font-medium">
+          <span className="text-[13px] text-indigo-300 font-medium">
             {cfg?.responsible}
           </span>
         </div>
-        <p className="text-xs font-semibold text-white">{label}</p>
-        <p className="text-xs text-amber-300 font-semibold mt-1">
-          Active WIP Orders: {payload[0].value}
+        <p className="text-[13px] font-semibold text-white">{label}</p>
+        <p className="text-[13px] text-amber-300 font-semibold mt-1">
+          Active Orders in progress: {payload[0].value}
         </p>
-        <p className="text-xs text-slate-300 mt-1">
+        <p className="text-[13px] text-slate-300 mt-1">
           Timeline Target: {cfg?.timeline}
         </p>
       </div>
@@ -48,8 +48,8 @@ const ProductionChart: React.FC<ProductionChartProps> = ({ data, onSelectStage }
     <div className="w-full h-[380px] md:h-[480px]">
       {!hasData ? (
         <div className="flex flex-col items-center justify-center h-full text-slate-500 bg-slate-50 rounded-xl border border-slate-200">
-          <p className="font-semibold text-slate-700">No WIP orders at any production stage.</p>
-          <p className="text-xs text-slate-400 mt-1">All orders are either dispatched or ready.</p>
+          <p className="font-semibold text-slate-700">No orders in progress.</p>
+          <p className="text-[13px] text-slate-500 mt-1">All orders are either dispatched or ready.</p>
         </div>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
@@ -104,7 +104,7 @@ const ProductionChart: React.FC<ProductionChartProps> = ({ data, onSelectStage }
 
             <Bar 
               dataKey="orders" 
-              name="WIP Orders" 
+              name="Orders in progress" 
               radius={[0, 6, 6, 0]} 
               animationDuration={800}
               onClick={(entry) => onSelectStage && onSelectStage(entry.name)}

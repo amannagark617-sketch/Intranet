@@ -283,14 +283,14 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
             </div>
             <div className="min-w-0">
               <h2 className="font-semibold text-sm text-slate-900 leading-tight">Operations Assistant</h2>
-              <p className="text-xs text-slate-500 leading-tight">Ask questions about orders or files</p>
+              <p className="text-[13px] text-slate-500 leading-tight">Ask questions about orders or files</p>
             </div>
           </div>
 
           <div className="flex items-center gap-1">
             <button
               onClick={handleClearHistory}
-              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
               title="Clear Conversation"
             >
               <Trash2 className="w-4 h-4" />
@@ -298,7 +298,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
 
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="hidden md:flex p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              className="hidden md:flex p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
               title={isExpanded ? 'Collapse' : 'Expand'}
             >
               {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -306,7 +306,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
 
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
               title="Close (Esc)"
             >
               <X className="w-4 h-4" />
@@ -316,15 +316,15 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
 
         {/* 2. ATTACHED FILE STATUS (ONLY WHEN FILE IS UPLOADED) */}
         {uploadedDataset && (
-          <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs text-slate-700 shrink-0">
+          <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-[13px] text-slate-700 shrink-0">
             <div className="flex items-center gap-2 min-w-0">
               <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
               <span className="truncate font-medium">{uploadedDataset.fileName}</span>
-              <span className="text-slate-400 text-xs shrink-0">({uploadedDataset.rowCount} rows)</span>
+              <span className="text-slate-500 text-[13px] shrink-0">({uploadedDataset.rowCount} rows)</span>
             </div>
             <button
               onClick={() => setUploadedDataset(null)}
-              className="text-xs text-slate-400 hover:text-rose-600 p-1 rounded cursor-pointer"
+              className="text-[13px] text-slate-500 hover:text-rose-600 p-1 rounded cursor-pointer"
               title="Remove file"
             >
               <X className="w-3.5 h-3.5" />
@@ -360,7 +360,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
                 )}
 
                 <div 
-                  className={`rounded-2xl p-3.5 text-xs leading-relaxed shadow-2xs relative group ${
+                  className={`rounded-2xl p-3.5 text-[13px] leading-relaxed shadow-2xs relative group ${
                     msg.author === 'user'
                       ? 'bg-slate-900 text-white rounded-br-xs'
                       : 'bg-white text-slate-800 border border-slate-200 rounded-bl-xs'
@@ -371,8 +371,8 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
                     onClick={() => handleCopy(msg.id, msg.content)}
                     className={`absolute top-2 right-2 p-1 rounded-md transition-opacity opacity-0 group-hover:opacity-100 ${
                       msg.author === 'user' 
-                        ? 'text-slate-400 hover:text-white hover:bg-slate-800' 
-                        : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'
+                        ? 'text-slate-500 hover:text-white hover:bg-slate-800' 
+                        : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
                     }`}
                     title="Copy message"
                   >
@@ -383,7 +383,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
                     {msg.content}
                   </div>
 
-                  <div className={`text-xs mt-1.5 font-medium ${msg.author === 'user' ? 'text-slate-400' : 'text-slate-400'}`}>
+                  <div className={`text-[13px] mt-1.5 font-medium ${msg.author === 'user' ? 'text-slate-500' : 'text-slate-500'}`}>
                     {msg.timestamp}
                   </div>
                 </div>
@@ -430,8 +430,8 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
                   handleSendMessage();
                 }
               }}
-              placeholder="Ask a question (e.g. OPF-218 or current bottleneck)..."
-              className="w-full bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none resize-none px-1 py-0.5"
+              placeholder="Ask a question (e.g. an order number, or what is holding up production)..."
+              className="w-full bg-transparent text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none resize-none px-1 py-0.5"
               disabled={isLoading}
             />
 
@@ -440,7 +440,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 px-2 py-1 rounded-md transition-colors cursor-pointer"
+                  className="flex items-center gap-1 text-[13px] font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 px-2 py-1 rounded-md transition-colors cursor-pointer"
                   title="Attach Excel or CSV file"
                 >
                   <Paperclip className="w-3.5 h-3.5" />
@@ -451,7 +451,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 disabled:opacity-30 text-white rounded-lg text-xs font-semibold shadow-2xs transition-all cursor-pointer shrink-0"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 disabled:opacity-30 text-white rounded-lg text-[13px] font-semibold shadow-2xs transition-all cursor-pointer shrink-0"
               >
                 <span>Send</span>
                 <Send className="w-3 h-3" />

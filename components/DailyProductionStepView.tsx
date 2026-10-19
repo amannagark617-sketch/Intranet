@@ -75,7 +75,7 @@ export interface DayProductionSummary {
   isPastOrToday: boolean;
   isFuture: boolean;
   dailyTarget: number;
-  actualProducedFinalQc: number; // KPI ACTUAL: Strictly Final QC Pass Units
+  actualProducedFinalQc: number; // KPI ACTUAL: Strictly Final Passed Units
   dailyVariance: number; // actualProducedFinalQc - dailyTarget
   achievementPct: number; // (actualProducedFinalQc / dailyTarget) * 100
   cumulativeTarget: number;
@@ -228,7 +228,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
               status: qcRec.status === 'Pass' ? 'Completed' : qcRec.status || 'Inspected',
               responsible: qcRec.qcInspector || cfg.responsible,
               actualDate: qcRec.dateYMD,
-              remarks: qcRec.passRemarks || (qcRec.rejectedQuantity > 0 ? `${qcRec.rejectedQuantity} rejected` : 'Final QC Form Inspection'),
+              remarks: qcRec.passRemarks || (qcRec.rejectedQuantity > 0 ? `${qcRec.rejectedQuantity} rejected` : 'Final inspection Form Inspection'),
             });
 
             if (qcRec.status === 'Pass' || qcRec.passQuantity > 0) {
@@ -451,7 +451,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
         'Date': d.dateDisplay,
         'Day': d.dayName,
         'Daily Target': d.dailyTarget,
-        'Actual Output (Final QC Pass)': d.actualProducedFinalQc,
+        'Actual Output (Final Passed)': d.actualProducedFinalQc,
       };
       PRODUCTION_STAGES.forEach(stg => {
         row[stg] = d.stageBreakdown[stg]?.unitCount || 0;
@@ -507,13 +507,13 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
       <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-slate-200 bg-slate-50/80 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-slate-500">{selectedMonthDisplay} · chairs passed final QC each day</p>
+            <p className="text-sm text-slate-500">{selectedMonthDisplay} · chairs passed final inspection each day</p>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
             {onBackToOverview && (
               <button
                 onClick={onBackToOverview}
-                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-[13px] font-semibold transition-colors cursor-pointer"
               >
                 ← Back
               </button>
@@ -521,7 +521,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
 
             <button
               onClick={handleExportExcel}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[13px] font-semibold shadow-xs transition-all cursor-pointer"
               title="Export complete daily production & step-wise matrix to Excel"
             >
               <Download className="w-3.5 h-3.5" />
@@ -534,13 +534,13 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
         <div className="p-3 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 bg-white">
           {/* 1. Monthly Target vs Actual Output */}
           <div className="bg-gradient-to-br from-indigo-50/70 to-indigo-50/40 border border-indigo-100 rounded-xl p-3.5">
-            <div className="flex items-center justify-between text-xs text-indigo-900 font-semibold mb-1">
-              <span>Actual Output (Final QC)</span>
+            <div className="flex items-center justify-between text-[13px] text-indigo-900 font-semibold mb-1">
+              <span>Actual output</span>
               <Target className="w-3.5 h-3.5 text-indigo-600" />
             </div>
             <div className="text-2xl font-semibold tabular-nums text-indigo-950">
               {monthTotals.totalActualProduced.toLocaleString()}{' '}
-              <span className="text-xs font-normal text-slate-500 font-sans">
+              <span className="text-[13px] font-normal text-slate-500 font-sans">
                 / {productionTarget.toLocaleString()} units
               </span>
             </div>
@@ -551,7 +551,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                   style={{ width: `${Math.min(100, monthTotals.targetAchievedPct)}%` }}
                 />
               </div>
-              <span className="text-xs font-semibold tabular-nums text-indigo-700">
+              <span className="text-[13px] font-semibold tabular-nums text-indigo-700">
                 {monthTotals.targetAchievedPct}%
               </span>
             </div>
@@ -559,17 +559,17 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
 
           {/* 2. Target / Day vs Actual Daily Average */}
           <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5">
-            <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+            <div className="flex items-center justify-between text-[13px] text-slate-500 font-semibold mb-1">
               <span>Daily Run-Rate Pace</span>
-              <TrendingUp className="w-3.5 h-3.5 text-slate-400" />
+              <TrendingUp className="w-3.5 h-3.5 text-slate-500" />
             </div>
             <div className="text-2xl font-semibold tabular-nums text-slate-900">
               {monthTotals.avgDailyOutput}{' '}
-              <span className="text-xs font-normal text-slate-500 font-sans">
+              <span className="text-[13px] font-normal text-slate-500 font-sans">
                 chairs / day
               </span>
             </div>
-            <div className="text-xs text-slate-500 mt-1 flex items-center justify-between">
+            <div className="text-[13px] text-slate-500 mt-1 flex items-center justify-between">
               <span>Target: <strong>{targetPerDay}/day</strong></span>
               <span className={monthTotals.avgDailyOutput >= targetPerDay ? 'text-emerald-600 font-semibold' : 'text-rose-600 font-semibold'}>
                 {monthTotals.avgDailyOutput >= targetPerDay ? '+' : ''}{monthTotals.avgDailyOutput - targetPerDay} gap
@@ -579,32 +579,32 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
 
           {/* 3. Peak Production Output Day */}
           <div className="bg-emerald-50/60 border border-emerald-100 rounded-xl p-3.5">
-            <div className="flex items-center justify-between text-xs text-emerald-900 font-semibold mb-1">
+            <div className="flex items-center justify-between text-[13px] text-emerald-900 font-semibold mb-1">
               <span>Peak Output Day</span>
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
             </div>
             <div className="text-2xl font-semibold tabular-nums text-emerald-950">
               {monthTotals.peakDay?.actualProducedFinalQc || 0}{' '}
-              <span className="text-xs font-normal text-emerald-800 font-sans">units</span>
+              <span className="text-[13px] font-normal text-emerald-800 font-sans">units</span>
             </div>
-            <div className="text-xs text-emerald-700 font-medium mt-1">
+            <div className="text-[13px] text-emerald-700 font-medium mt-1">
               Recorded on {monthTotals.peakDay?.dateDisplay || 'N/A'}
             </div>
           </div>
 
           {/* 4. Active Floor Output Days & Dispatch Total */}
           <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5">
-            <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+            <div className="flex items-center justify-between text-[13px] text-slate-500 font-semibold mb-1">
               <span>Production Days</span>
-              <Truck className="w-3.5 h-3.5 text-slate-400" />
+              <Truck className="w-3.5 h-3.5 text-slate-500" />
             </div>
             <div className="text-2xl font-semibold tabular-nums text-slate-900">
               {monthTotals.daysMetTarget}{' '}
-              <span className="text-xs font-normal text-slate-500 font-sans">
+              <span className="text-[13px] font-normal text-slate-500 font-sans">
                 / {monthTotals.workingDaysCount} days on target
               </span>
             </div>
-            <div className="text-xs text-slate-500 mt-1 flex items-center justify-between">
+            <div className="text-[13px] text-slate-500 mt-1 flex items-center justify-between">
               <span>Dispatched: <strong className="text-slate-800">{monthTotals.totalDispatched.toLocaleString()}</strong></span>
               <span>Submissions: <strong className="text-slate-800">{monthTotals.totalQcSubmissions}</strong></span>
             </div>
@@ -615,7 +615,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
       {/* 2. CONTROLS TOOLBAR & VIEW MODE SWITCHER */}
       <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
         {/* Left: View Mode Switcher */}
-        <div className="flex items-center p-1 bg-slate-100 border border-slate-200/80 rounded-xl text-xs font-semibold overflow-x-auto max-w-full scrollbar-none w-full sm:w-auto">
+        <div className="flex items-center p-1 bg-slate-100 border border-slate-200/80 rounded-xl text-[13px] font-semibold overflow-x-auto max-w-full scrollbar-none w-full sm:w-auto">
           <button
             onClick={() => setViewMode('ledger')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
@@ -656,8 +656,8 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
         {/* Middle/Right: Filters & Search */}
         <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full md:w-auto">
           {/* Day Status Filter */}
-          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs flex-1 sm:flex-initial">
-            <Filter className="w-3.5 h-3.5 text-slate-400 mr-1.5 shrink-0" />
+          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-[13px] flex-1 sm:flex-initial">
+            <Filter className="w-3.5 h-3.5 text-slate-500 mr-1.5 shrink-0" />
             <select
               value={dayTypeFilter}
               onChange={(e) => setDayTypeFilter(e.target.value as any)}
@@ -672,8 +672,8 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
           </div>
 
           {/* Stage Filter */}
-          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs flex-1 sm:flex-initial">
-            <Layers className="w-3.5 h-3.5 text-slate-400 mr-1.5 shrink-0" />
+          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-[13px] flex-1 sm:flex-initial">
+            <Layers className="w-3.5 h-3.5 text-slate-500 mr-1.5 shrink-0" />
             <select
               value={stageFilter}
               onChange={(e) => setStageFilter(e.target.value)}
@@ -688,18 +688,18 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
 
           {/* Search Box */}
           <div className="relative flex items-center w-full sm:w-auto">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3" />
+            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3" />
             <input
               type="text"
-              placeholder="Search OPF, model, inspector..."
+              placeholder="Search order, model or inspector"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 outline-none w-full sm:w-56 focus:border-indigo-500 focus:bg-white transition-colors"
+              className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[13px] font-medium text-slate-800 placeholder-slate-400 outline-none w-full sm:w-56 focus:border-indigo-500 focus:bg-white transition-colors"
             />
           </div>
 
           {viewMode === 'ledger' && (
-            <div className="flex items-center gap-1 text-xs font-semibold text-slate-600">
+            <div className="flex items-center gap-1 text-[13px] font-semibold text-slate-600">
               <button
                 onClick={expandAllDays}
                 className="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
@@ -723,7 +723,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
       {viewMode === 'ledger' && (
         <div className="space-y-3">
           {filteredDailySummaries.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500 text-xs">
+            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500 text-[13px]">
               No daily production records match the selected filter criteria for {selectedMonthDisplay}.
             </div>
           ) : (
@@ -748,19 +748,19 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                     {/* Day */}
                     <div className="flex items-center gap-4 min-w-0">
                       <div className="w-12 text-center shrink-0">
-                        <div className="text-xs text-slate-400">{day.dayName}</div>
+                        <div className="text-[13px] text-slate-500">{day.dayName}</div>
                         <div className={`text-xl font-semibold tabular-nums ${day.isToday ? 'text-indigo-600' : 'text-slate-900'}`}>{day.dayNum}</div>
                       </div>
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                           <span className="text-sm font-medium text-slate-800">{day.dateDisplay}</span>
-                          {day.isToday && <span className="text-xs font-medium text-indigo-600">Today</span>}
+                          {day.isToday && <span className="text-[13px] font-medium text-indigo-600">Today</span>}
                           {day.isSunday ? (
-                            <span className="text-xs text-slate-400">Weekly off</span>
+                            <span className="text-[13px] text-slate-500">Weekly off</span>
                           ) : (
                             day.isPastOrToday && (
-                              <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${
-                                isTargetMet ? 'text-emerald-700' : day.actualProducedFinalQc > 0 ? 'text-amber-700' : 'text-slate-400'
+                              <span className={`inline-flex items-center gap-1.5 text-[13px] font-medium ${
+                                isTargetMet ? 'text-emerald-700' : day.actualProducedFinalQc > 0 ? 'text-amber-700' : 'text-slate-500'
                               }`}>
                                 <span className={`w-1.5 h-1.5 rounded-full ${
                                   isTargetMet ? 'bg-emerald-500' : day.actualProducedFinalQc > 0 ? 'bg-amber-500' : 'bg-slate-300'
@@ -770,7 +770,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                             )
                           )}
                         </div>
-                        <div className="text-xs text-slate-400 mt-0.5 tabular-nums">
+                        <div className="text-[13px] text-slate-500 mt-0.5 tabular-nums">
                           Target {day.dailyTarget} · Month so far {day.cumulativeActualProduced.toLocaleString()}
                         </div>
                       </div>
@@ -780,9 +780,9 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                     <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full lg:w-auto mt-2 lg:mt-0">
                       <div className="text-right">
                         <div className="text-2xl font-semibold tabular-nums text-slate-900">
-                          {day.actualProducedFinalQc.toLocaleString()} <span className="text-xs font-normal text-slate-400">chairs</span>
+                          {day.actualProducedFinalQc.toLocaleString()} <span className="text-[13px] font-normal text-slate-500">chairs</span>
                         </div>
-                        <div className="text-xs text-slate-400 tabular-nums">{day.dispatchedUnits} dispatched</div>
+                        <div className="text-[13px] text-slate-500 tabular-nums">{day.dispatchedUnits} dispatched</div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
                         <button
@@ -805,12 +805,12 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                   {/* Expandable Step-Wise Stage Progression Bar & Cards */}
                   {isExpanded && (
                     <div className="p-4 bg-slate-50/80 border-t border-slate-200 space-y-4 animate-fade-in">
-                      <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+                      <div className="flex items-center justify-between text-[13px] font-semibold text-slate-700">
                         <span className="flex items-center gap-1.5">
                           <Layers className="w-4 h-4 text-indigo-600" />
                           PMS 14-Stage Floor Completion on {day.dateDisplay}
                         </span>
-                        <span className="text-xs text-slate-500 font-normal">
+                        <span className="text-[13px] text-slate-500 font-normal">
                           Click any step to view individual work orders
                         </span>
                       </div>
@@ -839,30 +839,30 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                                     : 'bg-slate-100/50 border-slate-200/50 opacity-60'
                               }`}
                             >
-                              <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1">
+                              <div className="flex items-center justify-between text-[13px] font-semibold text-slate-500 mb-1">
                                 <span className="tabular-nums">{stepData.stepCode}</span>
                                 {isFinalQc && (
-                                  <span className="px-1.5 py-0.2 rounded-full text-xs font-semibold bg-emerald-600 text-white">
+                                  <span className="px-1.5 py-0.2 rounded-full text-[13px] font-semibold bg-emerald-600 text-white">
                                     KPI
                                   </span>
                                 )}
                               </div>
 
-                              <div className="text-xs font-semibold text-slate-900 truncate" title={stageName}>
+                              <div className="text-[13px] font-semibold text-slate-900 truncate" title={stageName}>
                                 {stageName}
                               </div>
 
                               <div className="flex items-baseline justify-between mt-2 pt-1 border-t border-slate-100">
                                 <span className="text-base font-semibold tabular-nums text-slate-900">
                                   {stepData.unitCount}{' '}
-                                  <span className="text-xs font-normal text-slate-500">units</span>
+                                  <span className="text-[13px] font-normal text-slate-500">units</span>
                                 </span>
-                                <span className="text-xs font-semibold text-slate-500 tabular-nums">
-                                  {stepData.orderCount} OPF
+                                <span className="text-[13px] font-semibold text-slate-500 tabular-nums">
+                                  {stepData.orderCount} orders
                                 </span>
                               </div>
 
-                              <div className="text-xs text-slate-500 truncate mt-0.5" title={stepData.responsible}>
+                              <div className="text-[13px] text-slate-500 truncate mt-0.5" title={stepData.responsible}>
                                 {stepData.responsible.split('/')[0]}
                               </div>
                             </div>
@@ -873,14 +873,14 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                       {/* Quick Sample of Work Orders Completed on this date */}
                       {day.totalStepActivitiesCount > 0 && (
                         <div className="bg-white p-3 rounded-xl border border-slate-200">
-                          <div className="text-xs font-semibold text-slate-700 mb-2 flex items-center justify-between">
+                          <div className="text-[13px] font-semibold text-slate-700 mb-2 flex items-center justify-between">
                             <span>Sample Completed Work Orders on {day.dateDisplay} ({day.uniqueOrdersProcessedCount} Orders)</span>
                             <button
                               onClick={() => {
                                 setSelectedDayDetail(day);
                                 setSelectedModalTab('orders');
                               }}
-                              className="text-indigo-600 hover:text-indigo-800 text-xs font-semibold cursor-pointer"
+                              className="text-indigo-600 hover:text-indigo-800 text-[13px] font-semibold cursor-pointer"
                             >
                               View All Details →
                             </button>
@@ -891,13 +891,13 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                               .flatMap(s => s.orders.map(o => ({ ...o, stageName: s.stage, stepCode: s.stepCode })))
                               .slice(0, 6)
                               .map((ord, idx) => (
-                                <div key={`${ord.opfNo}-${ord.stageName}-${idx}`} className="p-2 rounded-lg bg-slate-50 border border-slate-200/80 text-xs">
+                                <div key={`${ord.opfNo}-${ord.stageName}-${idx}`} className="p-2 rounded-lg bg-slate-50 border border-slate-200/80 text-[13px]">
                                   <div className="flex items-center justify-between">
                                     <span className="font-semibold text-indigo-700 tabular-nums">{ord.opfNo}</span>
                                     <span className="font-semibold tabular-nums text-slate-900">{ord.quantity} units</span>
                                   </div>
-                                  <div className="text-xs text-slate-700 font-medium truncate mt-0.5">{ord.modelName}</div>
-                                  <div className="text-xs text-slate-500 flex items-center justify-between mt-1">
+                                  <div className="text-[13px] text-slate-700 font-medium truncate mt-0.5">{ord.modelName}</div>
+                                  <div className="text-[13px] text-slate-500 flex items-center justify-between mt-1">
                                     <span>{ord.stepCode}: {ord.stageName}</span>
                                     <span className="text-emerald-700 font-semibold">{ord.status}</span>
                                   </div>
@@ -923,19 +923,19 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
               <h3 className="text-sm font-semibold text-slate-900">
                 Cross-Step Unit Completion Matrix ({selectedMonthDisplay})
               </h3>
-              <p className="text-xs text-slate-500">
-                Daily throughput across all 14 sequential PMS production steps. <strong>Final QC</strong> reflects the official KPI actual output.
+              <p className="text-[13px] text-slate-500">
+                Daily throughput across all 14 sequential PMS production steps. <strong>Final inspection</strong> is the official count of chairs produced.
               </p>
             </div>
-            <div className="flex items-center gap-3 text-xs text-slate-600">
+            <div className="flex items-center gap-3 text-[13px] text-slate-600">
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-100 border border-emerald-300"></span> Output &gt; 0</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-indigo-50 border border-indigo-200"></span> Final QC Column</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-indigo-50 border border-indigo-200"></span> Final inspection</span>
             </div>
           </div>
 
           <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
-            <table className="w-full text-xs text-left border-collapse bg-white">
-              <thead className="bg-slate-100 text-slate-700 font-semibold text-xs  sticky top-0 z-20 border-b border-slate-200">
+            <table className="w-full text-[13px] text-left border-collapse bg-white">
+              <thead className="bg-slate-100 text-slate-700 font-semibold text-[13px]  sticky top-0 z-20 border-b border-slate-200">
                 <tr>
                   <th className="p-2.5 sticky left-0 bg-slate-100 z-30 min-w-[110px] border-r border-slate-200">
                     Date / Day
@@ -954,9 +954,9 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                         }`}
                         title={stg}
                       >
-                        <div className="text-xs text-slate-500 tabular-nums">{STAGE_CONFIGS[stg].stepCode}</div>
+                        <div className="text-[13px] text-slate-500 tabular-nums">{STAGE_CONFIGS[stg].stepCode}</div>
                         <div className="truncate max-w-[85px]">{stg}</div>
-                        {isFinalQc && <span className="text-xs bg-emerald-600 text-white px-1 rounded-sm">KPI ACTUAL</span>}
+                        {isFinalQc && <span className="text-[13px] bg-emerald-600 text-white px-1 rounded-sm">KPI ACTUAL</span>}
                       </th>
                     );
                   })}
@@ -965,7 +965,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-sans text-xs">
+              <tbody className="divide-y divide-slate-100 font-sans text-[13px]">
                 {dailySummaries.map((day) => {
                   const isTargetMet = day.actualProducedFinalQc >= day.dailyTarget && day.dailyTarget > 0;
                   return (
@@ -1006,7 +1006,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                               isFinalQc 
                                 ? val > 0 
                                   ? 'bg-emerald-50 font-semibold text-emerald-950 border-emerald-200' 
-                                  : 'bg-emerald-50/30 text-slate-400'
+                                  : 'bg-emerald-50/30 text-slate-500'
                                 : val > 0 
                                   ? 'bg-indigo-50/40 font-semibold text-slate-900' 
                                   : 'text-slate-300'
@@ -1063,7 +1063,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
           <div className="overflow-x-auto">
             <div className="min-w-[620px] grid grid-cols-7 gap-2">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
-                <div key={d} className="text-center font-semibold text-xs text-slate-500 py-2 border-b border-slate-200">
+                <div key={d} className="text-center font-semibold text-[13px] text-slate-500 py-2 border-b border-slate-200">
                   {d}
                 </div>
               ))}
@@ -1084,18 +1084,18 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                     day.isToday
                       ? 'border-indigo-500 ring-2 ring-indigo-200 bg-indigo-50/30'
                       : day.isSunday
-                        ? 'bg-slate-50/60 border-slate-200/80 text-slate-400'
+                        ? 'bg-slate-50/60 border-slate-200/80 text-slate-500'
                         : isTargetMet
                           ? 'bg-emerald-50/40 border-emerald-200 hover:border-emerald-400'
                           : 'bg-white border-slate-200 hover:border-indigo-300'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`tabular-nums text-xs font-semibold ${day.isToday ? 'text-indigo-700' : 'text-slate-800'}`}>
+                    <span className={`tabular-nums text-[13px] font-semibold ${day.isToday ? 'text-indigo-700' : 'text-slate-800'}`}>
                       {day.dayNum}
                     </span>
                     {day.actualProducedFinalQc > 0 && (
-                      <span className={`px-1.5 py-0.2 rounded-full text-xs font-semibold ${
+                      <span className={`px-1.5 py-0.2 rounded-full text-[13px] font-semibold ${
                         isTargetMet ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                       }`}>
                         {day.achievementPct}%
@@ -1104,14 +1104,14 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                   </div>
 
                   <div className="my-auto text-center">
-                    <div className="text-xs text-slate-500 font-semibold">Final QC Output</div>
+                    <div className="text-[13px] text-slate-500 font-semibold">Output after final inspection</div>
                     <div className="text-lg font-semibold tabular-nums text-emerald-950">
                       {day.actualProducedFinalQc}{' '}
-                      <span className="text-xs font-normal text-slate-500">units</span>
+                      <span className="text-[13px] font-normal text-slate-500">units</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-1">
+                  <div className="flex items-center justify-between text-[13px] text-slate-500 border-t border-slate-100 pt-1">
                     <span>Tgt: {day.dailyTarget}</span>
                     <span>Disp: {day.dispatchedUnits}</span>
                   </div>
@@ -1136,44 +1136,44 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                 <div>
                   <h3 className="text-base font-semibold text-slate-900 flex items-center gap-2">
                     <span>Daily Production Breakdown: {selectedDayDetail.dateDisplay}</span>
-                    <span className="text-xs tabular-nums font-normal text-slate-500">({selectedDayDetail.dayName})</span>
+                    <span className="text-[13px] tabular-nums font-normal text-slate-500">({selectedDayDetail.dayName})</span>
                   </h3>
-                  <p className="text-xs text-slate-500">
-                    Verified Final QC Pass units, stage-wise PMS throughput, and inspector submissions.
+                  <p className="text-[13px] text-slate-500">
+                    Verified Final Passed units, stage-wise PMS throughput, and inspector submissions.
                   </p>
                 </div>
               </div>
 
               <button
                 onClick={() => setSelectedDayDetail(null)}
-                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 rounded-xl transition-colors cursor-pointer"
+                className="p-2 text-slate-500 hover:text-slate-600 hover:bg-slate-200/60 rounded-xl transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Quick KPI Bar */}
-            <div className="px-5 py-3 bg-indigo-50/40 border-b border-indigo-100 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="px-5 py-3 bg-indigo-50/40 border-b border-indigo-100 grid grid-cols-2 sm:grid-cols-4 gap-3 text-[13px]">
               <div>
-                <span className="text-slate-500 text-xs block">Actual Produced (Final QC)</span>
+                <span className="text-slate-500 text-[13px] block">Actual produced</span>
                 <span className="text-base font-semibold tabular-nums text-emerald-700">
                   {selectedDayDetail.actualProducedFinalQc} units
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 text-xs block">Daily Target</span>
+                <span className="text-slate-500 text-[13px] block">Daily Target</span>
                 <span className="text-base font-semibold tabular-nums text-slate-800">
                   {selectedDayDetail.dailyTarget} units
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 text-xs block">Dispatched</span>
+                <span className="text-slate-500 text-[13px] block">Dispatched</span>
                 <span className="text-base font-semibold tabular-nums text-slate-800">
                   {selectedDayDetail.dispatchedUnits} units
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 text-xs block">Active Floor Steps</span>
+                <span className="text-slate-500 text-[13px] block">Active Floor Steps</span>
                 <span className="text-base font-semibold tabular-nums text-indigo-700">
                   {(Object.values(selectedDayDetail.stageBreakdown) as DayStepData[]).filter(s => s.unitCount > 0).length} of 14 steps
                 </span>
@@ -1181,7 +1181,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
             </div>
 
             {/* Tab Controls inside Modal */}
-            <div className="px-5 border-b border-slate-200 bg-white flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
+            <div className="px-5 border-b border-slate-200 bg-white flex flex-wrap items-center gap-4 text-[13px] font-semibold text-slate-600">
               <button
                 onClick={() => setSelectedModalTab('stages')}
                 className={`py-3 border-b-2 transition-colors cursor-pointer ${
@@ -1204,7 +1204,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                   selectedModalTab === 'qcBatches' ? 'border-indigo-600 text-indigo-700 font-semibold' : 'border-transparent hover:text-slate-900'
                 }`}
               >
-                Final QC Inspections ({selectedDayDetail.qcSubmissionsCount})
+                Final inspection Inspections ({selectedDayDetail.qcSubmissionsCount})
               </button>
               <button
                 onClick={() => setSelectedModalTab('dispatchBatches')}
@@ -1241,30 +1241,30 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                       >
                         <div>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-semibold tabular-nums text-slate-500">{stepData.stepCode}</span>
-                            <span className="text-xs font-semibold text-slate-900">{stg}</span>
+                            <span className="text-[13px] font-semibold tabular-nums text-slate-500">{stepData.stepCode}</span>
+                            <span className="text-[13px] font-semibold text-slate-900">{stg}</span>
                             {isFinalQc && (
-                              <span className="px-1.5 py-0.2 rounded-full text-xs font-semibold bg-emerald-600 text-white">
+                              <span className="px-1.5 py-0.2 rounded-full text-[13px] font-semibold bg-emerald-600 text-white">
                                 KPI ACTUAL
                               </span>
                             )}
                             {isDispatch && (
-                              <span className="px-1.5 py-0.2 rounded-full text-xs font-semibold bg-indigo-600 text-white">
+                              <span className="px-1.5 py-0.2 rounded-full text-[13px] font-semibold bg-indigo-600 text-white">
                                 FORM DISPATCH
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-slate-500 mt-0.5">
+                          <div className="text-[13px] text-slate-500 mt-0.5">
                             Lead: {stepData.responsible}
                           </div>
                         </div>
 
                         <div className="text-right">
                           <div className="text-base font-semibold tabular-nums text-slate-900">
-                            {stepData.unitCount} <span className="text-xs font-normal text-slate-500">{isDispatch ? 'boxes' : 'units'}</span>
+                            {stepData.unitCount} <span className="text-[13px] font-normal text-slate-500">{isDispatch ? 'boxes' : 'units'}</span>
                           </div>
-                          <div className="text-xs font-semibold text-slate-500 tabular-nums">
-                            {isDispatch ? `${stepData.orderCount} entries` : `${stepData.orderCount} OPFs`}
+                          <div className="text-[13px] font-semibold text-slate-500 tabular-nums">
+                            {isDispatch ? `${stepData.orderCount} entries` : `${stepData.orderCount} orders`}
                           </div>
                         </div>
                       </div>
@@ -1277,15 +1277,15 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
               {selectedModalTab === 'orders' && (
                 <div className="space-y-3">
                   {selectedDayDetail.totalStepActivitiesCount === 0 ? (
-                    <div className="text-center py-8 text-slate-500 text-xs">
-                      No OPF work order completions logged on this date.
+                    <div className="text-center py-8 text-slate-500 text-[13px]">
+                      No orders were completed on this date.
                     </div>
                   ) : (
                     <div className="overflow-x-auto border border-slate-200 rounded-xl">
-                      <table className="w-full text-xs text-left border-collapse bg-white">
-                        <thead className="bg-slate-50 text-slate-600 font-semibold text-xs  border-b border-slate-200">
+                      <table className="w-full text-[13px] text-left border-collapse bg-white">
+                        <thead className="bg-slate-50 text-slate-600 font-semibold text-[13px]  border-b border-slate-200">
                           <tr>
-                            <th className="p-2.5">OPF No</th>
+                            <th className="p-2.5">Order no.</th>
                             <th className="p-2.5">Model / Upholstery</th>
                             <th className="p-2.5 text-right">Units</th>
                             <th className="p-2.5">Step</th>
@@ -1294,7 +1294,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                             <th className="p-2.5">Remarks</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 font-sans text-xs">
+                        <tbody className="divide-y divide-slate-100 font-sans text-[13px]">
                           {(Object.values(selectedDayDetail.stageBreakdown) as DayStepData[])
                             .flatMap(s => s.orders.map(o => ({ ...o, stageName: s.stage, stepCode: s.stepCode })))
                             .map((ord, idx) => (
@@ -1302,20 +1302,20 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                                 <td className="p-2.5 font-semibold text-indigo-700 tabular-nums">{ord.opfNo}</td>
                                 <td className="p-2.5">
                                   <div className="font-semibold text-slate-800">{ord.modelName}</div>
-                                  <div className="text-xs text-slate-500">{ord.upholstery}</div>
+                                  <div className="text-[13px] text-slate-500">{ord.upholstery}</div>
                                 </td>
                                 <td className="p-2.5 text-right tabular-nums font-semibold text-slate-900">{ord.quantity}</td>
                                 <td className="p-2.5">
-                                  <span className="tabular-nums text-xs text-slate-500 mr-1">{ord.stepCode}</span>
+                                  <span className="tabular-nums text-[13px] text-slate-500 mr-1">{ord.stepCode}</span>
                                   <span className="font-medium text-slate-800">{ord.stageName}</span>
                                 </td>
                                 <td className="p-2.5 text-slate-600">{ord.responsible}</td>
                                 <td className="p-2.5">
-                                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                  <span className="px-2 py-0.5 rounded-full text-[13px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                                     {ord.status}
                                   </span>
                                 </td>
-                                <td className="p-2.5 text-slate-500 text-xs max-w-xs truncate">{ord.remarks || '-'}</td>
+                                <td className="p-2.5 text-slate-500 text-[13px] max-w-xs truncate">{ord.remarks || '-'}</td>
                               </tr>
                             ))}
                         </tbody>
@@ -1329,53 +1329,53 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
               {selectedModalTab === 'qcBatches' && (
                 <div className="space-y-3">
                   {selectedDayDetail.qcSubmissions.length === 0 ? (
-                    <div className="text-center py-8 text-slate-500 text-xs">
-                      No Google Form Final QC submissions recorded on {selectedDayDetail.dateDisplay}.
+                    <div className="text-center py-8 text-slate-500 text-[13px]">
+                      No Google Form Final inspection submissions recorded on {selectedDayDetail.dateDisplay}.
                     </div>
                   ) : (
                     <div className="overflow-x-auto border border-slate-200 rounded-xl">
-                      <table className="w-full text-xs text-left border-collapse bg-white">
-                        <thead className="bg-slate-50 text-slate-600 font-semibold text-xs  border-b border-slate-200">
+                      <table className="w-full text-[13px] text-left border-collapse bg-white">
+                        <thead className="bg-slate-50 text-slate-600 font-semibold text-[13px]  border-b border-slate-200">
                           <tr>
                             <th className="p-2.5">Timestamp</th>
-                            <th className="p-2.5">OPF No</th>
+                            <th className="p-2.5">Order no.</th>
                             <th className="p-2.5 text-right">Pass Qty</th>
                             <th className="p-2.5 text-right">Rej Qty</th>
                             <th className="p-2.5">Status</th>
-                            <th className="p-2.5">QC Inspector</th>
+                            <th className="p-2.5">Inspector</th>
                             <th className="p-2.5">Remarks</th>
                             <th className="p-2.5 text-center">Photos</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 font-sans text-xs">
+                        <tbody className="divide-y divide-slate-100 font-sans text-[13px]">
                           {selectedDayDetail.qcSubmissions.map((rec, idx) => (
                             <tr key={`${rec.opfNo}-${idx}`} className="hover:bg-slate-50">
-                              <td className="p-2.5 tabular-nums text-xs text-slate-500 whitespace-nowrap">{rec.timestamp}</td>
+                              <td className="p-2.5 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{rec.timestamp}</td>
                               <td className="p-2.5 font-semibold tabular-nums text-indigo-700">{rec.opfNo}</td>
                               <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-700">{rec.passQuantity}</td>
                               <td className="p-2.5 text-right tabular-nums text-rose-600">{rec.rejectedQuantity || 0}</td>
                               <td className="p-2.5">
-                                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                                <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold ${
                                   rec.status === 'Pass' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
                                 }`}>
                                   {rec.status}
                                 </span>
                               </td>
                               <td className="p-2.5 text-slate-700 font-medium">{rec.qcInspector}</td>
-                              <td className="p-2.5 text-slate-600 text-xs max-w-xs truncate">{rec.passRemarks || '-'}</td>
+                              <td className="p-2.5 text-slate-600 text-[13px] max-w-xs truncate">{rec.passRemarks || '-'}</td>
                               <td className="p-2.5 text-center">
                                 {rec.productImageUrls.length > 0 ? (
                                   <a
                                     href={rec.productImageUrls[0]}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="text-indigo-600 hover:underline text-xs font-semibold inline-flex items-center gap-0.5"
+                                    className="text-indigo-600 hover:underline text-[13px] font-semibold inline-flex items-center gap-0.5"
                                   >
                                     <span>{rec.productImageUrls.length} pic(s)</span>
                                     <ExternalLink className="w-2.5 h-2.5" />
                                   </a>
                                 ) : (
-                                  <span className="text-slate-400">-</span>
+                                  <span className="text-slate-500">-</span>
                                 )}
                               </td>
                             </tr>
@@ -1391,16 +1391,16 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
               {selectedModalTab === 'dispatchBatches' && (
                 <div className="space-y-3">
                   {selectedDayDetail.dispatchSubmissions.length === 0 ? (
-                    <div className="text-center py-8 text-slate-500 text-xs">
+                    <div className="text-center py-8 text-slate-500 text-[13px]">
                       No Google Form Dispatch submissions recorded on {selectedDayDetail.dateDisplay}.
                     </div>
                   ) : (
                     <div className="overflow-x-auto border border-slate-200 rounded-xl">
-                      <table className="w-full text-xs text-left border-collapse bg-white">
-                        <thead className="bg-slate-50 text-slate-600 font-semibold text-xs  border-b border-slate-200">
+                      <table className="w-full text-[13px] text-left border-collapse bg-white">
+                        <thead className="bg-slate-50 text-slate-600 font-semibold text-[13px]  border-b border-slate-200">
                           <tr>
                             <th className="p-2.5">Timestamp</th>
-                            <th className="p-2.5">OPF No</th>
+                            <th className="p-2.5">Order no.</th>
                             <th className="p-2.5">Model Name</th>
                             <th className="p-2.5 text-right">Boxes / Cartons</th>
                             <th className="p-2.5">Responsible</th>
@@ -1408,28 +1408,28 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                             <th className="p-2.5 text-center">Photo</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 font-sans text-xs">
+                        <tbody className="divide-y divide-slate-100 font-sans text-[13px]">
                           {selectedDayDetail.dispatchSubmissions.map((rec, idx) => (
                             <tr key={`${rec.id || rec.opfNo}-${idx}`} className="hover:bg-slate-50">
-                              <td className="p-2.5 tabular-nums text-xs text-slate-500 whitespace-nowrap">{rec.timestamp || '-'}</td>
+                              <td className="p-2.5 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{rec.timestamp || '-'}</td>
                               <td className="p-2.5 font-semibold tabular-nums text-indigo-700">{rec.opfNo || 'Direct Dispatch'}</td>
                               <td className="p-2.5 font-semibold text-slate-800">{rec.modelName || 'Dispatched Consignment'}</td>
                               <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-700">{rec.quantity} boxes</td>
                               <td className="p-2.5 text-slate-700 font-medium">Mr. Umesh</td>
-                              <td className="p-2.5 text-slate-600 text-xs max-w-xs truncate">{rec.remarks || '-'}</td>
+                              <td className="p-2.5 text-slate-600 text-[13px] max-w-xs truncate">{rec.remarks || '-'}</td>
                               <td className="p-2.5 text-center">
                                 {rec.pictureUrl ? (
                                   <a
                                     href={rec.pictureUrl}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="text-indigo-600 hover:underline text-xs font-semibold inline-flex items-center gap-0.5"
+                                    className="text-indigo-600 hover:underline text-[13px] font-semibold inline-flex items-center gap-0.5"
                                   >
                                     <span>View</span>
                                     <ExternalLink className="w-2.5 h-2.5" />
                                   </a>
                                 ) : (
-                                  <span className="text-slate-400">-</span>
+                                  <span className="text-slate-500">-</span>
                                 )}
                               </td>
                             </tr>
@@ -1446,7 +1446,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
             <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
               <button
                 onClick={() => setSelectedDayDetail(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-[13px] font-semibold transition-colors cursor-pointer"
               >
                 Close
               </button>

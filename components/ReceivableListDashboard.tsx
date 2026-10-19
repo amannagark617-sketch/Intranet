@@ -292,7 +292,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
           >
             <div className="text-[13px] font-medium text-slate-500">{c.label}</div>
             <div className="mt-2 text-2xl sm:text-3xl whitespace-nowrap font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
-            <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
+            <div className="mt-1 text-[13px] text-slate-500">{c.sub}</div>
           </button>
         ))}
       </div>
@@ -329,7 +329,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
               value={searchTerm}
@@ -338,7 +338,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
               className="w-full pl-9 pr-8 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 transition"
             />
             {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearchTerm('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600">
                 <X className="w-4 h-4" />
               </button>
             )}
@@ -390,7 +390,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
 
       {/* ERROR BANNER IF ANY */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg flex items-center justify-between text-xs">
+        <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg flex items-center justify-between text-[13px]">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
             <span>{error}</span>
@@ -418,7 +418,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                       <span className="text-sm font-medium text-slate-800">{grp.group}</span>
                       <span className="text-sm tabular-nums text-slate-600">
                         <span className="font-semibold text-slate-900">{formatInrCompact(grp.balanceAmount)}</span>
-                        <span className="text-slate-400"> · {grp.count} invoices</span>
+                        <span className="text-slate-500"> · {grp.count} invoices</span>
                       </span>
                     </div>
                     <div className="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden">
@@ -446,7 +446,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                 >
                   <span className="min-w-0">
                     <span className="block text-sm font-medium text-slate-800 truncate">{titleCase(inv.customerName)}</span>
-                    <span className="block text-xs text-slate-400 truncate">{inv.dueDate ? `Due ${inv.dueDate}` : inv.opfNo}</span>
+                    <span className="block text-[13px] text-slate-500 truncate">{inv.dueDate ? `Due ${inv.dueDate}` : inv.opfNo}</span>
                   </span>
                   <span className="shrink-0 text-sm font-semibold tabular-nums text-slate-900">{formatInrCompact(inv.balanceAmount)}</span>
                 </li>
@@ -469,13 +469,13 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                   </div>
                   <div>
                     <h2 className="text-sm font-semibold text-slate-900">Salesperson Outstanding</h2>
-                    <p className="text-xs text-slate-500">Click bar to filter by Salesperson</p>
+                    <p className="text-[13px] text-slate-500">Click bar to filter by Salesperson</p>
                   </div>
                 </div>
                 {selectedSalesPerson !== 'All' && (
                   <button
                     onClick={() => setSelectedSalesPerson('All')}
-                    className="text-xs font-semibold text-rose-600 hover:underline"
+                    className="text-[13px] font-semibold text-rose-600 hover:underline"
                   >
                     Clear Filter ({selectedSalesPerson})
                   </button>
@@ -529,13 +529,13 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                   </div>
                   <div>
                     <h2 className="text-sm font-semibold text-slate-900">Group Invoiced vs Received</h2>
-                    <p className="text-xs text-slate-500">Click bar to filter by Customer Group</p>
+                    <p className="text-[13px] text-slate-500">Click bar to filter by Customer Group</p>
                   </div>
                 </div>
                 {selectedGroup !== 'All' && (
                   <button
                     onClick={() => setSelectedGroup('All')}
-                    className="text-xs font-semibold text-rose-600 hover:underline"
+                    className="text-[13px] font-semibold text-rose-600 hover:underline"
                   >
                     Clear Filter ({selectedGroup})
                   </button>
@@ -590,13 +590,13 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
               <span className="text-sm font-semibold text-slate-900">
                 Receivables Invoices Ledger
               </span>
-              <span className="text-xs bg-indigo-100 text-indigo-800 tabular-nums font-semibold px-2 py-0.5 rounded">
+              <span className="text-[13px] bg-indigo-100 text-indigo-800 tabular-nums font-semibold px-2 py-0.5 rounded">
                 Showing {paginatedItems.length} of {sortedItems.length}
               </span>
             </div>
 
             {/* Page Size Selector */}
-            <div className="flex items-center gap-2 text-xs text-slate-600">
+            <div className="flex items-center gap-2 text-[13px] text-slate-600">
               <span>Show</span>
               <select
                 value={pageSize}
@@ -613,7 +613,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full text-left text-[13px] border-collapse">
               <thead>
                 <tr className="bg-slate-100 text-slate-700 border-b border-slate-200 font-semibold">
                   <th 
@@ -628,14 +628,14 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                   >
                     <div className="flex items-center gap-1">
                       <span>Customer Name</span>
-                      <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                      <ArrowUpDown className="w-3 h-3 text-slate-500" />
                     </div>
                   </th>
                   <th 
                     onClick={() => handleSort('opfNo')}
                     className="py-2.5 px-3 cursor-pointer hover:bg-slate-200 transition"
                   >
-                    Order / OPF
+                    Order
                   </th>
                   <th 
                     onClick={() => handleSort('salesPerson')}
@@ -669,7 +669,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                     Balance Due
                   </th>
                   <th className="py-2.5 px-3">Group</th>
-                  <th className="py-2.5 px-3">CRE / Sales</th>
+                  <th className="py-2.5 px-3">Follow-up owner</th>
                   <th className="py-2.5 px-3">Remarks</th>
                   <th className="py-2.5 px-3 text-center">Action</th>
                 </tr>
@@ -717,7 +717,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                       </td>
                       <td className="py-2.5 px-3">
                         <span 
-                          className="px-2 py-0.5 rounded text-xs font-semibold"
+                          className="px-2 py-0.5 rounded text-[13px] font-semibold"
                           style={{
                             backgroundColor: `${GROUP_COLORS[item.group] || '#64748b'}20`,
                             color: GROUP_COLORS[item.group] || '#334155'
@@ -729,7 +729,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                       <td className="py-2.5 px-3 text-slate-600 whitespace-nowrap">
                         {item.creSales}
                       </td>
-                      <td className="py-2.5 px-3 text-slate-600 max-w-[180px] truncate text-xs" title={item.remarks}>
+                      <td className="py-2.5 px-3 text-slate-600 max-w-[180px] truncate text-[13px]" title={item.remarks}>
                         {item.remarks || '-'}
                       </td>
                       <td className="py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
@@ -738,8 +738,8 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                             href={item.formLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded text-xs font-semibold transition border border-indigo-200"
-                            title="Open FMS Google Form to log follow-up"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded text-[13px] font-semibold transition border border-indigo-200"
+                            title="Open the follow-up form"
                           >
                             <span>Form</span>
                             <ExternalLink className="w-2.5 h-2.5" />
@@ -747,7 +747,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                         ) : (
                           <button
                             onClick={() => setSelectedItem(item)}
-                            className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold"
+                            className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[13px] font-semibold"
                           >
                             View
                           </button>
@@ -762,7 +762,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50 text-xs">
+            <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50 text-[13px]">
               <span className="text-slate-600">
                 Page <span className="font-semibold text-slate-900">{currentPage}</span> of <span className="font-semibold text-slate-900">{totalPages}</span>
               </span>
@@ -794,38 +794,38 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
             {/* Modal Header */}
             <div className="bg-slate-900 text-white p-5 rounded-t-2xl flex items-start justify-between">
               <div>
-                <span className="text-xs tabular-nums font-semibold text-amber-400">S.No #{selectedItem.sNo}</span>
+                <span className="text-[13px] tabular-nums font-semibold text-amber-400">S.No #{selectedItem.sNo}</span>
                 <h3 className="text-lg font-semibold text-white mt-0.5">{selectedItem.customerName}</h3>
-                <p className="text-xs text-slate-300 tabular-nums">OPF: {selectedItem.opfNo}</p>
+                <p className="text-[13px] text-slate-300 tabular-nums">OPF: {selectedItem.opfNo}</p>
               </div>
               <button
                 onClick={() => setSelectedItem(null)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg bg-slate-800"
+                className="p-1 text-slate-500 hover:text-white rounded-lg bg-slate-800"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-5 text-xs text-slate-700">
+            <div className="p-6 space-y-5 text-[13px] text-slate-700">
               {/* Key Financial Badges */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                  <span className="text-xs text-slate-500 font-semibold block">Invoice Amount</span>
+                  <span className="text-[13px] text-slate-500 font-semibold block">Invoice Amount</span>
                   <span className="text-base font-semibold tabular-nums text-slate-900 block mt-0.5">
                     ₹{formatCurrency(selectedItem.invoiceAmount)}
                   </span>
                 </div>
 
                 <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-center">
-                  <span className="text-xs text-emerald-700 font-semibold block">Received</span>
+                  <span className="text-[13px] text-emerald-700 font-semibold block">Received</span>
                   <span className="text-base font-semibold tabular-nums text-emerald-800 block mt-0.5">
                     ₹{formatCurrency(selectedItem.receivedAmount)}
                   </span>
                 </div>
 
                 <div className="bg-amber-50 p-3 rounded-xl border border-amber-300 text-center">
-                  <span className="text-xs text-amber-800 font-semibold block">Balance Due</span>
+                  <span className="text-[13px] text-amber-800 font-semibold block">Balance Due</span>
                   <span className="text-base font-semibold tabular-nums text-amber-900 block mt-0.5">
                     ₹{formatCurrency(selectedItem.balanceAmount)}
                   </span>
@@ -835,43 +835,43 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
               {/* Order & Billing Details */}
               <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <div>
-                  <span className="text-xs text-slate-400 block font-semibold">Sales Person</span>
-                  <span className="font-semibold text-slate-800 text-xs">{selectedItem.salesPerson || '-'}</span>
+                  <span className="text-[13px] text-slate-500 block font-semibold">Sales Person</span>
+                  <span className="font-semibold text-slate-800 text-[13px]">{selectedItem.salesPerson || '-'}</span>
                 </div>
 
                 <div>
-                  <span className="text-xs text-slate-400 block font-semibold">Group</span>
-                  <span className="font-semibold text-indigo-700 text-xs">{selectedItem.group || '-'}</span>
+                  <span className="text-[13px] text-slate-500 block font-semibold">Group</span>
+                  <span className="font-semibold text-indigo-700 text-[13px]">{selectedItem.group || '-'}</span>
                 </div>
 
                 <div>
-                  <span className="text-xs text-slate-400 block font-semibold">Invoice Date</span>
-                  <span className="tabular-nums text-slate-800 text-xs">{selectedItem.invoiceDate || '-'}</span>
+                  <span className="text-[13px] text-slate-500 block font-semibold">Invoice Date</span>
+                  <span className="tabular-nums text-slate-800 text-[13px]">{selectedItem.invoiceDate || '-'}</span>
                 </div>
 
                 <div>
-                  <span className="text-xs text-slate-400 block font-semibold">Due Date</span>
-                  <span className="tabular-nums text-slate-800 text-xs">{selectedItem.dueDate || '-'}</span>
+                  <span className="text-[13px] text-slate-500 block font-semibold">Due Date</span>
+                  <span className="tabular-nums text-slate-800 text-[13px]">{selectedItem.dueDate || '-'}</span>
                 </div>
 
                 <div className="col-span-2">
-                  <span className="text-xs text-slate-400 block font-semibold">Invoice Number(s)</span>
-                  <span className="tabular-nums text-slate-800 text-xs break-all">{selectedItem.invoiceNo || '-'}</span>
+                  <span className="text-[13px] text-slate-500 block font-semibold">Invoice Number(s)</span>
+                  <span className="tabular-nums text-slate-800 text-[13px] break-all">{selectedItem.invoiceNo || '-'}</span>
                 </div>
               </div>
 
               {/* Follow-Up & Remarks */}
               <div className="space-y-3">
                 <div className="bg-indigo-50/60 p-3.5 rounded-xl border border-indigo-100">
-                  <span className="text-xs font-semibold text-indigo-900 block mb-1">CRE / Sales Follow-Up</span>
-                  <div className="flex items-center justify-between text-xs">
+                  <span className="text-[13px] font-semibold text-indigo-900 block mb-1">Follow-up owner</span>
+                  <div className="flex items-center justify-between text-[13px]">
                     <span className="font-semibold text-indigo-950">Follow-Up By: {selectedItem.creSales || 'Not Assigned'}</span>
                     <span className="tabular-nums bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-800">
                       Status: {selectedItem.status || 'Pending'}
                     </span>
                   </div>
                   {selectedItem.creRemarks && (
-                    <p className="mt-2 text-indigo-900 text-xs font-medium bg-white p-2.5 rounded border border-indigo-100">
+                    <p className="mt-2 text-indigo-900 text-[13px] font-medium bg-white p-2.5 rounded border border-indigo-100">
                       {selectedItem.creRemarks}
                     </p>
                   )}
@@ -879,8 +879,8 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
 
                 {selectedItem.remarks && (
                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <span className="text-xs font-semibold text-slate-500 block mb-1">General Remarks</span>
-                    <p className="text-slate-800 text-xs">{selectedItem.remarks}</p>
+                    <span className="text-[13px] font-semibold text-slate-500 block mb-1">General Remarks</span>
+                    <p className="text-slate-800 text-[13px]">{selectedItem.remarks}</p>
                   </div>
                 )}
               </div>
@@ -889,7 +889,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
                 <button
                   onClick={() => setSelectedItem(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition text-xs"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition text-[13px]"
                 >
                   Close
                 </button>
@@ -898,7 +898,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                     href={selectedItem.formLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition text-xs flex items-center gap-1.5 shadow-xs"
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition text-[13px] flex items-center gap-1.5 shadow-xs"
                   >
                     <span>Open Follow-Up Google Form</span>
                     <ExternalLink className="w-3.5 h-3.5" />

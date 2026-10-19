@@ -210,10 +210,10 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                         {getBadgeForType(pin.resourceType).icon}
                       </div>
                       <div className="overflow-hidden">
-                        <div className="text-xs font-semibold text-slate-900 truncate group-hover:text-indigo-900">
+                        <div className="text-[13px] font-semibold text-slate-900 truncate group-hover:text-indigo-900">
                           {pin.title}
                         </div>
-                        <div className="text-xs text-slate-500 truncate">
+                        <div className="text-[13px] text-slate-500 truncate">
                           {pin.category}
                         </div>
                       </div>
@@ -230,7 +230,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             {/* Search Input */}
             <div className="relative flex-1 max-w-xl">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
@@ -241,7 +241,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-semibold cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-slate-500 hover:text-slate-600 font-semibold cursor-pointer"
                 >
                   Clear
                 </button>
@@ -253,20 +253,20 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
               <select
                 value={selectedType}
                 onChange={e => setSelectedType(e.target.value as ResourceType | 'ALL')}
-                className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-[13px] font-semibold text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 cursor-pointer"
               >
                 <option value="ALL">All types</option>
                 <option value="Google Sheet">Google Sheets</option>
                 <option value="Web App / Portal">Web Apps & Portals</option>
                 <option value="Google Drive">Drive Archives</option>
-                <option value="Looker Studio">Looker BI Dashboards</option>
+                <option value="Looker Studio">Looker dashboards</option>
                 <option value="External Link">External Links</option>
               </select>
 
               <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
                 <button
                   onClick={() => setViewFormat('grid')}
-                  className={`p-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${
+                  className={`p-1.5 rounded-lg text-[13px] font-semibold transition-all cursor-pointer flex items-center gap-1 ${
                     viewFormat === 'grid' ? 'bg-white text-indigo-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
                   title="Card Grid View"
@@ -275,7 +275,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                 </button>
                 <button
                   onClick={() => setViewFormat('table')}
-                  className={`p-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 ${
+                  className={`p-1.5 rounded-lg text-[13px] font-semibold transition-all cursor-pointer flex items-center gap-1 ${
                     viewFormat === 'table' ? 'bg-white text-indigo-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
                   title="Compact Table View"
@@ -287,7 +287,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
               <button
                 onClick={() => loadData(true)}
                 disabled={isRefreshing}
-                className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-xl text-xs font-semibold transition-all cursor-pointer disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-xl text-[13px] font-semibold transition-all cursor-pointer disabled:opacity-50"
                 title="Refresh Directory Resources"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-indigo-600' : ''}`} />
@@ -309,7 +309,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                 <button
                   key={cat.value}
                   onClick={() => setSelectedCategory(cat.value)}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-[13px] font-semibold whitespace-nowrap transition-all cursor-pointer border ${
                     isSelected
                       ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
@@ -317,7 +317,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                 >
                   {cat.icon}
                   <span>{cat.label}</span>
-                  <span className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${
+                  <span className={`px-1.5 py-0.5 rounded-full text-[13px] font-semibold ${
                     isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
                   }`}>
                     {count}
@@ -338,7 +338,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
 
         {/* Results Count */}
         {!isLoading && (
-          <div className="flex items-center justify-between text-xs text-slate-500 px-1 font-medium">
+          <div className="flex items-center justify-between text-[13px] text-slate-500 px-1 font-medium">
             <span>
               Showing <strong className="text-slate-800">{filteredResources.length}</strong> of {resources.length} resources
             </span>
@@ -365,10 +365,10 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-xs font-semibold px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md">
+                        <span className="text-[13px] font-semibold px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md">
                           #{res.sNo}
                         </span>
-                        <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${catColor}`}>
+                        <span className={`text-[13px] font-semibold px-2.5 py-0.5 rounded-full border ${catColor}`}>
                           {res.category}
                         </span>
                       </div>
@@ -378,7 +378,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                         className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                           isPinned 
                             ? 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100' 
-                            : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                            : 'text-slate-500 hover:text-slate-600 hover:bg-slate-100'
                         }`}
                         title={isPinned ? 'Unpin' : 'Pin to top'}
                       >
@@ -391,19 +391,19 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                       <h3 className="text-base font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 leading-snug">
                         {res.title}
                       </h3>
-                      <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed min-h-[32px]">
+                      <p className="text-[13px] text-slate-500 mt-1 line-clamp-2 leading-relaxed min-h-[32px]">
                         {res.description}
                       </p>
                     </div>
 
                     {/* Format Badge & Tags */}
                     <div className="flex items-center gap-1.5 flex-wrap pt-1">
-                      <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-md border ${typeBadge.bg}`}>
+                      <span className={`inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded-md border ${typeBadge.bg}`}>
                         {typeBadge.icon}
                         <span>{typeBadge.label}</span>
                       </span>
                       {res.tags.map(t => (
-                        <span key={t} className="text-xs font-medium px-2 py-0.5 bg-slate-50 text-slate-600 rounded-md border border-slate-100">
+                        <span key={t} className="text-[13px] font-medium px-2 py-0.5 bg-slate-50 text-slate-600 rounded-md border border-slate-100">
                           {t}
                         </span>
                       ))}
@@ -414,18 +414,18 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                   <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between gap-2">
                     <button
                       onClick={(e) => handleCopyLink(res.link, res.id, e)}
-                      className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 text-[13px] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                       title="Copy URL"
                     >
                       {copiedId === res.id ? (
                         <>
                           <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          <span className="text-xs text-emerald-600 font-semibold">Copied!</span>
+                          <span className="text-[13px] text-emerald-600 font-semibold">Copied!</span>
                         </>
                       ) : (
                         <>
                           <Copy className="w-3.5 h-3.5" />
-                          <span className="text-xs">Copy Link</span>
+                          <span className="text-[13px]">Copy Link</span>
                         </>
                       )}
                     </button>
@@ -434,7 +434,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                       href={res.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition-all shadow-xs hover:shadow-sm cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[13px] font-semibold transition-all shadow-xs hover:shadow-sm cursor-pointer"
                     >
                       <span>Open</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -452,7 +452,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/80 border-b border-slate-200 text-xs font-semibold text-slate-500">
+                  <tr className="bg-slate-50/80 border-b border-slate-200 text-[13px] font-semibold text-slate-500">
                     <th className="py-3 px-4 w-12 text-center">#</th>
                     <th className="py-3 px-4">Resource / Sheet Name</th>
                     <th className="py-3 px-4">Category</th>
@@ -461,7 +461,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
+                <tbody className="divide-y divide-slate-100 text-[13px] text-slate-700">
                   {filteredResources.map((res) => {
                     const typeBadge = getBadgeForType(res.resourceType);
                     const catColor = getCategoryColor(res.category);
@@ -469,7 +469,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
 
                     return (
                       <tr key={res.id} className="hover:bg-indigo-50/40 transition-colors group">
-                        <td className="py-3 px-4 font-semibold text-slate-400 text-center">
+                        <td className="py-3 px-4 font-semibold text-slate-500 text-center">
                           {res.sNo}
                         </td>
                         <td className="py-3 px-4 font-semibold text-slate-900 group-hover:text-indigo-600">
@@ -479,12 +479,12 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                           </div>
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap">
-                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${catColor}`}>
+                          <span className={`text-[13px] font-semibold px-2 py-0.5 rounded-full border ${catColor}`}>
                             {res.category}
                           </span>
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-md border ${typeBadge.bg}`}>
+                          <span className={`inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded-md border ${typeBadge.bg}`}>
                             {typeBadge.icon}
                             <span>{typeBadge.label}</span>
                           </span>
@@ -496,7 +496,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                           <div className="inline-flex items-center gap-1.5">
                             <button
                               onClick={(e) => handleCopyLink(res.link, res.id, e)}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                               title="Copy URL"
                             >
                               {copiedId === res.id ? (
@@ -509,7 +509,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                               href={res.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition-all"
+                              className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[13px] font-semibold transition-all"
                             >
                               <span>Open</span>
                               <ExternalLink className="w-3 h-3" />
@@ -530,7 +530,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
           <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 space-y-3">
             <Search className="w-10 h-10 text-slate-300 mx-auto" />
             <h3 className="text-base font-semibold text-slate-800">No matching resources found</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            <p className="text-[13px] text-slate-500 max-w-sm mx-auto">
               We couldn&apos;t find any company resource matching your search or active filter. Try resetting your search query or selecting &ldquo;All Resources&rdquo;.
             </p>
             <button
@@ -539,7 +539,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                 setSelectedCategory('ALL');
                 setSelectedType('ALL');
               }}
-              className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-semibold hover:bg-indigo-100 transition-all cursor-pointer"
+              className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-[13px] font-semibold hover:bg-indigo-100 transition-all cursor-pointer"
             >
               Reset All Filters
             </button>

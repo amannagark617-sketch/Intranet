@@ -29,26 +29,26 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
     if (!status) return <span className="text-slate-300">-</span>;
     if (status === 'Completed') {
       return (
-        <span className="px-1.5 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+        <span className="px-1.5 py-0.5 rounded text-[13px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
           Pass / Done
         </span>
       );
     }
     if (isCurrent || status === 'In Progress') {
       return (
-        <span className="px-1.5 py-0.5 rounded text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse whitespace-nowrap">
-          WIP
+        <span className="px-1.5 py-0.5 rounded text-[13px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse whitespace-nowrap">
+          In progress
         </span>
       );
     }
     if (status === 'Delayed' || status === 'Failed QC') {
       return (
-        <span className="px-1.5 py-0.5 rounded text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap">
+        <span className="px-1.5 py-0.5 rounded text-[13px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap">
           Hold / Delay
         </span>
       );
     }
-    return <span className="text-slate-400 text-xs">Pending</span>;
+    return <span className="text-slate-500 text-[13px]">Pending</span>;
   };
 
   return (
@@ -64,23 +64,23 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
               <h3 className="text-sm font-semibold text-slate-900">
                 Data sheet
               </h3>
-              <span className="text-xs text-slate-500 tabular-nums">{orders.length} orders</span>
+              <span className="text-[13px] text-slate-500 tabular-nums">{orders.length} orders</span>
             </div>
-            <p className="text-xs text-slate-500">All 14 steps for every order. Scroll sideways to see them all.</p>
+            <p className="text-[13px] text-slate-500">All 14 steps for every order. Scroll sideways to see them all.</p>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex items-center gap-3 text-xs text-slate-600">
+          <div className="hidden sm:flex items-center gap-3 text-[13px] text-slate-600">
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Completed</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block animate-pulse"></span> WIP Stage</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block animate-pulse"></span> In progress</span>
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Hold / Delay</span>
           </div>
 
           <button
             onClick={() => exportOrdersToExcel(orders, `PMS_Production_Orders_${new Date().toISOString().slice(0, 10)}.xlsx`, 'PMS Live Orders')}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-all cursor-pointer"
-            title="Export full PMS Matrix orders to Excel"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[13px] font-semibold shadow-xs transition-all cursor-pointer"
+            title="Export all orders to Excel"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export</span>
@@ -90,11 +90,11 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
 
       {/* Overflow Table Container */}
       <div className="overflow-x-auto overflow-y-auto max-h-[700px] border-t border-slate-200 scrollbar-thin">
-        <table className="w-full text-left text-xs border-collapse min-w-[2800px]">
+        <table className="w-full text-left text-[13px] border-collapse min-w-[2800px]">
           {/* Header Row 1: Steps & Timelines */}
           <thead>
             <tr className="bg-slate-800 text-slate-100 border-b border-slate-700">
-              <th colSpan={7} className="p-2.5 text-center font-semibold text-rose-300 border-r border-slate-700 text-xs sticky left-0 z-20 bg-slate-900">
+              <th colSpan={7} className="p-2.5 text-center font-semibold text-rose-300 border-r border-slate-700 text-[13px] sticky left-0 z-20 bg-slate-900">
                 PMS (Production Management System) - Order Identification
               </th>
               <th colSpan={4} className="p-2 text-center font-semibold border-r border-slate-700 bg-slate-800 text-slate-200">
@@ -142,7 +142,7 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
             </tr>
 
             {/* Header Row 2: How (Google Forms & Methods) */}
-            <tr className="bg-slate-100 text-slate-700 border-b border-slate-200 text-xs">
+            <tr className="bg-slate-100 text-slate-700 border-b border-slate-200 text-[13px]">
               <th colSpan={7} className="p-1.5 text-center font-medium border-r border-slate-300 sticky left-0 z-20 bg-slate-100">
                 How (Update Method)
               </th>
@@ -163,7 +163,7 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
             </tr>
 
             {/* Header Row 3: Responsible Person (Pinkish / Warm accent) */}
-            <tr className="bg-indigo-50 text-indigo-900 border-b border-indigo-200 text-xs">
+            <tr className="bg-indigo-50 text-indigo-900 border-b border-indigo-200 text-[13px]">
               <th colSpan={7} className="p-1.5 text-center font-semibold border-r border-indigo-200 sticky left-0 z-20 bg-indigo-100 text-indigo-950">
                 Responsible Person
               </th>
@@ -184,7 +184,7 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
             </tr>
 
             {/* Header Row 4: Stages of Production */}
-            <tr className="bg-amber-100 text-amber-950 border-b border-amber-300 text-xs font-semibold">
+            <tr className="bg-amber-100 text-amber-950 border-b border-amber-300 text-[13px] font-semibold">
               <th colSpan={7} className="p-2 text-center border-r border-amber-300 sticky left-0 z-20 bg-amber-200 text-amber-950">
                 Stages of Production
               </th>
@@ -205,14 +205,14 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
             </tr>
 
             {/* Header Row 5: Column Subheaders */}
-            <tr className="bg-slate-100 text-slate-700 border-b border-slate-300 text-xs font-semibold sticky top-0 z-10">
+            <tr className="bg-slate-100 text-slate-700 border-b border-slate-300 text-[13px] font-semibold sticky top-0 z-10">
               {/* Order Info Sticky Columns */}
               <th className="p-2 border-r border-slate-300 sticky left-0 z-30 bg-slate-200 w-28">Target Dispatch</th>
-              <th className="p-2 border-r border-slate-300 sticky left-28 z-30 bg-slate-200 w-28">OPF No.</th>
+              <th className="p-2 border-r border-slate-300 sticky left-28 z-30 bg-slate-200 w-28">Order no.</th>
               <th className="p-2 border-r border-slate-200 text-center w-16">Qty (units)</th>
               <th className="p-2 border-r border-slate-200 w-44">Model Of Recliners</th>
               <th className="p-2 border-r border-slate-200 w-48">Upholstery Type & Code</th>
-              <th className="p-2 border-r border-slate-200 w-28">OPF Receive</th>
+              <th className="p-2 border-r border-slate-200 w-28">Order received</th>
               <th className="p-2 border-r border-slate-300 w-24">Action</th>
 
               {/* 1. Carpentry */}
@@ -336,13 +336,13 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                   <td className="p-2 border-r border-slate-200 text-slate-600 max-w-[200px] truncate" title={order.upholstery}>
                     {order.upholstery}
                   </td>
-                  <td className="p-2 border-r border-slate-200 text-slate-500 tabular-nums text-xs whitespace-nowrap">
+                  <td className="p-2 border-r border-slate-200 text-slate-500 tabular-nums text-[13px] whitespace-nowrap">
                     {formatDateDDMMMYYYY(order.opfReceiveDate)}
                   </td>
                   <td className="p-2 border-r border-slate-300 text-center">
                     <button 
                       onClick={(e) => { e.stopPropagation(); onSelectOrder(order); }}
-                      className="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-semibold flex items-center gap-1 mx-auto transition-colors"
+                      className="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[13px] font-semibold flex items-center gap-1 mx-auto transition-colors"
                     >
                       <Eye className="w-3 h-3" /> View
                     </button>
@@ -354,9 +354,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'CARPENTRY';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-300 text-center">{getStatusBadge(s?.status, isCurr)}</td>
                       </>
                     );
@@ -368,11 +368,11 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'CARPENTRY QUALITY CONTROL';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-200 text-center">{getStatusBadge(s?.status, isCurr)}</td>
-                        <td className="p-1.5 border-r border-slate-300 text-xs text-slate-600 truncate max-w-[120px]" title={s?.remarks || ''}>
+                        <td className="p-1.5 border-r border-slate-300 text-[13px] text-slate-600 truncate max-w-[120px]" title={s?.remarks || ''}>
                           {s?.remarks || '-'}
                         </td>
                       </>
@@ -385,9 +385,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'UPHOLSTERY AVAILABLE';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-300 text-center">{getStatusBadge(s?.status, isCurr)}</td>
                       </>
                     );
@@ -399,9 +399,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'CUTTING OF UPHOLSTERY';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-300 text-center">{getStatusBadge(s?.status, isCurr)}</td>
                       </>
                     );
@@ -413,9 +413,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'STITCHING OF UPHOLSTERY';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-300 text-center">{getStatusBadge(s?.status, isCurr)}</td>
                       </>
                     );
@@ -427,9 +427,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'AVAILABILITY OF BOXES';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-300 text-center">{getStatusBadge(s?.status, isCurr)}</td>
                       </>
                     );
@@ -441,9 +441,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'LINING & FOAMING';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-300 text-center">{getStatusBadge(s?.status, isCurr)}</td>
                       </>
                     );
@@ -455,9 +455,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'UPHOLSTERY';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-300 text-center">{getStatusBadge(s?.status, isCurr)}</td>
                       </>
                     );
@@ -469,11 +469,11 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'UPHOLSTERY QUALITY CONTROL';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-200 text-center">{getStatusBadge(s?.status, isCurr)}</td>
-                        <td className="p-1.5 border-r border-slate-300 text-xs text-slate-600 truncate max-w-[120px]" title={s?.remarks || ''}>
+                        <td className="p-1.5 border-r border-slate-300 text-[13px] text-slate-600 truncate max-w-[120px]" title={s?.remarks || ''}>
                           {s?.remarks || '-'}
                         </td>
                       </>
@@ -486,9 +486,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'FITTING';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-300 text-center">{getStatusBadge(s?.status, isCurr)}</td>
                       </>
                     );
@@ -500,11 +500,11 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'QUALITY CONTROL';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
                         <td className="p-1.5 border-r border-slate-200 text-center font-semibold text-emerald-700">{s?.qtyPass ?? '-'}</td>
                         <td className="p-1.5 border-r border-slate-200 text-center">{getStatusBadge(s?.status, isCurr)}</td>
-                        <td className="p-1.5 border-r border-slate-300 text-xs text-rose-700 truncate max-w-[120px]" title={s?.reasonOfFail || ''}>
+                        <td className="p-1.5 border-r border-slate-300 text-[13px] text-rose-700 truncate max-w-[120px]" title={s?.reasonOfFail || ''}>
                           {s?.reasonOfFail || '-'}
                         </td>
                       </>
@@ -517,9 +517,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'PICTURE SHARING';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">
                           {s?.attachment ? <span className="text-indigo-700 font-semibold">✓ Attached</span> : '-'}
                         </td>
                         <td className="p-1.5 border-r border-slate-300 text-center">{getStatusBadge(s?.status, isCurr)}</td>
@@ -533,11 +533,11 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'PACKING';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 border-r border-slate-200 text-center">{getStatusBadge(s?.status, isCurr)}</td>
-                        <td className="p-1.5 border-r border-slate-300 text-center text-xs">{s?.delayDays ?? '0'}</td>
+                        <td className="p-1.5 border-r border-slate-300 text-center text-[13px]">{s?.delayDays ?? '0'}</td>
                       </>
                     );
                   })()}
@@ -548,9 +548,9 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
                     const isCurr = order.currentStage === 'DISPATCH';
                     return (
                       <>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-xs text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
-                        <td className="p-1.5 border-r border-slate-200 text-center text-xs">{s?.delay ? `+${s.delay}` : '0'}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-500 whitespace-nowrap">{formatDateDDMMMYYYY(s?.plannedDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 tabular-nums text-[13px] text-slate-800 font-medium whitespace-nowrap">{formatDateDDMMMYYYY(s?.actualDate)}</td>
+                        <td className="p-1.5 border-r border-slate-200 text-center text-[13px]">{s?.delay ? `+${s.delay}` : '0'}</td>
                         <td className="p-1.5 text-center">{getStatusBadge(s?.status, isCurr)}</td>
                       </>
                     );

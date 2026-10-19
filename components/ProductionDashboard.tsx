@@ -70,7 +70,7 @@ const StatTile: React.FC<{
       {label}
     </div>
     <div className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">{value}</div>
-    <div className="mt-1 text-xs text-slate-400">{sub}</div>
+    <div className="mt-1 text-[13px] text-slate-500">{sub}</div>
   </button>
 );
 
@@ -184,8 +184,8 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
         }
       }
     } catch (err: any) {
-      console.error('Failed to load Final QC responses or Dispatch records:', err);
-      setQcError(err?.message || 'Could not load Final QC data');
+      console.error('Failed to load Final inspection responses or Dispatch records:', err);
+      setQcError(err?.message || 'Could not load Final inspection data');
     } finally {
       setLoadingQc(false);
       setLoadingDispatch(false);
@@ -730,7 +730,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
   const pace = (() => {
     const met = productionTarget > 0 && liveProducedTillDate >= productionTarget;
     if (met) return { label: 'Target reached', pill: 'bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500', bar: 'bg-emerald-500' };
-    if (daysRemaining === 0) return { label: 'Month closed short', pill: 'bg-rose-50 text-rose-700', dot: 'bg-rose-500', bar: 'bg-rose-500' };
+    if (daysRemaining === 0) return { label: 'Ended below target', pill: 'bg-rose-50 text-rose-700', dot: 'bg-rose-500', bar: 'bg-rose-500' };
     if (actualPerDay >= newTargetPerDay) return { label: 'On pace', pill: 'bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500', bar: 'bg-emerald-500' };
     if (actualPerDay >= newTargetPerDay * 0.85) return { label: 'Slightly behind', pill: 'bg-amber-50 text-amber-700', dot: 'bg-amber-500', bar: 'bg-amber-400' };
     return { label: 'Behind pace', pill: 'bg-rose-50 text-rose-700', dot: 'bg-rose-500', bar: 'bg-rose-500' };
@@ -768,7 +768,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
         </div>
 
         <div className="flex items-center gap-2 bg-white border border-slate-200 hover:border-slate-300 rounded-lg px-3 py-2 transition-colors self-start sm:self-auto">
-          <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+          <Calendar className="w-4 h-4 text-slate-500 shrink-0" />
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
@@ -813,8 +813,8 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h2 className="text-sm font-medium text-slate-500">{selectedMonthDisplay} · Chairs passed final QC</h2>
-                  <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold ${pace.pill}`}>
+                  <h2 className="text-sm font-medium text-slate-500">{selectedMonthDisplay} · Chairs passed final inspection</h2>
+                  <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[13px] font-semibold ${pace.pill}`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${pace.dot}`} />
                     {pace.label}
                   </span>
@@ -824,7 +824,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   <span className="text-5xl sm:text-6xl font-semibold tracking-tight text-slate-900 tabular-nums">
                     {liveProducedTillDate.toLocaleString()}
                   </span>
-                  <span className="text-lg text-slate-400">of</span>
+                  <span className="text-lg text-slate-500">of</span>
                   {isEditingTarget ? (
                     <span className="inline-flex items-center gap-1.5">
                       <input
@@ -867,21 +867,21 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
 
               <dl className="grid grid-cols-3 gap-6 lg:gap-8 lg:pl-8 lg:border-l border-slate-100 shrink-0">
                 <div>
-                  <dt className="text-xs font-medium text-slate-400">Daily pace</dt>
+                  <dt className="text-[13px] font-medium text-slate-500">Daily pace</dt>
                   <dd className="mt-1.5 text-2xl font-semibold text-slate-900 tabular-nums">{actualPerDay}</dd>
-                  <dd className="text-xs text-slate-400">
+                  <dd className="text-[13px] text-slate-500">
                     {daysRemaining > 0 && shortfall > 0 ? `need ${newTargetPerDay}/day` : `target ${targetPerDay}/day`}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-medium text-slate-400">Days left</dt>
+                  <dt className="text-[13px] font-medium text-slate-500">Days left</dt>
                   <dd className="mt-1.5 text-2xl font-semibold text-slate-900 tabular-nums">{daysRemaining}</dd>
-                  <dd className="text-xs text-slate-400">of {totalDaysInMonth}</dd>
+                  <dd className="text-[13px] text-slate-500">of {totalDaysInMonth}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-medium text-slate-400">Projected</dt>
+                  <dt className="text-[13px] font-medium text-slate-500">Projected</dt>
                   <dd className="mt-1.5 text-2xl font-semibold text-slate-900 tabular-nums">{projectedOutput.toLocaleString()}</dd>
-                  <dd className="text-xs text-slate-400">by month end</dd>
+                  <dd className="text-[13px] text-slate-500">by month end</dd>
                 </div>
               </dl>
             </div>
@@ -902,7 +902,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               onClick={() => setShowDispatchDrawer(true)}
             />
             <StatTile
-              label="Passed QC, not sent"
+              label="Inspected, not sent"
               value={floorMetrics.qcPassedNotDispatched.toLocaleString()}
               sub={`${qcReconciliation.notDispatchedOpfs} orders`}
               accent={floorMetrics.qcPassedNotDispatched > 0 ? 'amber' : undefined}
@@ -943,7 +943,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   <span className="flex items-center gap-2 text-sm text-slate-600">
                     <span className={`w-2.5 h-2.5 rounded-full ${s.color}`} />
                     {s.label}
-                    <span className="text-xs text-slate-400">{s.hint}</span>
+                    <span className="text-[13px] text-slate-500">{s.hint}</span>
                   </span>
                   <span className="text-base font-semibold text-slate-900 tabular-nums">{s.value.toLocaleString()}</span>
                 </button>
@@ -1007,7 +1007,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden">
                 <div className="overflow-x-auto max-h-80 overflow-y-auto">
                   <table className="w-full min-w-[420px] text-sm text-left border-collapse">
-                    <thead className="bg-slate-50 text-slate-500 text-xs font-medium border-b border-slate-200 sticky top-0 z-10">
+                    <thead className="bg-slate-50 text-slate-500 text-[13px] font-medium border-b border-slate-200 sticky top-0 z-10">
                       <tr>
                         <th className="px-4 py-2.5 font-medium">Month</th>
                         <th className="px-4 py-2.5 font-medium text-right">Target</th>
@@ -1053,7 +1053,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
           {/* DETAILED RECORDS (collapsed; opens automatically from the tiles above) */}
           <Disclosure
             title="Detailed records"
-            subtitle="QC submissions, queue orders and dispatch entries"
+            subtitle="Inspection records, queue orders and dispatch entries"
             open={showAudit || showBatchDrawer || showQueueDrawer || showDispatchDrawer}
             onToggle={() => {
               const next = !(showAudit || showBatchDrawer || showQueueDrawer || showDispatchDrawer);
@@ -1072,15 +1072,15 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="p-1.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-200/60">
               <Layers className="w-4 h-4" />
             </div>
-            <span className="font-semibold text-xs text-slate-800">
-              Live Final QC Response Batch Submissions {qcViewScope === 'all' ? '(All Responses)' : `(${selectedMonthDisplay})`}
+            <span className="font-semibold text-[13px] text-slate-800">
+              Live Final inspection Response Batch Submissions {qcViewScope === 'all' ? '(All Responses)' : `(${selectedMonthDisplay})`}
             </span>
-            <span className="bg-amber-50 text-amber-900 border border-amber-200 text-xs px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
+            <span className="bg-amber-50 text-amber-900 border border-amber-200 text-[13px] px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
               {filteredBatchRecords.length} Submissions • {filteredBatchRecords.filter(r => r.status === 'Pass' || r.passQuantity > 0).reduce((acc, r) => acc + r.passQuantity, 0).toLocaleString()} Passed (Units)
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+          <div className="flex items-center gap-2 text-[13px] font-semibold text-slate-600">
             <span>{showBatchDrawer ? 'Hide Details' : 'View All Batches'}</span>
             {showBatchDrawer ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
           </div>
@@ -1092,7 +1092,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
               <div className="flex flex-wrap items-center gap-2">
                 {/* Scope selector: Current month vs All recorded responses */}
-                <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
+                <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-[13px]">
                   <button
                     onClick={() => setQcViewScope('month')}
                     className={`px-3 py-1 rounded-lg font-semibold transition-all ${
@@ -1113,7 +1113,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </div>
 
                 {/* Filter by Status */}
-                <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
+                <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-[13px]">
                   <button
                     onClick={() => setBatchFilterStatus('all')}
                     className={`px-3 py-1 rounded-lg font-semibold transition-all ${
@@ -1145,29 +1145,29 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
 
               {/* Search box */}
               <div className="relative flex items-center w-full sm:w-auto">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3" />
+                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3" />
                 <input
                   type="text"
-                  placeholder="Search OPF, inspector, remarks..."
+                  placeholder="Search order, inspector or remarks"
                   value={batchSearchTerm}
                   onChange={(e) => setBatchSearchTerm(e.target.value)}
-                  className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 outline-none w-full sm:w-64 focus:border-indigo-500 focus:bg-white transition-colors"
+                  className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[13px] font-medium text-slate-800 placeholder-slate-400 outline-none w-full sm:w-64 focus:border-indigo-500 focus:bg-white transition-colors"
                 />
               </div>
             </div>
 
             {/* Submissions Table */}
             {filteredBatchRecords.length === 0 ? (
-              <div className="text-center py-8 text-slate-500 text-xs font-medium">
-                No Final QC responses found matching the selected filters for {selectedMonthDisplay}.
+              <div className="text-center py-8 text-slate-500 text-[13px] font-medium">
+                No Final inspection responses found matching the selected filters for {selectedMonthDisplay}.
               </div>
             ) : (
               <div className="overflow-x-auto max-h-80 overflow-y-auto border border-slate-200/80 rounded-xl">
-                <table className="w-full text-xs text-left border-collapse bg-white">
-                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-xs  z-10">
+                <table className="w-full text-[13px] text-left border-collapse bg-white">
+                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-[13px]  z-10">
                     <tr>
                       <th className="p-2.5">Timestamp</th>
-                      <th className="p-2.5">OPF No</th>
+                      <th className="p-2.5">Order no.</th>
                       <th className="p-2.5">Factory</th>
                       <th className="p-2.5 text-right">Batch Qty</th>
                       <th className="p-2.5 text-right">Pass Qty</th>
@@ -1178,24 +1178,24 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                       <th className="p-2.5 text-center">Photos</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-sans text-xs">
+                  <tbody className="divide-y divide-slate-100 font-sans text-[13px]">
                     {filteredBatchRecords.map((rec, idx) => (
                       <tr key={`${rec.opfNo}-${rec.timestamp}-${idx}`} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="p-2.5 text-slate-500 text-xs tabular-nums whitespace-nowrap">{rec.timestamp}</td>
+                        <td className="p-2.5 text-slate-500 text-[13px] tabular-nums whitespace-nowrap">{rec.timestamp}</td>
                         <td className="p-2.5 font-semibold text-indigo-700 tabular-nums">{rec.opfNo}</td>
                         <td className="p-2.5 text-slate-600 tabular-nums">{rec.factoryNo || '-'}</td>
                         <td className="p-2.5 text-right tabular-nums font-semibold text-slate-900">{rec.totalQuantity}</td>
                         <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-700">{rec.passQuantity}</td>
                         <td className="p-2.5 text-right tabular-nums text-rose-600">{rec.rejectedQuantity || 0}</td>
                         <td className="p-2.5">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-semibold ${
                             rec.status === 'Pass' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
                           }`}>
                             {rec.status}
                           </span>
                         </td>
                         <td className="p-2.5 text-slate-700 font-medium">{rec.qcInspector}</td>
-                        <td className="p-2.5 text-slate-600 text-xs max-w-xs truncate" title={rec.passRemarks}>
+                        <td className="p-2.5 text-slate-600 text-[13px] max-w-xs truncate" title={rec.passRemarks}>
                           {rec.passRemarks || '-'}
                         </td>
                         <td className="p-2.5 text-center">
@@ -1204,13 +1204,13 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                               href={rec.productImageUrls[0]}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-indigo-600 hover:underline inline-flex items-center gap-0.5 text-xs font-medium"
+                              className="text-indigo-600 hover:underline inline-flex items-center gap-0.5 text-[13px] font-medium"
                             >
                               <span>{rec.productImageUrls.length} pic(s)</span>
                               <ExternalLink className="w-2.5 h-2.5" />
                             </a>
                           ) : (
-                            <span className="text-slate-400 text-xs">-</span>
+                            <span className="text-slate-500 text-[13px]">-</span>
                           )}
                         </td>
                       </tr>
@@ -1233,15 +1233,15 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="p-1.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-200/60">
               <Layers className="w-4 h-4" />
             </div>
-            <span className="font-semibold text-xs text-slate-800">
+            <span className="font-semibold text-[13px] text-slate-800">
               Chairs in Queue Orders Audit
             </span>
-            <span className="bg-amber-50 text-amber-900 border border-amber-200 text-xs px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
+            <span className="bg-amber-50 text-amber-900 border border-amber-200 text-[13px] px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
               {floorMetrics.inQueueCurrent.toLocaleString()} Cur. Month • {floorMetrics.backlogChairs.toLocaleString()} Backlog • {floorMetrics.holdChairs.toLocaleString()} On Hold • {floorMetrics.nextMonthChairs.toLocaleString()} Next Month
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+          <div className="flex items-center gap-2 text-[13px] font-semibold text-slate-600">
             <span>{showQueueDrawer ? 'Hide Details' : 'View Queue Orders'}</span>
             {showQueueDrawer ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
           </div>
@@ -1252,7 +1252,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             {/* Queue Filter Toolbar */}
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
               {/* Category Filter Pills */}
-              <div className="flex flex-wrap items-center gap-1.5 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
+              <div className="flex flex-wrap items-center gap-1.5 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-[13px]">
                 <button
                   onClick={() => setQueueFilterCategory('current')}
                   className={`px-3 py-1 rounded-lg font-semibold transition-all ${
@@ -1297,40 +1297,40 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
 
               {/* Search box */}
               <div className="relative flex items-center w-full sm:w-auto">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3" />
+                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3" />
                 <input
                   type="text"
-                  placeholder="Search OPF, model, stage..."
+                  placeholder="Search order, model or stage"
                   value={queueSearchTerm}
                   onChange={(e) => setQueueSearchTerm(e.target.value)}
-                  className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 outline-none w-full sm:w-56 focus:border-amber-500 focus:bg-white transition-colors"
+                  className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[13px] font-medium text-slate-800 placeholder-slate-400 outline-none w-full sm:w-56 focus:border-amber-500 focus:bg-white transition-colors"
                 />
               </div>
             </div>
 
             {/* In-Queue Table */}
             {filteredQueueOrders.length === 0 ? (
-              <div className="text-center py-8 text-slate-500 text-xs font-medium">
+              <div className="text-center py-8 text-slate-500 text-[13px] font-medium">
                 No active in-queue orders found for the selected filter ({queueFilterCategory}).
               </div>
             ) : (
               <div className="overflow-x-auto max-h-80 overflow-y-auto border border-slate-200/80 rounded-xl">
-                <table className="w-full text-xs text-left border-collapse bg-white">
-                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-xs  z-10">
+                <table className="w-full text-[13px] text-left border-collapse bg-white">
+                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-[13px]  z-10">
                     <tr>
-                      <th className="p-2.5">OPF No</th>
+                      <th className="p-2.5">Order no.</th>
                       <th className="p-2.5">Model Name</th>
                       <th className="p-2.5">Dispatch Date</th>
                       <th className="p-2.5">Current Stage</th>
                       <th className="p-2.5 text-right">Total Qty</th>
-                      <th className="p-2.5 text-right">QC Pass</th>
-                      <th className="p-2.5 text-center">QC Status</th>
+                      <th className="p-2.5 text-right">Passed</th>
+                      <th className="p-2.5 text-center">Inspection</th>
                       <th className="p-2.5 text-right bg-amber-50 text-amber-900 font-semibold">Remaining in Queue</th>
                       <th className="p-2.5">Queue Bucket</th>
                       <th className="p-2.5">Overall Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-sans text-xs">
+                  <tbody className="divide-y divide-slate-100 font-sans text-[13px]">
                     {filteredQueueOrders.map((item, idx) => (
                       <tr 
                         key={`${item.opfNo}-${idx}`} 
@@ -1340,16 +1340,16 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                       >
                         <td className="p-2.5 font-semibold text-indigo-700 tabular-nums">{item.opfNo}</td>
                         <td className="p-2.5 text-slate-900 font-medium">{item.modelName}</td>
-                        <td className="p-2.5 text-slate-600 tabular-nums text-xs">{item.dispatchDate || 'HOLD'}</td>
+                        <td className="p-2.5 text-slate-600 tabular-nums text-[13px]">{item.dispatchDate || 'HOLD'}</td>
                         <td className="p-2.5 text-slate-700">
-                          <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-xs font-semibold text-slate-800">
+                          <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-[13px] font-semibold text-slate-800">
                             {item.currentStage}
                           </span>
                         </td>
                         <td className="p-2.5 text-right tabular-nums font-semibold text-slate-700">{item.totalQty}</td>
                         <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-700">{item.qtyPass}</td>
                         <td className="p-2.5 text-center">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-semibold ${
                             (item.qcStatus || '').toLowerCase() === 'pass'
                               ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                               : (item.qcStatus || '').toLowerCase().includes('wip')
@@ -1359,7 +1359,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                             {item.qcStatus || 'Pending'}
                           </span>
                         </td>
-                        <td className="p-2.5 text-right tabular-nums font-semibold text-amber-950 bg-amber-50/60 text-xs">
+                        <td className="p-2.5 text-right tabular-nums font-semibold text-amber-950 bg-amber-50/60 text-[13px]">
                           {item.remainingQueue}
                         </td>
                         <td className="p-2.5">
@@ -1378,7 +1378,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                           </span>
                         </td>
                         <td className="p-2.5">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-medium ${
                             item.category === 'hold'
                               ? 'bg-amber-50 text-amber-900 border border-amber-200 font-semibold'
                               : 'bg-slate-100 text-slate-800'
@@ -1406,15 +1406,15 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="p-1.5 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-200/60">
               <Truck className="w-4 h-4" />
             </div>
-            <span className="font-semibold text-xs text-slate-800">
+            <span className="font-semibold text-[13px] text-slate-800">
               Dispatch Response Entries {dispatchViewScope === 'all' ? '(All Responses)' : `(${selectedMonthDisplay})`}
             </span>
-            <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
+            <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[13px] px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
               {filteredDispatchRecords.reduce((acc, r) => acc + r.quantity, 0).toLocaleString()} Boxes Dispatched • {filteredDispatchRecords.length} Entries
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+          <div className="flex items-center gap-2 text-[13px] font-semibold text-slate-600">
             <span>{showDispatchDrawer ? 'Hide Entries' : 'View Dispatch Entries'}</span>
             {showDispatchDrawer ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
           </div>
@@ -1425,7 +1425,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
                 {/* Scope selector: Current month vs All recorded responses */}
-                <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
+                <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-[13px]">
                   <button
                     onClick={() => setDispatchViewScope('month')}
                     className={`px-3 py-1 rounded-lg font-semibold transition-all ${
@@ -1448,55 +1448,55 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
 
               {/* Search box */}
               <div className="relative flex items-center">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3" />
+                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3" />
                 <input
                   type="text"
                   placeholder="Search timestamp or boxes..."
                   value={dispatchSearchTerm}
                   onChange={(e) => setDispatchSearchTerm(e.target.value)}
-                  className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 outline-none w-56 focus:border-indigo-500 focus:bg-white transition-colors"
+                  className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[13px] font-medium text-slate-800 placeholder-slate-400 outline-none w-56 focus:border-indigo-500 focus:bg-white transition-colors"
                 />
               </div>
             </div>
 
             {filteredDispatchRecords.length === 0 ? (
-              <div className="text-center py-8 text-slate-500 text-xs font-medium">
+              <div className="text-center py-8 text-slate-500 text-[13px] font-medium">
                 No dispatch responses found {dispatchViewScope === 'all' ? 'in sheet archive' : `for ${selectedMonthDisplay}`}.
               </div>
             ) : (
               <div className="overflow-x-auto max-h-80 overflow-y-auto border border-slate-200/80 rounded-xl">
-                <table className="w-full text-xs text-left border-collapse bg-white">
-                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-xs  z-10">
+                <table className="w-full text-[13px] text-left border-collapse bg-white">
+                  <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-[13px]  z-10">
                     <tr>
                       <th className="p-2.5 w-12 text-center">#</th>
                       <th className="p-2.5">Timestamp</th>
-                      <th className="p-2.5 font-semibold">OPF No.</th>
+                      <th className="p-2.5 font-semibold">Order no.</th>
                       <th className="p-2.5 text-right">Number of Boxes / Qty</th>
                       <th className="p-2.5">Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-sans text-xs">
+                  <tbody className="divide-y divide-slate-100 font-sans text-[13px]">
                     {filteredDispatchRecords.map((item, idx) => (
                       <tr key={`${item.id}-${idx}`} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="p-2.5 text-slate-400 text-xs tabular-nums text-center">
+                        <td className="p-2.5 text-slate-500 text-[13px] tabular-nums text-center">
                           {idx + 1}
                         </td>
-                        <td className="p-2.5 text-slate-600 tabular-nums text-xs whitespace-nowrap">
+                        <td className="p-2.5 text-slate-600 tabular-nums text-[13px] whitespace-nowrap">
                           {item.timestamp}
                         </td>
-                        <td className="p-2.5 tabular-nums font-semibold text-indigo-700 text-xs whitespace-nowrap">
+                        <td className="p-2.5 tabular-nums font-semibold text-indigo-700 text-[13px] whitespace-nowrap">
                           {item.opfNo ? (
                             <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
                               {item.opfNo}
                             </span>
                           ) : (
-                            <span className="text-slate-400 font-normal">-</span>
+                            <span className="text-slate-500 font-normal">-</span>
                           )}
                         </td>
-                        <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-800 text-xs">
+                        <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-800 text-[13px]">
                           {item.quantity.toLocaleString()}
                         </td>
-                        <td className="p-2.5 text-slate-600 text-xs">
+                        <td className="p-2.5 text-slate-600 text-[13px]">
                           {item.modelName || `Dispatched on ${item.dateYMD}`}
                         </td>
                       </tr>
@@ -1526,10 +1526,10 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-semibold text-slate-900 tracking-tight">
-                    QC Passed, Not Dispatched — Order Reconciliation
+                    Passed inspection, Not Dispatched — Order Reconciliation
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
-                    Month: {selectedMonthDisplay} • OPF-by-OPF match (Final QC Passed vs Dispatches)
+                  <p className="text-[13px] text-slate-500 font-medium">
+                    Month: {selectedMonthDisplay} · Order by order: passed final inspection vs dispatched
                   </p>
                 </div>
               </div>
@@ -1544,47 +1544,47 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             {/* Methodology & Metric Summary Cards */}
             <div className="p-4 bg-slate-50/50 border-b border-slate-200 space-y-3">
               {/* Formula explanation */}
-              <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl p-3 text-xs text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl p-3 text-[13px] text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div className="space-y-0.5">
-                  <span className="font-semibold block text-amber-900">OPF-Level Factory Inventory Methodology:</span>
-                  <p className="text-xs text-slate-700 leading-snug">
-                    Evaluates each OPF with Final QC completed in <strong>{selectedMonthDisplay}</strong>. Checks whether the OPF was dispatched in the same period to calculate exact units still held on the factory floor.
+                  <span className="font-semibold block text-amber-900">How this is counted:</span>
+                  <p className="text-[13px] text-slate-700 leading-snug">
+                    Every order that passed its final inspection in <strong>{selectedMonthDisplay}</strong>, checked against what has been dispatched. What is left is still in the factory.
                   </p>
                 </div>
-                <div className="text-xs text-amber-900 font-semibold bg-amber-100 px-3 py-1 rounded-lg border border-amber-200 whitespace-nowrap">
-                  {qcReconciliation.notDispatchedOpfs} OPF(s) Pending Dispatch
+                <div className="text-[13px] text-amber-900 font-semibold bg-amber-100 px-3 py-1 rounded-lg border border-amber-200 whitespace-nowrap">
+                  {qcReconciliation.notDispatchedOpfs} orders waiting to be dispatched
                 </div>
               </div>
 
               {/* 3 Metric Summary Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200/80 text-center">
-                  <span className="text-xs font-semibold text-emerald-800 block">1. Total QC Passed</span>
+                  <span className="text-[13px] font-semibold text-emerald-800 block">1. Total passed inspection</span>
                   <span className="text-xl sm:text-2xl font-semibold tabular-nums text-emerald-950 block mt-0.5">
                     {qcReconciliation.totalQcPassedUnits.toLocaleString()}
                   </span>
-                  <span className="text-xs text-emerald-700 font-semibold block">
-                    {qcReconciliation.totalQcPassedOpfs} OPFs inspected
+                  <span className="text-[13px] text-emerald-700 font-semibold block">
+                    {qcReconciliation.totalQcPassedOpfs} orders inspected
                   </span>
                 </div>
 
                 <div className="p-3 rounded-xl bg-indigo-50/60 border border-indigo-200/80 text-center">
-                  <span className="text-xs font-semibold text-indigo-800 block">2. Total Dispatched</span>
+                  <span className="text-[13px] font-semibold text-indigo-800 block">2. Total Dispatched</span>
                   <span className="text-xl sm:text-2xl font-semibold tabular-nums text-indigo-950 block mt-0.5">
                     {qcReconciliation.dispatchedUnits.toLocaleString()}
                   </span>
-                  <span className="text-xs text-indigo-700 font-semibold block">
-                    {qcReconciliation.dispatchedOpfs} OPFs shipped
+                  <span className="text-[13px] text-indigo-700 font-semibold block">
+                    {qcReconciliation.dispatchedOpfs} orders shipped
                   </span>
                 </div>
 
                 <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-300 text-center shadow-xs">
-                  <span className="text-xs font-semibold text-amber-900 block">3. Left In Factory</span>
+                  <span className="text-[13px] font-semibold text-amber-900 block">3. Left In Factory</span>
                   <span className="text-xl sm:text-2xl font-semibold tabular-nums text-amber-950 block mt-0.5">
                     {floorMetrics.qcPassedNotDispatched.toLocaleString()}
                   </span>
-                  <span className="text-xs text-amber-800 font-semibold block">
-                    {qcReconciliation.notDispatchedOpfs} OPFs awaiting dispatch
+                  <span className="text-[13px] text-amber-800 font-semibold block">
+                    {qcReconciliation.notDispatchedOpfs} orders awaiting dispatch
                   </span>
                 </div>
               </div>
@@ -1595,7 +1595,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               <div className="flex items-center gap-1.5 w-full sm:w-auto">
                 <button
                   onClick={() => setReconciliationFilter('pending')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all ${
                     reconciliationFilter === 'pending'
                       ? 'bg-amber-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200/60'
@@ -1605,7 +1605,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </button>
                 <button
                   onClick={() => setReconciliationFilter('dispatched')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all ${
                     reconciliationFilter === 'dispatched'
                       ? 'bg-emerald-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200/60'
@@ -1615,7 +1615,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </button>
                 <button
                   onClick={() => setReconciliationFilter('all')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all ${
                     reconciliationFilter === 'all'
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200/60'
@@ -1626,13 +1626,13 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               </div>
 
               <div className="relative w-full sm:w-72">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search OPF, model, customer..."
+                  placeholder="Search order, model or customer"
                   value={reconciliationSearch}
                   onChange={(e) => setReconciliationSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:bg-white focus:border-indigo-500 font-medium text-slate-800 transition-colors"
+                  className="w-full pl-9 pr-3 py-1.5 text-[13px] bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:bg-white focus:border-indigo-500 font-medium text-slate-800 transition-colors"
                 />
               </div>
             </div>
@@ -1643,27 +1643,27 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 <div className="py-12 text-center text-slate-500">
                   <PackageCheck className="w-10 h-10 mx-auto text-slate-300 mb-2" />
                   <p className="text-sm font-semibold text-slate-700">No orders match the selected filter or search.</p>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-[13px] text-slate-500 mt-1">
                     {qcReconciliation.items.length === 0
-                      ? 'No Final QC Passed orders logged for this month.'
+                      ? 'No Final Passed inspection orders logged for this month.'
                       : 'Try adjusting your search keywords or switching tabs above.'}
                   </p>
                 </div>
               ) : (
                 <div className="border border-slate-200/80 rounded-xl overflow-hidden shadow-xs">
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead className="bg-slate-50 text-slate-600 font-semibold text-xs  border-b border-slate-200 sticky top-0 z-10">
+                  <table className="w-full text-left border-collapse text-[13px]">
+                    <thead className="bg-slate-50 text-slate-600 font-semibold text-[13px]  border-b border-slate-200 sticky top-0 z-10">
                       <tr>
-                        <th className="p-2.5">OPF No</th>
+                        <th className="p-2.5">Order no.</th>
                         <th className="p-2.5">Model / Customer</th>
-                        <th className="p-2.5">QC Date & Inspector</th>
-                        <th className="p-2.5 text-right">QC Pass</th>
+                        <th className="p-2.5">Inspected on / by</th>
+                        <th className="p-2.5 text-right">Passed</th>
                         <th className="p-2.5 text-right">Dispatched</th>
                         <th className="p-2.5 text-right font-semibold text-amber-950">Left in Factory</th>
                         <th className="p-2.5 text-center">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 font-sans text-xs">
+                    <tbody className="divide-y divide-slate-100 font-sans text-[13px]">
                       {filteredReconciliationItems.map((item, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
                           <td className="p-2.5">
@@ -1671,7 +1671,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                               {item.opfNo || '-'}
                             </div>
                             {item.factoryNo && (
-                              <span className="inline-block text-xs font-semibold bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded mt-0.5 border border-slate-200">
+                              <span className="inline-block text-[13px] font-semibold bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded mt-0.5 border border-slate-200">
                                 {item.factoryNo}
                               </span>
                             )}
@@ -1680,42 +1680,42 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                             <div className="font-semibold text-slate-900 leading-tight">
                               {item.modelName || '-'}
                             </div>
-                            <div className="text-xs text-slate-500 truncate max-w-xs mt-0.5">
+                            <div className="text-[13px] text-slate-500 truncate max-w-xs mt-0.5">
                               {item.customerName || '-'}
                             </div>
                           </td>
                           <td className="p-2.5 text-slate-600 whitespace-nowrap">
-                            <div className="tabular-nums text-xs text-slate-700 font-medium">
+                            <div className="tabular-nums text-[13px] text-slate-700 font-medium">
                               {item.qcTimestamp || '-'}
                             </div>
                             {item.qcInspector && (
-                              <div className="text-xs text-slate-400">
+                              <div className="text-[13px] text-slate-500">
                                 Inspected by: {item.qcInspector}
                               </div>
                             )}
                           </td>
-                          <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-700 text-xs">
+                          <td className="p-2.5 text-right tabular-nums font-semibold text-emerald-700 text-[13px]">
                             {item.qcPassedQty}
                           </td>
-                          <td className="p-2.5 text-right tabular-nums font-semibold text-indigo-700 text-xs">
+                          <td className="p-2.5 text-right tabular-nums font-semibold text-indigo-700 text-[13px]">
                             {item.dispatchedQty}
                           </td>
-                          <td className="p-2.5 text-right tabular-nums font-semibold text-amber-950 text-xs bg-amber-50/40">
+                          <td className="p-2.5 text-right tabular-nums font-semibold text-amber-950 text-[13px] bg-amber-50/40">
                             {item.remainingInFactory}
                           </td>
                           <td className="p-2.5 text-center whitespace-nowrap">
                             {item.status === 'Dispatched' ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[13px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                 Dispatched
                               </span>
                             ) : item.status === 'Partially Dispatched' ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[13px] font-semibold bg-amber-50 text-amber-900 border border-amber-200">
                                 <AlertTriangle className="w-3 h-3 text-amber-700" />
                                 Partial ({item.dispatchedQty}/{item.qcPassedQty})
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[13px] font-semibold bg-rose-50 text-rose-800 border border-rose-200">
                                 <PackageCheck className="w-3 h-3 text-rose-600" />
                                 In Factory
                               </span>
@@ -1731,12 +1731,12 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
 
             {/* Modal Footer */}
             <div className="p-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
-              <span className="text-xs text-slate-500 font-medium">
+              <span className="text-[13px] text-slate-500 font-medium">
                 Showing {filteredReconciliationItems.length} of {qcReconciliation.items.length} orders in {selectedMonthDisplay}
               </span>
               <button
                 onClick={() => setShowQcPassedNotDispatchedModal(false)}
-                className="px-4 py-2 bg-slate-900 text-white font-semibold rounded-xl text-xs hover:bg-slate-800 transition-colors shadow-xs"
+                className="px-4 py-2 bg-slate-900 text-white font-semibold rounded-xl text-[13px] hover:bg-slate-800 transition-colors shadow-xs"
               >
                 Close
               </button>

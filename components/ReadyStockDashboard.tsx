@@ -272,7 +272,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
           >
             <div className="text-[13px] font-medium text-slate-500">{c.label}</div>
             <div className="mt-2 text-2xl sm:text-3xl whitespace-nowrap font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
-            <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
+            <div className="mt-1 text-[13px] text-slate-500">{c.sub}</div>
           </button>
         ))}
       </div>
@@ -309,7 +309,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
               value={searchTerm}
@@ -318,7 +318,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
               className="w-full pl-9 pr-8 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 transition"
             />
             {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearchTerm('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600">
                 <X className="w-4 h-4" />
               </button>
             )}
@@ -362,7 +362,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
 
       {/* ERROR BANNER IF ANY */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg flex items-center justify-between text-xs">
+        <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg flex items-center justify-between text-[13px]">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
             <span>{error}</span>
@@ -420,7 +420,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                   </div>
                   <div>
                     <h2 className="text-sm font-semibold text-slate-900">Stock by Recliner Model</h2>
-                    <p className="text-xs text-slate-500">Available finished units by model</p>
+                    <p className="text-[13px] text-slate-500">Available finished units by model</p>
                   </div>
                 </div>
               </div>
@@ -479,7 +479,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                   </div>
                   <div>
                     <h2 className="text-sm font-semibold text-slate-900">Upholstery Material Split</h2>
-                    <p className="text-xs text-slate-500">Share of Leatherette, Premium Fabric & Leather (Click to filter)</p>
+                    <p className="text-[13px] text-slate-500">Share of Leatherette, Premium Fabric & Leather (Click to filter)</p>
                   </div>
                 </div>
               </div>
@@ -523,7 +523,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
               </div>
 
               {/* Legend with interactive triggers */}
-              <div className="space-y-1.5 text-xs">
+              <div className="space-y-1.5 text-[13px]">
                 {upholsteryDistribution.map(u => {
                   const isSelected = selectedUpholsteryType === u.type;
                   return (
@@ -538,7 +538,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                         <span className="w-3 h-3 rounded-full" style={{ backgroundColor: UPHOLSTERY_COLORS[u.type] || '#64748b' }} />
                         <span className={`font-semibold ${isSelected ? 'text-indigo-900 font-semibold' : 'text-slate-800'}`}>{u.type}</span>
                         {isSelected && (
-                          <span className="text-xs bg-indigo-600 text-white font-semibold px-1.5 py-0.2 rounded">Filtered</span>
+                          <span className="text-[13px] bg-indigo-600 text-white font-semibold px-1.5 py-0.2 rounded">Filtered</span>
                         )}
                       </div>
                       <span className="tabular-nums font-semibold text-slate-900">{u.units} Units ({u.percentage}%)</span>
@@ -560,13 +560,13 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
               <span className="text-sm font-semibold text-slate-900">
                 Ready Stock Floor Inventory Ledger
               </span>
-              <span className="text-xs bg-amber-100 text-amber-900 tabular-nums font-semibold px-2.5 py-0.5 rounded-full">
+              <span className="text-[13px] bg-amber-100 text-amber-900 tabular-nums font-semibold px-2.5 py-0.5 rounded-full">
                 Showing {paginatedItems.length} of {sortedItems.length} ({activeSummary.totalUnits} Units)
               </span>
             </div>
 
             {/* Page Size Selector */}
-            <div className="flex items-center gap-2 text-xs text-slate-600">
+            <div className="flex items-center gap-2 text-[13px] text-slate-600">
               <span>Show</span>
               <select
                 value={pageSize}
@@ -583,7 +583,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full text-left text-[13px] border-collapse">
               <thead>
                 <tr className="bg-slate-100/90 text-slate-700 border-b border-slate-200 font-semibold">
                   <th 
@@ -596,7 +596,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                     onClick={() => handleSort('code')}
                     className="py-2.5 px-3 cursor-pointer hover:bg-slate-200 transition"
                   >
-                    Code / OPF
+                    Code / order
                   </th>
                   <th 
                     onClick={() => handleSort('model')}
@@ -604,7 +604,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                   >
                     <div className="flex items-center gap-1">
                       <span>Model</span>
-                      <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                      <ArrowUpDown className="w-3 h-3 text-slate-500" />
                     </div>
                   </th>
                   <th 
@@ -685,11 +685,11 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                         {item.upholsteryCode || '-'}
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        <span className="px-2 py-0.5 rounded-full tabular-nums font-semibold bg-amber-100 text-amber-900 text-xs">
+                        <span className="px-2 py-0.5 rounded-full tabular-nums font-semibold bg-amber-100 text-amber-900 text-[13px]">
                           {item.qty}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-slate-600 max-w-[200px] truncate text-xs" title={item.dimensions || item.description}>
+                      <td className="py-2.5 px-3 text-slate-600 max-w-[200px] truncate text-[13px]" title={item.dimensions || item.description}>
                         {item.dimensions || item.description || '-'}
                       </td>
                       <td className="py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
@@ -698,20 +698,20 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                             href={item.photos}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded text-xs font-semibold border border-emerald-200"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded text-[13px] font-semibold border border-emerald-200"
                             title="Open Google Drive photo"
                           >
                             <span>Photo</span>
                             <ExternalLink className="w-2.5 h-2.5" />
                           </a>
                         ) : (
-                          <span className="text-slate-400 text-xs">-</span>
+                          <span className="text-slate-500 text-[13px]">-</span>
                         )}
                       </td>
                       <td className="py-2.5 px-3 text-center">
                         <button
                           onClick={() => setSelectedItem(item)}
-                          className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold"
+                          className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[13px] font-semibold"
                         >
                           Specs
                         </button>
@@ -725,7 +725,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50 text-xs">
+            <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50 text-[13px]">
               <span className="text-slate-600">
                 Page <span className="font-semibold text-slate-900">{currentPage}</span> of <span className="font-semibold text-slate-900">{totalPages}</span>
               </span>
@@ -757,9 +757,9 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
             {/* Header */}
             <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white p-5 rounded-t-2xl flex items-start justify-between">
               <div>
-                <span className="text-xs tabular-nums font-semibold text-amber-200">SR.NO #{selectedItem.srNo} • CODE: {selectedItem.code}</span>
+                <span className="text-[13px] tabular-nums font-semibold text-amber-200">SR.NO #{selectedItem.srNo} • CODE: {selectedItem.code}</span>
                 <h3 className="text-xl font-semibold text-white mt-0.5">{selectedItem.model}</h3>
-                <span className="inline-block mt-1 px-2.5 py-0.5 bg-white text-amber-900 rounded-full font-semibold text-xs tabular-nums">
+                <span className="inline-block mt-1 px-2.5 py-0.5 bg-white text-amber-900 rounded-full font-semibold text-[13px] tabular-nums">
                   {selectedItem.qty} {selectedItem.qty === 1 ? 'Unit Ready' : 'Units Ready for Sales'}
                 </span>
               </div>
@@ -772,20 +772,20 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-4 text-xs text-slate-700">
+            <div className="p-6 space-y-4 text-[13px] text-slate-700">
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="text-xs text-slate-400 block font-semibold">Functionality</span>
+                  <span className="text-[13px] text-slate-500 block font-semibold">Functionality</span>
                   <span className="font-semibold text-slate-900 text-sm mt-0.5 block">{selectedItem.functionality}</span>
                 </div>
 
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="text-xs text-slate-400 block font-semibold">Upholstery Type</span>
+                  <span className="text-[13px] text-slate-500 block font-semibold">Upholstery Type</span>
                   <span className="font-semibold text-slate-900 text-sm mt-0.5 block">{selectedItem.upholsteryType}</span>
                 </div>
 
                 <div className="col-span-2 bg-amber-50/70 p-3 rounded-xl border border-amber-200">
-                  <span className="text-xs text-amber-900 block font-semibold">Upholstery Code & Color</span>
+                  <span className="text-[13px] text-amber-900 block font-semibold">Upholstery Code & Color</span>
                   <span className="tabular-nums font-semibold text-amber-950 text-sm mt-0.5 block">
                     {selectedItem.upholsteryCode || 'Standard Color'}
                   </span>
@@ -794,14 +794,14 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
 
               {selectedItem.dimensions && (
                 <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                  <span className="text-xs text-slate-400 block font-semibold mb-1">Dimensions & Arm Size</span>
+                  <span className="text-[13px] text-slate-500 block font-semibold mb-1">Dimensions & Arm Size</span>
                   <p className="font-semibold text-slate-800">{selectedItem.dimensions}</p>
                 </div>
               )}
 
               {selectedItem.description && (
                 <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                  <span className="text-xs text-slate-400 block font-semibold mb-1">Configuration & Notes</span>
+                  <span className="text-[13px] text-slate-500 block font-semibold mb-1">Configuration & Notes</span>
                   <p className="text-slate-800">{selectedItem.description}</p>
                 </div>
               )}
@@ -810,7 +810,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200">
                 <button
                   onClick={() => setSelectedItem(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition text-xs"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition text-[13px]"
                 >
                   Close
                 </button>
@@ -819,7 +819,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                     href={selectedItem.photos}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition text-xs flex items-center gap-1.5 shadow-xs"
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition text-[13px] flex items-center gap-1.5 shadow-xs"
                   >
                     <span>Open Drive Photos</span>
                     <ExternalLink className="w-3.5 h-3.5" />

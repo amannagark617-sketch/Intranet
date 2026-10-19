@@ -61,19 +61,19 @@ const SummaryBlock: React.FC<{
     </div>
     <div className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">{headline}</div>
     {rows.length === 0 ? (
-      <p className="mt-3 text-sm text-slate-400">{empty}</p>
+      <p className="mt-3 text-sm text-slate-500">{empty}</p>
     ) : (
       <ul className="mt-4 divide-y divide-slate-100">
         {rows.slice(0, 6).map(r => (
           <li key={r.key} className="flex items-baseline justify-between gap-4 py-2.5 text-sm">
             <span className="min-w-0">
               <span className="font-medium text-slate-800 truncate block">{r.left}</span>
-              {r.sub && <span className="text-xs text-slate-400 truncate block">{r.sub}</span>}
+              {r.sub && <span className="text-[13px] text-slate-500 truncate block">{r.sub}</span>}
             </span>
             {r.right && <span className="shrink-0 tabular-nums text-slate-600">{r.right}</span>}
           </li>
         ))}
-        {rows.length > 6 && <li className="pt-2.5 text-xs text-slate-400">+ {rows.length - 6} more (see Export)</li>}
+        {rows.length > 6 && <li className="pt-2.5 text-[13px] text-slate-500">+ {rows.length - 6} more (see Export)</li>}
       </ul>
     )}
   </section>
@@ -468,8 +468,8 @@ export const DailyEnterpriseSummaryView: React.FC<DailyEnterpriseSummaryViewProp
         'Quantity': item.order.quantity,
         'Upholstery': item.order.upholstery,
         'Current Stage': item.order.currentStage || 'Finished',
-        'Steps Today': item.stepsToday.map(s => s.stage).join(', ') || 'Final QC / Dispatch',
-        'Final QC Today': item.isFinalQcToday ? 'YES' : 'NO',
+        'Steps Today': item.stepsToday.map(s => s.stage).join(', ') || 'Final inspection / Dispatch',
+        'Final inspection Today': item.isFinalQcToday ? 'YES' : 'NO',
         'Dispatched Today': item.isDispatchToday ? 'YES' : 'NO',
       }));
       const wsProd = XLSX.utils.json_to_sheet(prodRows);
@@ -576,7 +576,7 @@ export const DailyEnterpriseSummaryView: React.FC<DailyEnterpriseSummaryViewProp
           key: o.order.opfNo,
           left: o.order.modelName || o.order.opfNo,
           sub: o.order.opfNo,
-          right: o.isDispatchToday ? 'Dispatched' : o.isFinalQcToday ? 'Passed QC' : pl(o.order.quantity, 'chair'),
+          right: o.isDispatchToday ? 'Dispatched' : o.isFinalQcToday ? 'Passed inspection' : pl(o.order.quantity, 'chair'),
         }))}
       />
 

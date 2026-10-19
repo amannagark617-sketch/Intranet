@@ -584,7 +584,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
             <p className="text-sm text-slate-500">Tap a day to see what is planned and who owns it</p>
           </div>
                     {/* Quick Backlog & Planning Summary Pill Cards */}
-          <div className="flex flex-wrap items-center gap-2.5 text-xs">
+          <div className="flex flex-wrap items-center gap-2.5 text-[13px]">
             {/* Backlog Alert Trigger */}
             <button
               onClick={() => setPlannerTab('backlog')}
@@ -598,7 +598,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                 <ShieldAlert className="w-4 h-4" />
               </div>
               <div>
-                <span className="text-xs font-semibold block opacity-80">
+                <span className="text-[13px] font-semibold block opacity-80">
                   Backlog Orders
                 </span>
                 <span className="text-sm font-semibold tabular-nums">
@@ -609,7 +609,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
             {/* Today's Step Tasks */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 px-3.5 text-center">
-              <span className="text-xs text-slate-500 block font-semibold">Due today</span>
+              <span className="text-[13px] text-slate-500 block font-semibold">Due today</span>
               <span className="text-sm font-semibold text-indigo-700 tabular-nums">
                 {stepMilestoneMap.get(todayYMD)?.length || 0} Steps
               </span>
@@ -617,7 +617,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
             {/* Next 7 Days Quota */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 px-3.5 text-center">
-              <span className="text-xs text-slate-500 block font-semibold">Next 7 days</span>
+              <span className="text-[13px] text-slate-500 block font-semibold">Next 7 days</span>
               <span className="text-sm font-semibold text-slate-800 tabular-nums">
                 {weekHorizonDays.reduce((s, d) => s + d.dispatches.length, 0)} Orders
               </span>
@@ -632,7 +632,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
         <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-lg border border-slate-200 overflow-x-auto">
           <button
             onClick={() => setPlannerTab('month')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-semibold transition-all shrink-0 ${
               plannerTab === 'month'
                 ? 'bg-white text-indigo-700 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -644,7 +644,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
           <button
             onClick={() => setPlannerTab('backlog')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-semibold transition-all shrink-0 ${
               plannerTab === 'backlog'
                 ? 'bg-rose-600 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -656,7 +656,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
           <button
             onClick={() => setPlannerTab('7day')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-semibold transition-all shrink-0 ${
               plannerTab === '7day'
                 ? 'bg-white text-indigo-700 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -668,7 +668,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
           <button
             onClick={() => setPlannerTab('stage-matrix')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-semibold transition-all shrink-0 ${
               plannerTab === 'stage-matrix'
                 ? 'bg-white text-indigo-700 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -680,14 +680,14 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-2.5 text-xs">
+        <div className="flex flex-wrap items-center gap-2.5 text-[13px]">
           {/* Stage Filter */}
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-500 text-xs font-medium">Stage:</span>
+            <span className="text-slate-500 text-[13px] font-medium">Stage:</span>
             <select
               value={stageFilter}
               onChange={(e) => setStageFilter(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[13px] text-slate-700 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
             >
               <option value="All">All stages</option>
               {PRODUCTION_STAGES.map(s => (
@@ -698,11 +698,11 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
           {/* Owner Filter */}
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-500 text-xs font-medium">Owner:</span>
+            <span className="text-slate-500 text-[13px] font-medium">Owner:</span>
             <select
               value={ownerFilter}
               onChange={(e) => setOwnerFilter(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[13px] text-slate-700 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
             >
               {RESPONSIBLE_PERSONS.map(owner => (
                 <option key={owner} value={owner}>
@@ -714,14 +714,14 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
           {/* Step Status Filter */}
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-500 text-xs font-medium">Step Status:</span>
+            <span className="text-slate-500 text-[13px] font-medium">Step Status:</span>
             <select
               value={stepStatusFilter}
               onChange={(e) => setStepStatusFilter(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[13px] text-slate-700 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
             >
               <option value="All">Any status</option>
-              <option value="WIP">WIP (In Progress)</option>
+              <option value="WIP">In progress</option>
               <option value="Completed">Completed</option>
               <option value="Delayed">Delayed</option>
               <option value="Pending">Pending</option>
@@ -761,7 +761,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
                 <button
                   onClick={handleJumpToToday}
-                  className="ml-2 px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition-colors"
+                  className="ml-2 px-2.5 py-1 text-[13px] font-semibold rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition-colors"
                 >
                   Today (01 Sep)
                 </button>
@@ -786,7 +786,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
             </div>
 
             {/* Day of week headers */}
-            <div className="grid grid-cols-7 gap-1 text-center font-semibold text-xs text-slate-400 py-1 border-b border-slate-100">
+            <div className="grid grid-cols-7 gap-1 text-center font-semibold text-[13px] text-slate-500 py-1 border-b border-slate-100">
               <span>Sun</span>
               <span>Mon</span>
               <span>Tue</span>
@@ -817,27 +817,27 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                         ? 'border-indigo-400 bg-indigo-50/30 hover:bg-indigo-50/60'
                         : cell.isCurrentMonth
                         ? 'border-slate-200 bg-white hover:border-indigo-300 hover:bg-slate-50/80'
-                        : 'border-slate-100 bg-slate-50/40 text-slate-400'
+                        : 'border-slate-100 bg-slate-50/40 text-slate-500'
                     }`}
                   >
                     {/* Top Row: Day Number & Badge */}
                     <div className="flex items-center justify-between">
                       <span
-                        className={`text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded-md ${
+                        className={`text-[13px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md ${
                           cell.isToday
                             ? 'bg-indigo-600 text-white shadow-xs'
                             : isSelected
                             ? 'bg-indigo-600 text-white font-semibold shadow-xs'
                             : cell.isCurrentMonth
                             ? 'text-slate-800'
-                            : 'text-slate-400'
+                            : 'text-slate-500'
                         }`}
                       >
                         {cell.dayNumber}
                       </span>
 
                       {cell.isToday && (
-                        <span className="text-xs font-semibold text-indigo-700 bg-indigo-100 px-1.5 py-0.2 rounded">
+                        <span className="text-[13px] font-semibold text-indigo-700 bg-indigo-100 px-1.5 py-0.2 rounded">
                           Today
                         </span>
                       )}
@@ -874,7 +874,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                             <Truck className="w-2.5 h-2.5 shrink-0" />
                             <span>{cell.dispatches.length} Disp</span>
                           </span>
-                          <span className="tabular-nums text-xs">{cell.dispatchUnits}u</span>
+                          <span className="tabular-nums text-[13px]">{cell.dispatchUnits}u</span>
                         </div>
                       )}
                     </div>
@@ -884,7 +884,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
             </div>
 
             {/* Calendar Legend */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 text-xs text-slate-500">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 text-[13px] text-slate-500">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Planned Step Tasks
@@ -899,7 +899,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                   <span className="w-2.5 h-2.5 rounded-full bg-indigo-600"></span> Selected Date
                 </span>
               </div>
-              <span className="text-xs text-slate-400 tabular-nums"></span>
+              <span className="text-[13px] text-slate-500 tabular-nums"></span>
             </div>
           </div>
 
@@ -919,16 +919,16 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                       </h3>
                       <div className="flex items-center gap-2 mt-0.5">
                         {selectedDayInfo.isToday && (
-                          <span className="text-xs font-semibold text-indigo-700 bg-indigo-100 px-1.5 py-0.2 rounded">
+                          <span className="text-[13px] font-semibold text-indigo-700 bg-indigo-100 px-1.5 py-0.2 rounded">
                             Busy day
                           </span>
                         )}
                         {selectedDayInfo.isPast && !selectedDayInfo.isToday && (
-                          <span className="text-xs font-semibold text-rose-700 bg-rose-100 px-1.5 py-0.2 rounded">
+                          <span className="text-[13px] font-semibold text-rose-700 bg-rose-100 px-1.5 py-0.2 rounded">
                             🚨 Past Date
                           </span>
                         )}
-                        <span className="text-xs text-slate-500 tabular-nums">
+                        <span className="text-[13px] text-slate-500 tabular-nums">
                           {selectedDayInfo.dateStr}
                         </span>
                       </div>
@@ -936,7 +936,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                   </div>
 
                   {/* Summary counts badge */}
-                  <div className="flex items-center gap-1.5 text-xs tabular-nums">
+                  <div className="flex items-center gap-1.5 text-[13px] tabular-nums">
                     <span className="px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200">
                       {selectedDayInfo.rawMilestonesCount} Steps
                     </span>
@@ -947,23 +947,23 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                 </div>
 
                 {/* KPI Breakdown for the selected date */}
-                <div className="grid grid-cols-4 gap-2 mt-3 text-center text-xs">
+                <div className="grid grid-cols-4 gap-2 mt-3 text-center text-[13px]">
                   <div className="p-2 rounded-lg bg-slate-50 border border-slate-200">
-                    <span className="text-xs text-slate-400 font-semibold block">Total Tasks</span>
+                    <span className="text-[13px] text-slate-500 font-semibold block">Total Tasks</span>
                     <span className="font-semibold text-slate-800 tabular-nums text-sm">
                       {selectedDayInfo.rawMilestonesCount + selectedDayInfo.rawDispatchesCount}
                     </span>
                   </div>
                   <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800">
-                    <span className="text-xs font-semibold block opacity-80">Completed</span>
+                    <span className="text-[13px] font-semibold block opacity-80">Completed</span>
                     <span className="font-semibold tabular-nums text-sm">{selectedDayInfo.completedSteps}</span>
                   </div>
                   <div className="p-2 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-800">
-                    <span className="text-xs font-semibold block opacity-80">WIP / Active</span>
+                    <span className="text-[13px] font-semibold block opacity-80">In progress</span>
                     <span className="font-semibold tabular-nums text-sm">{selectedDayInfo.wipSteps}</span>
                   </div>
                   <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
-                    <span className="text-xs font-semibold block opacity-80">Delayed</span>
+                    <span className="text-[13px] font-semibold block opacity-80">Delayed</span>
                     <span className="font-semibold tabular-nums text-sm">{selectedDayInfo.delayedSteps}</span>
                   </div>
                 </div>
@@ -972,7 +972,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
               {/* View Switcher & Search inside the Day View */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg text-xs font-semibold">
+                  <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg text-[13px] font-semibold">
                     <button
                       onClick={() => setDayViewTab('all')}
                       className={`px-2.5 py-1 rounded-md transition-all ${
@@ -1001,13 +1001,13 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
 
                   {/* Day Search Input */}
                   <div className="relative flex-1 max-w-[180px]">
-                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       placeholder="Search tasks..."
                       value={daySearchQuery}
                       onChange={(e) => setDaySearchQuery(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-2.5 py-1 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-2.5 py-1 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                     />
                   </div>
                 </div>
@@ -1018,7 +1018,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                 {/* 1. Planned Steps for this day */}
                 {(dayViewTab === 'all' || dayViewTab === 'steps') && (
                   <div>
-                    <h4 className="text-xs font-semibold text-slate-700 flex items-center justify-between mb-2">
+                    <h4 className="text-[13px] font-semibold text-slate-700 flex items-center justify-between mb-2">
                       <span className="flex items-center gap-1.5 text-indigo-700">
                         <Clock className="w-3.5 h-3.5" /> Planned Stage Steps ({selectedDayInfo.milestones.length})
                       </span>
@@ -1030,20 +1030,20 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                           <div
                             key={`${item.order.opfNo}-${item.stageName}-${idx}`}
                             onClick={() => onSelectOrder(item.order)}
-                            className="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 bg-white hover:bg-indigo-50/30 transition-all cursor-pointer shadow-xs space-y-2 text-xs group"
+                            className="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 bg-white hover:bg-indigo-50/30 transition-all cursor-pointer shadow-xs space-y-2 text-[13px] group"
                           >
                             {/* Step Header: Step Code & Stage & Status Pill */}
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="font-semibold text-xs px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 border border-indigo-200 tabular-nums">
+                                <span className="font-semibold text-[13px] px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 border border-indigo-200 tabular-nums">
                                   {item.stepCode}
                                 </span>
-                                <span className="font-semibold text-slate-900 text-xs">
+                                <span className="font-semibold text-slate-900 text-[13px]">
                                   {item.stageName}
                                 </span>
                               </div>
 
-                              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                              <span className={`text-[13px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 ${
                                 item.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' :
                                 item.status === 'In Progress' ? 'bg-indigo-100 text-indigo-800 animate-pulse' :
                                 item.status === 'Delayed' ? 'bg-rose-100 text-rose-800 border border-rose-200' :
@@ -1056,7 +1056,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                             </div>
 
                             {/* Order Details & Model */}
-                            <div className="flex items-center justify-between text-xs bg-slate-50 p-2 rounded-lg border border-slate-100">
+                            <div className="flex items-center justify-between text-[13px] bg-slate-50 p-2 rounded-lg border border-slate-100">
                               <div className="space-y-0.5 truncate pr-2">
                                 <span className="tabular-nums font-semibold text-indigo-700 block">
                                   {item.order.opfNo}
@@ -1066,17 +1066,17 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                                 </span>
                               </div>
                               <div className="text-right shrink-0">
-                                <span className="text-slate-900 font-semibold tabular-nums text-xs">
+                                <span className="text-slate-900 font-semibold tabular-nums text-[13px]">
                                   {item.order.quantity} units
                                 </span>
-                                <span className="text-xs text-slate-500 block">
+                                <span className="text-[13px] text-slate-500 block">
                                   Disp: {formatDateDDMMMYYYY(item.order.dispatchDate)}
                                 </span>
                               </div>
                             </div>
 
                             {/* Timeline & Responsible Owner */}
-                            <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-100 gap-2">
+                            <div className="flex flex-wrap items-center justify-between text-[13px] text-slate-500 pt-1 border-t border-slate-100 gap-2">
                               <span className="flex items-center gap-1">
                                 <User className="w-3 h-3 text-indigo-600 shrink-0" />
                                 <span>Owner: <strong className="text-indigo-700">{item.owner}</strong></span>
@@ -1103,14 +1103,14 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                               </div>
                             )}
 
-                            <div className="flex items-center justify-end text-xs text-indigo-600 font-semibold group-hover:underline pt-0.5">
+                            <div className="flex items-center justify-end text-[13px] text-indigo-600 font-semibold group-hover:underline pt-0.5">
                               <span>See all steps &rarr;</span>
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-xs text-slate-400 italic py-4 bg-slate-50 p-3 rounded-xl border border-dashed border-slate-200 text-center">
+                      <p className="text-[13px] text-slate-500 italic py-4 bg-slate-50 p-3 rounded-xl border border-dashed border-slate-200 text-center">
                         No planned stage steps scheduled for {selectedDayInfo.formattedTitle}.
                       </p>
                     )}
@@ -1120,7 +1120,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                 {/* 2. Target Dispatches for this day */}
                 {(dayViewTab === 'all' || dayViewTab === 'dispatches') && (
                   <div>
-                    <h4 className="text-xs font-semibold text-slate-700 flex items-center justify-between mb-2">
+                    <h4 className="text-[13px] font-semibold text-slate-700 flex items-center justify-between mb-2">
                       <span className="flex items-center gap-1.5 text-emerald-700">
                         <Truck className="w-3.5 h-3.5" /> Target Dispatches ({selectedDayInfo.dispatches.length})
                       </span>
@@ -1132,13 +1132,13 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                           <div
                             key={order.opfNo}
                             onClick={() => onSelectOrder(order)}
-                            className="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 bg-white hover:bg-slate-50/80 transition-all cursor-pointer shadow-xs space-y-2 text-xs group"
+                            className="p-3 rounded-xl border border-slate-200 hover:border-indigo-400 bg-white hover:bg-slate-50/80 transition-all cursor-pointer shadow-xs space-y-2 text-[13px] group"
                           >
                             <div className="flex items-center justify-between">
-                              <span className="tabular-nums text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                              <span className="tabular-nums text-[13px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
                                 {order.opfNo}
                               </span>
-                              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                              <span className={`text-[13px] font-semibold px-2 py-0.5 rounded-full ${
                                 order.overallStatus === 'Dispatched' ? 'bg-emerald-100 text-emerald-700' :
                                 order.overallStatus === 'Ready' ? 'bg-indigo-100 text-indigo-700' :
                                 order.overallStatus === 'On Hold' ? 'bg-amber-100 text-amber-700' :
@@ -1148,25 +1148,25 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                               </span>
                             </div>
 
-                            <div className="text-xs font-semibold text-slate-800 truncate">
+                            <div className="text-[13px] font-semibold text-slate-800 truncate">
                               {order.modelName}
                             </div>
 
-                            <div className="flex items-center justify-between text-xs text-slate-500 pt-1.5 border-t border-slate-100">
+                            <div className="flex items-center justify-between text-[13px] text-slate-500 pt-1.5 border-t border-slate-100">
                               <span>Qty: <strong className="text-slate-800">{order.quantity} units</strong></span>
                               <span className="truncate text-indigo-600 font-medium">
                                 Current Stage: {order.currentStage ? order.currentStage.replace('OF UPHOLSTERY', '') : 'Ready for Dispatch'}
                               </span>
                             </div>
 
-                            <div className="flex items-center justify-end text-xs text-indigo-600 font-semibold group-hover:underline pt-0.5">
+                            <div className="flex items-center justify-end text-[13px] text-indigo-600 font-semibold group-hover:underline pt-0.5">
                               <span>View Full Order Details &rarr;</span>
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-xs text-slate-400 italic py-4 bg-slate-50 p-3 rounded-xl border border-dashed border-slate-200 text-center">
+                      <p className="text-[13px] text-slate-500 italic py-4 bg-slate-50 p-3 rounded-xl border border-dashed border-slate-200 text-center">
                         No final order dispatches planned for {selectedDayInfo.formattedTitle}.
                       </p>
                     )}
@@ -1191,13 +1191,13 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                     Active Production Backlog Analysis & Clearing Strategy
                   </h3>
                 </div>
-                <p className="text-xs text-slate-600 mt-1 max-w-3xl leading-relaxed">
+                <p className="text-[13px] text-slate-600 mt-1 max-w-3xl leading-relaxed">
                   Deep dive into orders past their target dispatch date or delayed at interim stages. Follow the step-by-step clearance plan to restore 100% on-time delivery.
                 </p>
               </div>
 
               {/* Ageing Filter Tabs */}
-              <div className="flex items-center gap-1.5 p-1 bg-white rounded-xl border border-slate-200 shadow-xs text-xs">
+              <div className="flex items-center gap-1.5 p-1 bg-white rounded-xl border border-slate-200 shadow-xs text-[13px]">
                 <button
                   onClick={() => setBacklogAgeingFilter('all')}
                   className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
@@ -1244,40 +1244,40 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
             {/* Backlog Metrics Breakdown */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-2">
               <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-                <span className="text-xs font-semibold text-slate-500 block">Total Backlog Load</span>
+                <span className="text-[13px] font-semibold text-slate-500 block">Total Backlog Load</span>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-2xl font-semibold text-slate-900 tabular-nums">{backlogStats.totalBacklogOrders}</span>
-                  <span className="text-xs text-slate-500 font-semibold">orders ({backlogStats.totalBacklogUnits} units)</span>
+                  <span className="text-[13px] text-slate-500 font-semibold">orders ({backlogStats.totalBacklogUnits} units)</span>
                 </div>
               </div>
 
               <div className="bg-white p-4 rounded-xl border border-rose-200 shadow-xs">
-                <span className="text-xs font-semibold text-rose-600 flex items-center gap-1">
+                <span className="text-[13px] font-semibold text-rose-600 flex items-center gap-1">
                   <Flame className="w-3.5 h-3.5" /> Critical Delay (8+ Days)
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-2xl font-semibold text-rose-700 tabular-nums">{backlogStats.criticalCount}</span>
-                  <span className="text-xs text-rose-500 font-semibold">orders ({backlogStats.criticalUnits} units)</span>
+                  <span className="text-[13px] text-rose-500 font-semibold">orders ({backlogStats.criticalUnits} units)</span>
                 </div>
               </div>
 
               <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-xs">
-                <span className="text-xs font-semibold text-amber-600 flex items-center gap-1">
+                <span className="text-[13px] font-semibold text-amber-600 flex items-center gap-1">
                   <AlertTriangle className="w-3.5 h-3.5" /> High Risk (4-7 Days)
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-2xl font-semibold text-amber-700 tabular-nums">{backlogStats.highCount}</span>
-                  <span className="text-xs text-amber-500 font-semibold">orders ({backlogStats.highUnits} units)</span>
+                  <span className="text-[13px] text-amber-500 font-semibold">orders ({backlogStats.highUnits} units)</span>
                 </div>
               </div>
 
               <div className="bg-white p-4 rounded-xl border border-indigo-200 shadow-xs">
-                <span className="text-xs font-semibold text-indigo-600 flex items-center gap-1">
+                <span className="text-[13px] font-semibold text-indigo-600 flex items-center gap-1">
                   <Zap className="w-3.5 h-3.5" /> Fast-Trackable (1-3 Days)
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-2xl font-semibold text-indigo-700 tabular-nums">{backlogStats.moderateCount}</span>
-                  <span className="text-xs text-indigo-500 font-semibold">orders ({backlogStats.moderateUnits} units)</span>
+                  <span className="text-[13px] text-indigo-500 font-semibold">orders ({backlogStats.moderateUnits} units)</span>
                 </div>
               </div>
             </div>
@@ -1291,11 +1291,11 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                 <Target className="w-5 h-5 text-indigo-600" />
                 <div>
                   <h4 className="font-semibold text-slate-900 text-sm">Delayed Orders by Stage</h4>
-                  <p className="text-xs text-slate-500">Calculated directly from live PMS stage status</p>
+                  <p className="text-[13px] text-slate-500">Calculated directly from live production tracker</p>
                 </div>
               </div>
 
-              <div className="space-y-2.5 text-xs">
+              <div className="space-y-2.5 text-[13px]">
                 {Array.from(
                   filteredBacklogList.reduce((acc, order) => {
                     const stage = order.currentStage || 'Unassigned / Pending';
@@ -1308,12 +1308,12 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                 ).map(([stageName, data]) => (
                   <div key={stageName} className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                     <div>
-                      <span className="font-semibold text-slate-800 block text-xs">{stageName}</span>
-                      <span className="text-xs text-slate-500">Responsible: <strong className="text-indigo-600">{data.owner}</strong></span>
+                      <span className="font-semibold text-slate-800 block text-[13px]">{stageName}</span>
+                      <span className="text-[13px] text-slate-500">Responsible: <strong className="text-indigo-600">{data.owner}</strong></span>
                     </div>
                     <div className="text-right">
-                      <span className="tabular-nums font-semibold text-rose-700 text-xs block">{data.count} Orders</span>
-                      <span className="tabular-nums text-xs text-slate-500">{data.units} units</span>
+                      <span className="tabular-nums font-semibold text-rose-700 text-[13px] block">{data.count} Orders</span>
+                      <span className="tabular-nums text-[13px] text-slate-500">{data.units} units</span>
                     </div>
                   </div>
                 ))}
@@ -1327,11 +1327,11 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                   <h4 className="font-semibold text-slate-900 text-sm">
                     Backlog Queue ({filteredBacklogList.length} Orders)
                   </h4>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-[13px] text-slate-500">
                     Sorted by delay severity. Click any order to open full 14-step inspection modal.
                   </p>
                 </div>
-                <span className="text-xs font-semibold text-slate-500 tabular-nums">
+                <span className="text-[13px] font-semibold text-slate-500 tabular-nums">
                   {filteredBacklogList.reduce((s, o) => s + o.quantity, 0)} Total Units
                 </span>
               </div>
@@ -1342,14 +1342,14 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                     <div
                       key={order.opfNo}
                       onClick={() => onSelectOrder(order)}
-                      className="p-3.5 rounded-xl border border-slate-200 hover:border-indigo-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer space-y-2 text-xs"
+                      className="p-3.5 rounded-xl border border-slate-200 hover:border-indigo-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer space-y-2 text-[13px]"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="tabular-nums font-semibold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
                             {order.opfNo}
                           </span>
-                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                          <span className={`text-[13px] font-semibold px-2 py-0.5 rounded-full ${
                             order.backlogSeverity === 'critical' ? 'bg-rose-100 text-rose-800 border border-rose-200' :
                             order.backlogSeverity === 'high' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
                             'bg-indigo-100 text-indigo-800 border border-indigo-200'
@@ -1367,7 +1367,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                         {order.modelName}
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 pt-1.5 border-t border-slate-200/60 gap-2">
+                      <div className="flex flex-wrap items-center justify-between text-[13px] text-slate-500 pt-1.5 border-t border-slate-200/60 gap-2">
                         <span>
                           Target Dispatch: <strong className="text-rose-600 tabular-nums">{formatDateDDMMMYYYY(order.dispatchDate)}</strong>
                         </span>
@@ -1382,10 +1382,10 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-slate-500 text-xs">
+                <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-slate-500 text-[13px]">
                   <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-emerald-500" />
                   <p className="font-semibold text-slate-800">Zero orders matching this backlog filter!</p>
-                  <p className="text-slate-400 mt-1">All production schedules in this category are fully on track.</p>
+                  <p className="text-slate-500 mt-1">All production schedules in this category are fully on track.</p>
                 </div>
               )}
             </div>
@@ -1401,7 +1401,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
               <h3 className="text-base font-semibold text-slate-900">
                 7-Day Production Rolling Horizon (01-Sep-2026 to 07-Sep-2026)
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-[13px] text-slate-500">
                 Direct visibility into day-wise dispatch quotas & stage deadlines for the upcoming week
               </p>
             </div>
@@ -1423,14 +1423,14 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                   {/* Column Header */}
                   <div className="border-b border-slate-200 pb-2">
                     <div className="flex items-center justify-between">
-                      <span className={`text-xs font-semibold ${isToday ? 'text-indigo-900' : 'text-slate-800'}`}>
+                      <span className={`text-[13px] font-semibold ${isToday ? 'text-indigo-900' : 'text-slate-800'}`}>
                         {day.dayName}
                       </span>
                       {isToday && (
                         <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
                       )}
                     </div>
-                    <div className="flex items-center justify-between text-xs text-slate-500 mt-1 tabular-nums">
+                    <div className="flex items-center justify-between text-[13px] text-slate-500 mt-1 tabular-nums">
                       <span>{day.dispatches.length} Disp</span>
                       <span>{day.milestones.length} Steps</span>
                     </div>
@@ -1443,16 +1443,16 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                       <div
                         key={order.opfNo}
                         onClick={() => onSelectOrder(order)}
-                        className="p-2.5 rounded-lg bg-emerald-50/60 border border-emerald-200 hover:border-emerald-400 transition-all cursor-pointer shadow-xs text-xs space-y-1"
+                        className="p-2.5 rounded-lg bg-emerald-50/60 border border-emerald-200 hover:border-emerald-400 transition-all cursor-pointer shadow-xs text-[13px] space-y-1"
                       >
                         <div className="flex items-center justify-between">
                           <span className="tabular-nums font-semibold text-emerald-800">{order.opfNo}</span>
-                          <span className="tabular-nums text-xs text-emerald-700">{order.quantity}u</span>
+                          <span className="tabular-nums text-[13px] text-emerald-700">{order.quantity}u</span>
                         </div>
-                        <div className="text-xs font-semibold text-slate-800 truncate" title={order.modelName}>
+                        <div className="text-[13px] font-semibold text-slate-800 truncate" title={order.modelName}>
                           {order.modelName}
                         </div>
-                        <div className="text-xs text-emerald-700 font-medium">
+                        <div className="text-[13px] text-emerald-700 font-medium">
                           🚚 Planned Dispatch
                         </div>
                       </div>
@@ -1463,7 +1463,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                       <div
                         key={`${ms.order.opfNo}-${ms.stageName}-${idx}`}
                         onClick={() => onSelectOrder(ms.order)}
-                        className="p-2 rounded-lg bg-white border border-slate-200 hover:border-indigo-300 transition-all cursor-pointer shadow-xs text-xs space-y-1"
+                        className="p-2 rounded-lg bg-white border border-slate-200 hover:border-indigo-300 transition-all cursor-pointer shadow-xs text-[13px] space-y-1"
                       >
                         <div className="flex items-center justify-between">
                           <span className="tabular-nums font-semibold text-slate-800 text-[10.5px]">{ms.order.opfNo}</span>
@@ -1474,27 +1474,27 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                         <div className="text-[10.5px] font-medium text-slate-700 truncate">
                           {ms.stageName}
                         </div>
-                        <div className="text-xs text-indigo-600 truncate">
+                        <div className="text-[13px] text-indigo-600 truncate">
                           {ms.owner}
                         </div>
                       </div>
                     ))}
 
                     {day.milestones.length > 8 && (
-                      <div className="text-center text-xs font-semibold text-indigo-700 py-1 bg-indigo-50 rounded">
+                      <div className="text-center text-[13px] font-semibold text-indigo-700 py-1 bg-indigo-50 rounded">
                         +{day.milestones.length - 8} more steps planned
                       </div>
                     )}
 
                     {day.dispatches.length === 0 && day.milestones.length === 0 && (
-                      <div className="text-center py-8 text-xs text-slate-400 italic">
+                      <div className="text-center py-8 text-[13px] text-slate-500 italic">
                         No tasks scheduled
                       </div>
                     )}
                   </div>
 
                   {/* Stage Milestones count */}
-                  <div className="pt-2 border-t border-slate-200/80 text-xs text-indigo-700 flex items-center justify-between font-medium">
+                  <div className="pt-2 border-t border-slate-200/80 text-[13px] text-indigo-700 flex items-center justify-between font-medium">
                     <span>Total Day Tasks:</span>
                     <span className="font-semibold tabular-nums">{day.milestones.length + day.dispatches.length} due</span>
                   </div>
@@ -1513,7 +1513,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
               <h3 className="text-base font-semibold text-slate-900">
                 14-Stage Lead Time & Standard PMS Cycle Planning
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-[13px] text-slate-500">
                 Reference lead times required before Target Dispatch Date for seamless on-time performance
               </p>
             </div>
@@ -1532,19 +1532,19 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                 >
                   <div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 border border-indigo-200">
+                      <span className="text-[13px] font-semibold px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 border border-indigo-200">
                         {cfg?.stepCode}
                       </span>
-                      <span className="text-xs font-semibold text-slate-800 tabular-nums">
-                        {activeCount} WIP ({activeUnits} units)
+                      <span className="text-[13px] font-semibold text-slate-800 tabular-nums">
+                        {activeCount} in progress ({activeUnits} units)
                       </span>
                     </div>
 
-                    <h4 className="text-xs font-semibold text-slate-900 mt-2">
+                    <h4 className="text-[13px] font-semibold text-slate-900 mt-2">
                       {stage}
                     </h4>
 
-                    <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                    <p className="text-[13px] text-slate-500 mt-1 flex items-center gap-1">
                       <User className="w-3 h-3 text-indigo-600" />
                       <span>{cfg?.responsible}</span>
                     </p>

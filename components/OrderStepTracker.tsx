@@ -23,7 +23,7 @@ const OrderStepTracker: React.FC<OrderStepTrackerProps> = ({ steps, currentStage
 
           // Color calculation for light theme
           let barBg = 'bg-slate-200 border-slate-300';
-          let textColor = 'text-slate-400';
+          let textColor = 'text-slate-500';
           let badgeBg = 'bg-slate-100 text-slate-500 border border-slate-200';
 
           if (isCompleted) {
@@ -83,50 +83,50 @@ const OrderStepTracker: React.FC<OrderStepTrackerProps> = ({ steps, currentStage
               {/* ISOLATED Tooltip for THIS STEP ONLY */}
               {isHovered && (
                 <div 
-                  className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-64 p-3.5 bg-slate-900 text-white text-xs rounded-xl shadow-2xl z-50 pointer-events-none border border-slate-700 animate-in fade-in zoom-in-95 duration-150"
+                  className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-64 p-3.5 bg-slate-900 text-white text-[13px] rounded-xl shadow-2xl z-50 pointer-events-none border border-slate-700 animate-in fade-in zoom-in-95 duration-150"
                   style={{
                     // Prevent overflow on extreme left or right steps
                     transform: idx <= 1 ? 'translateX(-15%)' : idx >= steps.length - 2 ? 'translateX(-85%)' : 'translateX(-50%)'
                   }}
                 >
                   <div className="flex items-center justify-between border-b border-slate-700 pb-1.5 mb-2">
-                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-300 border border-indigo-400/40">
+                    <span className="text-[13px] font-semibold px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-300 border border-indigo-400/40">
                       {step.stepCode || `STEP ${idx + 1}`}
                     </span>
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                    <span className={`text-[13px] font-semibold px-2 py-0.5 rounded-full ${
                       isCompleted ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
                       isCurrent ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' :
-                      isDelayed ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-800 text-slate-400'
+                      isDelayed ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-800 text-slate-500'
                     }`}>
-                      {isCurrent ? 'WIP (In Progress)' : isCompleted ? 'Completed' : isDelayed ? 'Delayed' : 'Pending'}
+                      {isCurrent ? 'In progress' : isCompleted ? 'Completed' : isDelayed ? 'Delayed' : 'Pending'}
                     </span>
                   </div>
 
-                  <h4 className="font-semibold text-white text-xs leading-snug">{step.name}</h4>
+                  <h4 className="font-semibold text-white text-[13px] leading-snug">{step.name}</h4>
                   
-                  <div className="mt-2.5 space-y-1.5 text-xs text-slate-200">
+                  <div className="mt-2.5 space-y-1.5 text-[13px] text-slate-200">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-400 flex items-center gap-1">
+                      <span className="text-slate-500 flex items-center gap-1">
                         <User className="w-3 h-3 text-indigo-400" /> Owner:
                       </span>
                       <strong className="text-indigo-300 font-medium">{step.responsible}</strong>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-400 flex items-center gap-1">
+                      <span className="text-slate-500 flex items-center gap-1">
                         <Clock className="w-3 h-3 text-amber-400" /> Timeline:
                       </span>
                       <span className="text-slate-300">{step.timeline}</span>
                     </div>
 
                     <div className="flex items-center justify-between pt-1.5 border-t border-slate-700">
-                      <span className="text-slate-400">Planned:</span>
+                      <span className="text-slate-500">Planned:</span>
                       <span className="tabular-nums text-slate-200">{step.plannedDate || 'Pending'}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-400">Actual:</span>
-                      <span className={`tabular-nums ${step.actualDate ? 'text-emerald-300 font-semibold' : 'text-slate-400'}`}>
+                      <span className="text-slate-500">Actual:</span>
+                      <span className={`tabular-nums ${step.actualDate ? 'text-emerald-300 font-semibold' : 'text-slate-500'}`}>
                         {step.actualDate || 'Not Completed'}
                       </span>
                     </div>
@@ -140,14 +140,14 @@ const OrderStepTracker: React.FC<OrderStepTrackerProps> = ({ steps, currentStage
 
                     {step.remarks && (
                       <div className="text-slate-200 bg-slate-800 p-2 rounded text-[10.5px] mt-1.5 border border-slate-700">
-                        <span className="text-slate-400 font-semibold block text-xs">QC / REMARKS</span>
+                        <span className="text-slate-500 font-semibold block text-[13px]">Remarks</span>
                         {step.remarks}
                       </div>
                     )}
 
                     {step.reasonOfFail && (
                       <div className="text-red-200 bg-red-950/60 p-2 rounded text-[10.5px] mt-1.5 border border-red-800">
-                        <span className="text-red-300 font-semibold block text-xs">HOLD REASON</span>
+                        <span className="text-red-300 font-semibold block text-[13px]">HOLD REASON</span>
                         {step.reasonOfFail}
                       </div>
                     )}

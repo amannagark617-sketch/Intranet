@@ -97,8 +97,8 @@ const Header: React.FC<HeaderProps> = ({
       pages: [
         { id: 'readyGoods', label: 'Ready Goods', icon: PackageCheck, badge: readyGoodsUnits },
         { id: 'readyStock', label: 'Ready Stock', icon: Armchair, badge: readyStockUnits },
-        { id: 'salesReport', label: 'Sale Report', icon: TrendingUp },
-        { id: 'grossProfit', label: 'Real-Time GP', icon: BadgePercent },
+        { id: 'salesReport', label: 'Sales report', icon: TrendingUp },
+        { id: 'grossProfit', label: 'Profit (live)', icon: BadgePercent },
         { id: 'receivableList', label: 'Receivables', icon: ReceiptText, badge: receivablesCount },
       ],
     },
@@ -192,7 +192,7 @@ const Header: React.FC<HeaderProps> = ({
               <button
                 key={g.id}
                 onClick={() => onViewModeChange(g.pages[0].id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-semibold min-h-[38px] cursor-pointer ${
+                className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-[13px] font-semibold min-h-[38px] cursor-pointer ${
                   isActive ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
@@ -224,7 +224,7 @@ const Header: React.FC<HeaderProps> = ({
                 >
                   <span className="whitespace-nowrap">{p.label}</span>
                   {typeof p.badge === 'number' && p.badge > 0 && (
-                    <span className="px-1.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600">
+                    <span className="px-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
                       {p.badge}
                     </span>
                   )}

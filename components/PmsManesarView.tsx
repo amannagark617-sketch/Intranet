@@ -167,7 +167,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
             >
               {t.label}
               {typeof t.badge === 'number' && t.badge > 0 && (
-                <span className={`text-xs tabular-nums ${activeSubTab === t.id ? 'text-slate-300' : 'text-slate-400'}`}>{t.badge}</span>
+                <span className={`text-[13px] tabular-nums ${activeSubTab === t.id ? 'text-slate-300' : 'text-slate-500'}`}>{t.badge}</span>
               )}
             </button>
           ))}
@@ -214,7 +214,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
               <div key={c.label} className="bg-white rounded-2xl border border-slate-200/80 px-5 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                 <div className="text-[13px] font-medium text-slate-500">{c.label}</div>
                 <div className="mt-2 text-2xl sm:text-3xl whitespace-nowrap font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
-                <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
+                <div className="mt-1 text-[13px] text-slate-500">{c.sub}</div>
               </div>
             ))}
           </div>
@@ -247,7 +247,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
           {/* Orders list */}
           <div className="space-y-4">
             <h2 className="text-base font-semibold text-slate-900">
-              Orders <span className="text-slate-400 font-normal tabular-nums">{filteredOrders.length}</span>
+              Orders <span className="text-slate-500 font-normal tabular-nums">{filteredOrders.length}</span>
             </h2>
 
             {/* List of Orders */}
@@ -263,7 +263,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
               ) : (
                 <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 text-slate-500 shadow-xs">
                   <p className="font-semibold text-base text-slate-800">No orders match</p>
-                  <p className="text-xs text-slate-400 mt-1">Try clearing the filters.</p>
+                  <p className="text-[13px] text-slate-500 mt-1">Try clearing the filters.</p>
                 </div>
               )}
             </div>

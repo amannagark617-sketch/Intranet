@@ -16,9 +16,9 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, units, icon, iconBgCo
         {icon}
       </div>
       <div>
-        <h3 className="text-xs font-semibold text-slate-500">{title}</h3>
+        <h3 className="text-[13px] font-semibold text-slate-500">{title}</h3>
         <p className="text-2xl md:text-3xl font-semibold text-slate-900 tabular-nums tracking-tight">{value}</p>
-        <p className="text-xs text-slate-400 mt-0.5">{units}</p>
+        <p className="text-[13px] text-slate-500 mt-0.5">{units}</p>
       </div>
     </div>
   );

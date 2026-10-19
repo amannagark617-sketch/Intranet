@@ -36,12 +36,12 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onSelect }) => {
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <h3 className="text-base font-semibold text-slate-900">{titleCase(order.modelName)}</h3>
-            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${status.text}`}>
+            <span className={`inline-flex items-center gap-1.5 text-[13px] font-medium ${status.text}`}>
               <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
               {status.label}
             </span>
           </div>
-          <p className="mt-0.5 text-xs text-slate-400 tabular-nums">
+          <p className="mt-0.5 text-[13px] text-slate-500 tabular-nums">
             {order.opfNo}
             {order.upholstery ? ` · ${titleCase(order.upholstery)}` : ''}
           </p>
@@ -49,15 +49,15 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onSelect }) => {
 
         <dl className="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm">
           <div>
-            <dt className="text-xs text-slate-400">Chairs</dt>
+            <dt className="text-[13px] text-slate-500">Chairs</dt>
             <dd className="font-semibold text-slate-900 tabular-nums">{order.quantity}</dd>
           </div>
           <div>
-            <dt className="text-xs text-slate-400">Dispatch</dt>
+            <dt className="text-[13px] text-slate-500">Dispatch</dt>
             <dd className="font-semibold text-slate-900 tabular-nums">{formatDateDDMMMYYYY(order.dispatchDate)}</dd>
           </div>
           <div>
-            <dt className="text-xs text-slate-400">Now at</dt>
+            <dt className="text-[13px] text-slate-500">Now at</dt>
             <dd className="font-semibold text-slate-900">
               {stage}
               {order.currentResponsible ? <span className="font-normal text-slate-500"> · {order.currentResponsible}</span> : null}

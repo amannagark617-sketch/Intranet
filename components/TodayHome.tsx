@@ -82,11 +82,11 @@ const KpiCard: React.FC<{
       <span className={`absolute inset-x-0 top-0 h-[3px] ${t.bar}`} />
       <div className="flex items-center justify-between gap-2 min-h-[24px]">
         <span className="flex items-center gap-2 text-[13px] font-medium text-slate-500">
-          <Icon className="hidden sm:block w-4 h-4 text-slate-400" />
+          <Icon className="hidden sm:block w-4 h-4 text-slate-500" />
           {title}
         </span>
         {t.label && (
-          <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold ${t.pill}`}>
+          <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold ${t.pill}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${t.dot}`} />
             <span className="hidden sm:inline">{t.label}</span>
           </span>
@@ -102,7 +102,7 @@ const KpiCard: React.FC<{
 };
 
 const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{children}</h3>
+  <h3 className="mb-3 text-[13px] font-semibold uppercase tracking-[0.12em] text-slate-500">{children}</h3>
 );
 
 const SalesPeriod: React.FC<{
@@ -117,11 +117,11 @@ const SalesPeriod: React.FC<{
     <div>
       <div className="flex items-center justify-between gap-2">
         <h3 className="flex items-center gap-2 text-[13px] font-medium text-slate-500">
-          <TrendingUp className="w-4 h-4 text-slate-400" />
+          <TrendingUp className="w-4 h-4 text-slate-500" />
           {label}{period ? ` · ${period.label}` : ''}
         </h3>
         {t.label && (
-          <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold ${t.pill}`}>
+          <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold ${t.pill}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${t.dot}`} />
             {t.label}
           </span>
@@ -132,7 +132,7 @@ const SalesPeriod: React.FC<{
           {period ? formatInr(period.sales) : loading ? '—' : 'n/a'}
         </span>
         {period && period.target ? (
-          <span className="text-base text-slate-400">of {formatInr(period.target)} target</span>
+          <span className="text-base text-slate-500">of {formatInr(period.target)} target</span>
         ) : null}
       </div>
       {period && period.target ? (
@@ -146,7 +146,7 @@ const SalesPeriod: React.FC<{
           </div>
         </div>
       ) : (
-        <p className="mt-3 text-[13px] text-slate-400">{loading ? 'Loading…' : 'No target available'}</p>
+        <p className="mt-3 text-[13px] text-slate-500">{loading ? 'Loading…' : 'No target available'}</p>
       )}
       {period && (
         <p className="mt-3 text-[13px] text-slate-500 tabular-nums">
@@ -378,7 +378,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
   return (
     <div className="max-w-6xl mx-auto space-y-10 pb-6">
       <div className="pt-2">
-        <p className="text-sm font-medium text-slate-400">{dateLabel}</p>
+        <p className="text-sm font-medium text-slate-500">{dateLabel}</p>
         <h2 className="mt-1 text-3xl sm:text-[34px] font-semibold text-slate-900 tracking-tight">{greeting}</h2>
         <p className="mt-2 flex items-start gap-2.5 text-[15px] text-slate-600">
           <span className={`mt-[7px] w-2 h-2 rounded-full shrink-0 ${TONE_STYLES[headlineTone].dot}`} />
@@ -409,7 +409,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
           >
             <div className="flex items-baseline justify-between">
               <h3 className="text-base font-semibold text-slate-900">By showroom · {sales.month.label}</h3>
-              <span className="text-[13px] text-slate-400">sales vs target</span>
+              <span className="text-[13px] text-slate-500">sales vs target</span>
             </div>
             <ul className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
               {sales.regions.slice(0, 8).map(r => {
@@ -429,7 +429,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
                           style={{ width: `${Math.min(100, pct ?? 0)}%` }}
                         />
                       </div>
-                      <span className="w-10 text-right text-xs font-medium text-slate-500 tabular-nums">{pct !== null ? `${pct}%` : ''}</span>
+                      <span className="w-10 text-right text-[13px] font-medium text-slate-500 tabular-nums">{pct !== null ? `${pct}%` : ''}</span>
                     </div>
                   </li>
                 );
@@ -438,7 +438,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
           </button>
         )}
         {salesLoaded && !sales?.hasTargets && sales && (
-          <p className="mt-3 text-[13px] text-slate-400">Targets couldn't be read, so sales are shown without a target comparison.</p>
+          <p className="mt-3 text-[13px] text-slate-500">Targets couldn't be read, so sales are shown without a target comparison.</p>
         )}
       </section>
 
@@ -462,10 +462,10 @@ const TodayHome: React.FC<TodayHomeProps> = ({
                   {!production
                     ? 'Loading…'
                     : production.todayUnits > 0
-                    ? `chairs · ${production.todayOrders} orders passed QC`
+                    ? `chairs · ${production.todayOrders} orders passed inspection`
                     : production.lastDay
                     ? `Last: ${production.lastUnits} on ${formatDisplayDate(production.lastDay, false)}`
-                    : 'Nothing passed QC yet'}
+                    : 'Nothing passed inspection yet'}
                 </div>
               </div>
               <div>
@@ -561,7 +561,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
           >
             <div className="flex items-center justify-between">
               <h3 className="flex items-center gap-2 text-base font-semibold text-slate-900">
-                <PackageCheck className="w-4 h-4 text-slate-400" /> Ready goods
+                <PackageCheck className="w-4 h-4 text-slate-500" /> Ready goods
               </h3>
               <ChevronRight className="w-4 h-4 text-slate-300" />
             </div>
@@ -573,7 +573,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
               <div>
                 <div className="text-[13px] text-slate-500">Order qty</div>
                 <div className="mt-1.5 text-3xl font-semibold text-slate-900 tabular-nums">{readyGoods.orderQty.toLocaleString()}</div>
-                <div className="text-xs text-slate-400">{readyGoods.readyQty.toLocaleString()} ready</div>
+                <div className="text-[13px] text-slate-500">{readyGoods.readyQty.toLocaleString()} ready</div>
               </div>
               <div>
                 <div className="text-[13px] text-slate-500">Amount</div>
@@ -610,7 +610,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
             <ol className="mt-6 space-y-5">
               {stats.bottlenecks.map((b, i) => (
                 <li key={b.stage} className="flex gap-4">
-                  <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-semibold flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-[13px] font-semibold flex items-center justify-center shrink-0 mt-0.5">
                     {i + 1}
                   </span>
                   <div className="flex-1 min-w-0">
@@ -626,7 +626,7 @@ const TodayHome: React.FC<TodayHomeProps> = ({
                         style={{ width: `${(b.orders / maxBottleneck) * 100}%` }}
                       />
                     </div>
-                    {b.owner && <div className="mt-1.5 text-xs text-slate-400">Owner · {b.owner}</div>}
+                    {b.owner && <div className="mt-1.5 text-[13px] text-slate-500">Owner · {b.owner}</div>}
                   </div>
                 </li>
               ))}

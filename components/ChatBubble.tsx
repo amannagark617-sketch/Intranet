@@ -50,14 +50,14 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ messages, isLoading, isOpen, se
             </div>
             <div>
               <h3 className="font-semibold text-sm text-slate-900">Production AI Assistant</h3>
-              <p className="text-xs text-emerald-600 flex items-center gap-1 font-medium">
+              <p className="text-[13px] text-emerald-600 flex items-center gap-1 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> Online • Little Nap PMS
               </p>
             </div>
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"
+            className="p-1 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-200 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -70,9 +70,9 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ messages, isLoading, isOpen, se
                 <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 mt-0.5">
                   <Bot className="w-4 h-4" />
                 </div>
-                <div className="bg-white text-slate-700 border border-slate-200 rounded-2xl p-3 text-xs shadow-xs max-w-[85%]">
+                <div className="bg-white text-slate-700 border border-slate-200 rounded-2xl p-3 text-[13px] shadow-xs max-w-[85%]">
                   <p className="leading-relaxed">
-                    Hello! I'm your PMS assistant. Ask me anything about orders (e.g. <em>"What is the status of OPF-218?"</em>), upcoming dispatches, or department bottlenecks.
+                    Hello! I'm your assistant. Ask me anything about orders (e.g. <em>"Where is my latest order?"</em>), upcoming dispatches, or department bottlenecks.
                   </p>
                 </div>
               </div>
@@ -85,7 +85,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ messages, isLoading, isOpen, se
                     <Bot className="w-4 h-4" />
                   </div>
                 )}
-                <div className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-xs ${
+                <div className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-[13px] ${
                   msg.author === 'user' 
                     ? 'bg-indigo-600 text-white shadow-xs rounded-br-xs' 
                     : 'bg-white text-slate-800 border border-slate-200 shadow-xs rounded-bl-xs'
@@ -120,7 +120,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ messages, isLoading, isOpen, se
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about an order or step..."
-              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 placeholder-slate-400 focus:outline-none"
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[13px] text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 placeholder-slate-400 focus:outline-none"
               disabled={isLoading}
             />
             <button 

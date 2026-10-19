@@ -224,7 +224,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
       {/* Month picker and export */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <p className="text-sm text-slate-500">
-          Was each order passed through final QC by its dispatch date?
+          Was each order passed through final inspection by its dispatch date?
           {(monthScopeFilter !== 'all' || weekScopeFilter) && (
             <span className="text-slate-700">
               {' '}Showing {monthScopeFilter === 'all' ? 'all months' : monthScopeFilter}
@@ -239,7 +239,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
         </p>
         <div className="flex items-center gap-2">
           <div className="flex items-center bg-white border border-slate-200 rounded-lg px-3 py-2">
-            <Calendar className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
+            <Calendar className="w-4 h-4 text-slate-500 mr-2 shrink-0" />
             <select
               value={monthScopeFilter}
               onChange={(e) => handleMonthChange(e.target.value)}
@@ -272,7 +272,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
             <span className={`absolute inset-x-0 top-0 h-[3px] ${c.tone}`} />
             <div className="text-[13px] font-medium text-slate-500">{c.label}</div>
             <div className="mt-2 text-4xl font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
-            <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
+            <div className="mt-1 text-[13px] text-slate-500">{c.sub}</div>
           </div>
         ))}
       </div>
@@ -301,7 +301,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
               <h3 className="text-sm font-semibold text-slate-900">
                 Monthly Delivery Performance &amp; Execution Velocity
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-[13px] text-slate-500">
                 Comparing On-Time cleared units vs Delayed units month-over-month
               </p>
             </div>
@@ -309,7 +309,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
             <div className="flex items-center bg-slate-100 p-1 rounded-xl">
               <button
                 onClick={() => setChartMetricMode('units')}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${
                   chartMetricMode === 'units'
                     ? 'bg-white text-slate-900 shadow-xs'
                     : 'text-slate-600 hover:text-slate-900'
@@ -319,7 +319,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
               </button>
               <button
                 onClick={() => setChartMetricMode('orders')}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${
                   chartMetricMode === 'orders'
                     ? 'bg-white text-slate-900 shadow-xs'
                     : 'text-slate-600 hover:text-slate-900'
@@ -383,7 +383,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
             <h3 className="text-sm font-semibold text-slate-900">
               Order Status Distribution
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-[13px] text-slate-500">
               Breakdown for {monthScopeFilter === 'all' ? 'All Records' : monthScopeFilter}
             </p>
           </div>
@@ -419,13 +419,13 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-xs text-slate-400 font-semibold">Orders</span>
+              <span className="text-[13px] text-slate-500 font-semibold">Orders</span>
               <span className="text-xl font-semibold tabular-nums text-slate-900">{scopeMetrics.totalOrders.toLocaleString()}</span>
             </div>
           </div>
 
           {/* Mini Legend list */}
-          <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-slate-100">
+          <div className="grid grid-cols-2 gap-2 text-[13px] pt-2 border-t border-slate-100">
             {statusPieData.map((item) => (
               <div key={item.name} className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
@@ -475,7 +475,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
               <div>
                 <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                   <span>Orders</span>
-                  <span className="px-2 py-0.5 rounded-full text-xs tabular-nums font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                  <span className="px-2 py-0.5 rounded-full text-[13px] tabular-nums font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
                     {filteredOrders.length.toLocaleString()}
                   </span>
                 </h3>
@@ -485,23 +485,23 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
             {/* Search Box & Export Ledger Button */}
             <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <div className="relative flex-1 sm:flex-initial w-full sm:w-auto">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search orders."
-                  className="pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-hidden focus:border-indigo-500 w-full sm:w-56 shadow-2xs text-slate-800"
+                  className="pl-8 pr-3 py-1.5 text-[13px] bg-white border border-slate-200 rounded-xl focus:outline-hidden focus:border-indigo-500 w-full sm:w-56 shadow-2xs text-slate-800"
                 />
               </div>
 
               <button
                 onClick={handleExportLedger}
                 disabled={filteredOrders.length === 0}
-                className={`flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-xs cursor-pointer w-full sm:w-auto shrink-0 ${
+                className={`flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[13px] font-semibold transition-all shadow-xs cursor-pointer w-full sm:w-auto shrink-0 ${
                   filteredOrders.length > 0
                     ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                    : 'bg-slate-200 text-slate-500 cursor-not-allowed'
                 }`}
                 title="Export this filtered On-Time vs Delayed Order Ledger directly to Excel (.xlsx)"
               >
@@ -515,12 +515,12 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-200/60">
             {/* Week Selector (if specific month is active) */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full scrollbar-none">
-              <span className="text-xs font-semibold text-slate-500 mr-1 shrink-0">
+              <span className="text-[13px] font-semibold text-slate-500 mr-1 shrink-0">
                 Week:
               </span>
               <button
                 onClick={() => setWeekScopeFilter(null)}
-                className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 whitespace-nowrap ${
+                className={`px-3 py-1 rounded-xl text-[13px] font-semibold transition-all cursor-pointer shrink-0 whitespace-nowrap ${
                   !weekScopeFilter
                     ? 'bg-indigo-600 text-white shadow-xs border border-indigo-600'
                     : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -534,7 +534,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                   <button
                     key={w.weekName}
                     onClick={() => setWeekScopeFilter(isSelected ? null : w.weekName)}
-                    className={`px-2.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
+                    className={`px-2.5 py-1 rounded-xl text-[13px] font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
                       isSelected
                         ? 'bg-indigo-600 text-white border border-indigo-600 shadow-xs ring-2 ring-indigo-200'
                         : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -542,7 +542,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                     title={`Filter by ${w.weekName} ${w.dateRange}`}
                   >
                     <span>{w.weekName}</span>
-                    <span className={`text-xs font-medium px-1 rounded ${
+                    <span className={`text-[13px] font-medium px-1 rounded ${
                       isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
                     }`}>
                       {w.totalOpf}
@@ -553,7 +553,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
             </div>
 
             {/* Status Filter Buttons */}
-            <div className="flex items-center p-1 bg-slate-100 rounded-xl text-xs font-semibold overflow-x-auto max-w-full scrollbar-none shrink-0">
+            <div className="flex items-center p-1 bg-slate-100 rounded-xl text-[13px] font-semibold overflow-x-auto max-w-full scrollbar-none shrink-0">
               <button
                 onClick={() => setStatusFilter('all')}
                 className={`px-3 py-1 rounded-lg transition-all cursor-pointer shrink-0 whitespace-nowrap ${
@@ -591,7 +591,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
 
           {/* Active Filter Summary Banner */}
           {weekScopeFilter && (
-            <div className="bg-indigo-50/80 border border-indigo-100 rounded-xl p-2.5 flex items-center justify-between text-xs text-indigo-950">
+            <div className="bg-indigo-50/80 border border-indigo-100 rounded-xl p-2.5 flex items-center justify-between text-[13px] text-indigo-950">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-indigo-600" />
                 <span>
@@ -610,14 +610,14 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
 
         {/* Orders Table */}
         <div className="overflow-x-auto max-h-[520px]">
-          <table className="w-full text-left border-collapse text-xs min-w-[850px]">
-            <thead className="bg-slate-50 sticky top-0 z-10 border-b border-slate-200 text-slate-600 text-xs font-semibold">
+          <table className="w-full text-left border-collapse text-[13px] min-w-[850px]">
+            <thead className="bg-slate-50 sticky top-0 z-10 border-b border-slate-200 text-slate-600 text-[13px] font-semibold">
               <tr>
-                <th className="py-3 px-4">OPF &amp; Model</th>
+                <th className="py-3 px-4">Order &amp; model</th>
                 <th className="py-3 px-4">Week</th>
                 <th className="py-3 px-4">Chairs</th>
                 <th className="py-3 px-4">Due</th>
-                <th className="py-3 px-4">QC passed</th>
+                <th className="py-3 px-4">Inspected on</th>
                 <th className="py-3 px-4 text-emerald-700">On time</th>
                 <th className="py-3 px-4 text-rose-700">Late</th>
                 <th className="py-3 px-4">Status</th>
@@ -627,7 +627,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
             <tbody className="divide-y divide-slate-100">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="py-8 text-center text-slate-400">
+                  <td colSpan={9} className="py-8 text-center text-slate-500">
                     No orders matching the selected filter criteria.
                   </td>
                 </tr>
@@ -651,7 +651,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                       {/* Order */}
                       <td className="py-3 px-4">
                         <div className="font-semibold text-slate-900 tabular-nums">{o.opfNo}</div>
-                        <div className="text-xs text-slate-500 truncate max-w-[180px]" title={o.modelName}>
+                        <div className="text-[13px] text-slate-500 truncate max-w-[180px]" title={o.modelName}>
                           {o.modelName}
                         </div>
                       </td>
@@ -660,15 +660,15 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                       <td className="py-3 px-4 whitespace-nowrap">
                         {o.weekName ? (
                           <div className="flex flex-col">
-                            <span className="font-semibold text-indigo-900 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100 text-xs w-fit">
+                            <span className="font-semibold text-indigo-900 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100 text-[13px] w-fit">
                               {o.weekName}
                             </span>
-                            <span className="text-xs text-slate-400 mt-0.5">
+                            <span className="text-[13px] text-slate-500 mt-0.5">
                               {o.weekRangeLabel || ''}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-slate-400 italic text-xs">-</span>
+                          <span className="text-slate-500 italic text-[13px]">-</span>
                         )}
                       </td>
 
@@ -690,7 +690,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                             {o.qcPassDateLatest}
                           </span>
                         ) : (
-                          <span className="text-slate-400 italic">Not Cleared</span>
+                          <span className="text-slate-500 italic">Not Cleared</span>
                         )}
                       </td>
 
@@ -701,7 +701,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                             {o.onTimeQty}
                           </span>
                         ) : (
-                          <span className="text-slate-400">0</span>
+                          <span className="text-slate-500">0</span>
                         )}
                       </td>
 
@@ -712,19 +712,19 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                             {o.delayedQty}
                           </span>
                         ) : (
-                          <span className="text-slate-400">0</span>
+                          <span className="text-slate-500">0</span>
                         )}
                       </td>
 
                       {/* Punctuality Status Badge */}
                       <td className="py-3 px-4">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border inline-block ${badgeClass}`}>
+                        <span className={`px-2.5 py-1 rounded-full text-[13px] font-semibold border inline-block ${badgeClass}`}>
                           {o.status}
                         </span>
                       </td>
 
                       {/* Diagnosis */}
-                      <td className="py-3 px-4 text-slate-600 text-xs max-w-[240px]">
+                      <td className="py-3 px-4 text-slate-600 text-[13px] max-w-[240px]">
                         <p className="truncate" title={o.statusExplanation}>
                           {o.statusExplanation}
                         </p>
@@ -738,7 +738,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
         </div>
 
         {filteredOrders.length > 150 && (
-          <div className="p-3 bg-slate-50 border-t border-slate-200 text-center text-xs text-slate-500 font-medium">
+          <div className="p-3 bg-slate-50 border-t border-slate-200 text-center text-[13px] text-slate-500 font-medium">
             Showing first 150 of {filteredOrders.length.toLocaleString()} records. Use search or filters to narrow down.
           </div>
         )}

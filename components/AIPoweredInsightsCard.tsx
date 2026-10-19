@@ -33,12 +33,12 @@ const AIPoweredInsightsCard: React.FC<AIPoweredInsightsCardProps> = ({ onGenerat
             <Sparkles className="w-4 h-4 text-indigo-600" />
             AI Production Insights
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">Automated stage bottleneck analysis & recommendations</p>
+          <p className="text-[13px] text-slate-500 mt-0.5">Automated stage bottleneck analysis & recommendations</p>
         </div>
         <button
           onClick={handleGenerateClick}
           disabled={isLoading}
-          className="flex-shrink-0 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-2 px-3.5 rounded-xl transition-all shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-shrink-0 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-[13px] py-2 px-3.5 rounded-xl transition-all shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
             <>
@@ -56,9 +56,9 @@ const AIPoweredInsightsCard: React.FC<AIPoweredInsightsCardProps> = ({ onGenerat
 
       <div className="flex-grow flex flex-col justify-center animate-fade-in mt-2">
         {!insights && !error && !isLoading && (
-          <div className="text-center py-6 text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+          <div className="text-center py-6 text-slate-500 bg-slate-50 rounded-xl border border-dashed border-slate-200">
             <Lightbulb className="w-6 h-6 mx-auto mb-2 text-slate-300" />
-            <p className="text-xs">Click "Generate Insights" to run automated analysis on active WIP orders & schedules.</p>
+            <p className="text-[13px]">Click "Generate Insights" to run automated analysis on orders in progress & schedules.</p>
           </div>
         )}
         {isLoading && (
@@ -76,7 +76,7 @@ const AIPoweredInsightsCard: React.FC<AIPoweredInsightsCardProps> = ({ onGenerat
           </div>
         )}
         {error && (
-          <div className="bg-rose-50 text-rose-800 p-3.5 rounded-xl text-xs border border-rose-200 flex items-start gap-2">
+          <div className="bg-rose-50 text-rose-800 p-3.5 rounded-xl text-[13px] border border-rose-200 flex items-start gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
             <div>
               <strong className="font-semibold">Analysis Notice:</strong> {error}
@@ -91,8 +91,8 @@ const AIPoweredInsightsCard: React.FC<AIPoweredInsightsCardProps> = ({ onGenerat
                   <Lightbulb className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-xs text-slate-900 mb-0.5">{insight.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">{insight.description}</p>
+                  <h3 className="font-semibold text-[13px] text-slate-900 mb-0.5">{insight.title}</h3>
+                  <p className="text-[13px] text-slate-600 leading-relaxed">{insight.description}</p>
                 </div>
               </li>
             ))}

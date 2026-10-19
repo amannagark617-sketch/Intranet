@@ -50,7 +50,7 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white border border-slate-200 rounded-2xl text-xs text-slate-700 shadow-xs mt-4">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white border border-slate-200 rounded-2xl text-[13px] text-slate-700 shadow-xs mt-4">
       {/* Item Range and Total */}
       <div className="flex items-center gap-2">
         <span className="text-slate-500">
@@ -62,14 +62,14 @@ const Pagination: React.FC<PaginationProps> = ({
       {/* Page Size Selector & Controls */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-1.5">
-          <span className="text-slate-500 text-xs">Per page:</span>
+          <span className="text-slate-500 text-[13px]">Per page:</span>
           <select
             value={pageSize}
             onChange={(e) => {
               onPageSizeChange(Number(e.target.value));
               onPageChange(1);
             }}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none"
+            className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-[13px] text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none"
           >
             {pageSizeOptions.map((opt) => (
               <option key={opt} value={opt}>
@@ -103,7 +103,7 @@ const Pagination: React.FC<PaginationProps> = ({
             {getPageNumbers().map((page, idx) => {
               if (page === '...') {
                 return (
-                  <span key={`dots-${idx}`} className="px-1 text-slate-400 tabular-nums">
+                  <span key={`dots-${idx}`} className="px-1 text-slate-500 tabular-nums">
                     ...
                   </span>
                 );
@@ -113,7 +113,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 <button
                   key={`page-${page}`}
                   onClick={() => onPageChange(Number(page))}
-                  className={`min-w-7 h-7 px-2 rounded-lg tabular-nums text-xs font-semibold transition-all ${
+                  className={`min-w-7 h-7 px-2 rounded-lg tabular-nums text-[13px] font-semibold transition-all ${
                     isCurrent
                       ? 'bg-indigo-600 text-white shadow-xs'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-950 border border-slate-200'

@@ -14,7 +14,7 @@ interface OnTimeDonutChartProps {
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-slate-900 text-white p-3 rounded-xl shadow-lg border border-slate-700 animate-fade-in text-xs">
+      <div className="bg-slate-900 text-white p-3 rounded-xl shadow-lg border border-slate-700 animate-fade-in text-[13px]">
         <p className="font-semibold text-white">{payload[0].name}</p>
         <p className="text-slate-300 mt-0.5">{`Orders: ${payload[0].value}`}</p>
       </div>
@@ -32,7 +32,7 @@ const OnTimeDonutChart: React.FC<OnTimeDonutChartProps> = ({ data }) => {
     <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs h-full flex flex-col justify-between">
       <div>
         <h2 className="text-base font-semibold text-slate-900">Orders Ready On Time</h2>
-        <p className="text-xs text-slate-500 mt-0.5">Compares QC Pass date with scheduled dispatch date for passed orders.</p>
+        <p className="text-[13px] text-slate-500 mt-0.5">Compares the day an order passed inspection with its dispatch date.</p>
       </div>
 
       <div className="h-48 relative flex items-center justify-center my-2">
@@ -60,11 +60,11 @@ const OnTimeDonutChart: React.FC<OnTimeDonutChartProps> = ({ data }) => {
             </ResponsiveContainer>
             <div className="absolute flex flex-col items-center justify-center pointer-events-none">
               <span className="text-3xl font-semibold text-slate-900 tabular-nums">{onTimePercentage}%</span>
-              <span className="text-xs font-semibold text-slate-500">On Time</span>
+              <span className="text-[13px] font-semibold text-slate-500">On Time</span>
             </div>
           </>
         ) : (
-          <div className="text-center text-slate-400 text-xs h-full flex items-center justify-center">
+          <div className="text-center text-slate-500 text-[13px] h-full flex items-center justify-center">
             No completed orders to analyze.
           </div>
         )}
@@ -72,7 +72,7 @@ const OnTimeDonutChart: React.FC<OnTimeDonutChartProps> = ({ data }) => {
 
       <div className="flex justify-center gap-6 pt-3 border-t border-slate-100">
         {data.map(entry => (
-          <div key={entry.name} className="flex items-center gap-2 text-xs">
+          <div key={entry.name} className="flex items-center gap-2 text-[13px]">
             <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: entry.color }}></div>
             <div>
               <span className="text-slate-500">{entry.name}</span>

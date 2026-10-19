@@ -236,7 +236,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
       badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
       headerBg: 'border-t-4 border-t-amber-500',
       accentColor: 'text-amber-700',
-      description: 'Moderate aging; CRE follow-up active for balance collection'
+      description: 'Moderate aging; follow-up active for balance collection'
     },
     {
       id: '46 - 60 Days',
@@ -375,7 +375,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
 
       {/* Error Alert */}
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs flex items-center justify-between">
+        <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-[13px] flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{error}</span>
@@ -431,14 +431,14 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
           >
             <div className="text-[13px] font-medium text-slate-500">{c.label}</div>
             <div className="mt-2 text-2xl sm:text-3xl whitespace-nowrap font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
-            <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
+            <div className="mt-1 text-[13px] text-slate-500">{c.sub}</div>
           </button>
         ))}
       </div>
 
       {/* REAL-TIME ACTIVE DRILLDOWN SUMMARY BANNER */}
       {hasActiveFilters && (
-        <div className="p-3 bg-amber-50/90 border border-amber-300 rounded-xl flex flex-wrap items-center justify-between gap-2.5 text-xs text-amber-950 animate-fade-in">
+        <div className="p-3 bg-amber-50/90 border border-amber-300 rounded-xl flex flex-wrap items-center justify-between gap-2.5 text-[13px] text-amber-950 animate-fade-in">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold text-amber-900 flex items-center gap-1">
               <Filter className="w-3.5 h-3.5" />
@@ -471,7 +471,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
             )}
             {selectedCreName !== 'All' && (
               <span className="bg-indigo-100 text-indigo-900 border border-indigo-300 px-2 py-0.5 rounded-full font-semibold">
-                CRE: {selectedCreName}
+                Follow-up: {selectedCreName}
               </span>
             )}
             {searchTerm && (
@@ -522,12 +522,12 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
           </div>
 
           {/* Active Filter Count & Reset */}
-          <div className="flex items-center gap-2 text-xs text-slate-500">
+          <div className="flex items-center gap-2 text-[13px] text-slate-500">
             <span>{filteredItems.length} of {items.length} orders</span>
             {hasActiveFilters && (
               <button
                 onClick={resetFilters}
-                className="flex items-center gap-1 text-xs font-semibold text-rose-600 hover:text-rose-700 px-2 py-1 bg-rose-50 rounded-lg border border-rose-200 transition-colors"
+                className="flex items-center gap-1 text-[13px] font-semibold text-rose-600 hover:text-rose-700 px-2 py-1 bg-rose-50 rounded-lg border border-rose-200 transition-colors"
               >
                 <X className="w-3.5 h-3.5" />
                 <span>Clear</span>
@@ -539,7 +539,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
             <input
               type="text"
               value={searchTerm}
@@ -548,7 +548,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
               className="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-800 focus:border-indigo-500 focus:outline-hidden transition-all"
             />
             {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearchTerm('')} className="absolute right-2.5 top-2.5 text-slate-500 hover:text-slate-600">
                 <X className="w-4 h-4" />
               </button>
             )}
@@ -636,12 +636,12 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                   >
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="text-sm font-semibold text-slate-900">{col.title}</h3>
-                      <span className="text-xs tabular-nums font-medium text-slate-500 whitespace-nowrap">
+                      <span className="text-[13px] tabular-nums font-medium text-slate-500 whitespace-nowrap">
                         {isColActive ? 'Filtered' : `${colItems.length} orders`}
                       </span>
                     </div>
-                    <div className="mt-2 flex items-baseline justify-between text-xs text-slate-500">
-                      <span className="tabular-nums">{totalUnits} chairs</span>
+                    <div className="mt-2 flex items-baseline justify-between text-[13px] text-slate-500">
+                      <span className="tabular-nums">{totalUnits} {totalUnits === 1 ? 'chair' : 'chairs'}</span>
                       <span className="tabular-nums font-medium text-slate-800">{formatInrCompact(totalBalance)} due</span>
                     </div>
                   </div>
@@ -649,7 +649,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                   {/* Cards Container */}
                   <div className="p-2.5 space-y-2.5 flex-1 max-h-[750px] overflow-y-auto">
                     {colItems.length === 0 ? (
-                      <div className="p-6 text-center text-slate-400 text-xs italic bg-white/60 rounded-xl border border-dashed border-slate-200">
+                      <div className="p-6 text-center text-slate-500 text-[13px] italic bg-white/60 rounded-xl border border-dashed border-slate-200">
                         No orders
                       </div>
                     ) : (
@@ -662,15 +662,15 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
                               <div className="text-sm font-semibold text-slate-900 truncate">{titleCase(item.customerName) || 'Customer'}</div>
-                              <div className="text-xs text-slate-400 tabular-nums truncate">{item.opfNo}</div>
+                              <div className="text-[13px] text-slate-500 tabular-nums truncate">{item.opfNo}</div>
                             </div>
-                            <span className={`shrink-0 whitespace-nowrap text-xs font-medium ${
+                            <span className={`shrink-0 whitespace-nowrap text-[13px] font-medium ${
                               item.daysInFactory > 60 ? 'text-rose-600' : item.daysInFactory > 30 ? 'text-amber-600' : 'text-slate-500'
                             }`}>
                               {item.daysInFactory} days
                             </span>
                           </div>
-                          <div className="mt-3 flex items-baseline justify-between text-xs">
+                          <div className="mt-3 flex items-baseline justify-between text-[13px]">
                             <span className="text-slate-500 truncate pr-2">{item.readyGoodsQty} × {titleCase(item.modelOfRecliners) || 'Recliner'}</span>
                             <span className="tabular-nums font-semibold text-slate-900 whitespace-nowrap">
                               {item.balancePayment > 0 ? `${formatInrCompact(item.balancePayment)} due` : 'Paid'}
@@ -699,11 +699,11 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                   <h3 className="text-sm font-semibold text-slate-900">
                     Aging Stage Distribution
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-[13px] text-slate-500">
                     Click any bar bracket to filter data real-time
                   </p>
                 </div>
-                <span className="text-xs tabular-nums font-semibold bg-slate-100 px-2 py-1 rounded text-slate-700">
+                <span className="text-[13px] tabular-nums font-semibold bg-slate-100 px-2 py-1 rounded text-slate-700">
                   {globalSummary.totalReadyGoodsQty} Total Units
                 </span>
               </div>
@@ -752,7 +752,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                   <h3 className="text-sm font-semibold text-slate-900">
                     Payment Collection Breakdown
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-[13px] text-slate-500">
                     Click slice to filter by Received, Due, or Warehouse
                   </p>
                 </div>
@@ -804,7 +804,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                 <h3 className="text-sm font-semibold text-slate-900">
                   Top Salespersons - Outstanding Balance
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-[13px] text-slate-500">
                   Click any salesperson bar to drill-down and filter data
                 </p>
               </div>
@@ -844,11 +844,11 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
               <h3 className="text-sm font-semibold text-slate-900">
                 Aging Matrix & Financial Summary
               </h3>
-              <span className="text-xs text-slate-500">Click any row to filter stage</span>
+              <span className="text-[13px] text-slate-500">Click any row to filter stage</span>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left">
-                <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200 text-xs">
+              <table className="w-full text-[13px] text-left">
+                <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200 text-[13px]">
                   <tr>
                     <th className="p-3">Aging Bracket</th>
                     <th className="p-3 text-right">Orders</th>
@@ -901,12 +901,12 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
               <h3 className="text-sm font-semibold text-slate-900">
                 Ready Goods Master Register
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-[13px] text-slate-500">
                 Sorted by {String(sortField)} ({sortDirection.toUpperCase()})
               </p>
             </div>
 
-            <div className="flex items-center gap-2 text-xs">
+            <div className="flex items-center gap-2 text-[13px]">
               <span className="text-slate-500">Rows per page:</span>
               <select
                 value={pageSize}
@@ -914,7 +914,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                   setPageSize(Number(e.target.value));
                   setCurrentPage(1);
                 }}
-                className="py-1 px-2 border border-slate-200 rounded-lg bg-white text-xs text-slate-800 font-semibold"
+                className="py-1 px-2 border border-slate-200 rounded-lg bg-white text-[13px] text-slate-800 font-semibold"
               >
                 <option value={10}>10</option>
                 <option value={15}>15</option>
@@ -926,8 +926,8 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
 
           {/* Table Element */}
           <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200 text-xs  select-none">
+            <table className="w-full text-[13px] text-left">
+              <thead className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200 text-[13px]  select-none">
                 <tr>
                   <th className="p-3 w-10 text-center">#</th>
                   <th 
@@ -935,7 +935,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                     className="p-3 cursor-pointer hover:bg-slate-200/60"
                   >
                     <div className="flex items-center gap-1">
-                      <span>OPF No</span>
+                      <span>Order no.</span>
                       <ArrowUpDown className="w-3 h-3" />
                     </div>
                   </th>
@@ -958,7 +958,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                     </div>
                   </th>
                   <th className="p-3">Model</th>
-                  <th className="p-3">Sales / CRE</th>
+                  <th className="p-3">Salesperson / follow-up</th>
                   <th 
                     onClick={() => handleSort('readyGoodsQty')}
                     className="p-3 text-right cursor-pointer hover:bg-slate-200/60"
@@ -992,7 +992,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
               <tbody className="divide-y divide-slate-100 font-medium">
                 {paginatedTableItems.length === 0 ? (
                   <tr>
-                    <td colSpan={10} className="p-8 text-center text-slate-400 text-xs italic">
+                    <td colSpan={10} className="p-8 text-center text-slate-500 text-[13px] italic">
                       No matching records found.
                     </td>
                   </tr>
@@ -1003,7 +1003,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                       onClick={() => setSelectedOrder(item)}
                       className="hover:bg-indigo-50/40 cursor-pointer transition-colors"
                     >
-                      <td className="p-3 text-center text-slate-400 tabular-nums text-xs">
+                      <td className="p-3 text-center text-slate-500 tabular-nums text-[13px]">
                         {(currentPage - 1) * pageSize + idx + 1}
                       </td>
                       <td className="p-3 tabular-nums font-semibold text-slate-900 whitespace-nowrap">
@@ -1017,7 +1017,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                       <td className="p-3">
                         <div className="font-semibold text-slate-900">{item.customerName || '-'}</div>
                         {(item.companyName || item.location) && (
-                          <div className="text-xs text-slate-500 truncate max-w-xs">
+                          <div className="text-[13px] text-slate-500 truncate max-w-xs">
                             {[item.companyName, item.location].filter(Boolean).join(' • ')}
                           </div>
                         )}
@@ -1025,9 +1025,9 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                       <td className="p-3 text-slate-700 font-medium max-w-xs truncate">
                         {item.modelOfRecliners || '-'}
                       </td>
-                      <td className="p-3 text-slate-600 whitespace-nowrap text-xs">
+                      <td className="p-3 text-slate-600 whitespace-nowrap text-[13px]">
                         <div>SP: {item.salesPerson || '-'}</div>
-                        <div className="text-slate-400">CRE: {item.creName || '-'}</div>
+                        <div className="text-slate-500">Follow-up: {item.creName || '-'}</div>
                       </td>
                       <td className="p-3 text-right tabular-nums font-semibold text-emerald-700">
                         {item.readyGoodsQty}
@@ -1036,7 +1036,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                         ₹{formatINR(item.balancePayment)}
                       </td>
                       <td className="p-3 text-center tabular-nums">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${
+                        <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${
                           item.daysInFactory > 60
                             ? 'bg-rose-50 text-rose-700 border-rose-200'
                             : item.daysInFactory > 30
@@ -1052,7 +1052,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                             e.stopPropagation();
                             setSelectedOrder(item);
                           }}
-                          className="px-2.5 py-1 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors"
+                          className="px-2.5 py-1 text-[13px] font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors"
                         >
                           Details
                         </button>
@@ -1066,7 +1066,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
+            <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[13px] text-slate-600">
               <div>
                 Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong> ({sortedTableItems.length} records)
               </div>
@@ -1106,7 +1106,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                     <h3 className="text-base font-semibold tabular-nums tracking-tight">
                       OPF #{selectedOrder.opfNo}
                     </h3>
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                    <span className={`text-[13px] font-semibold px-2 py-0.5 rounded-full ${
                       selectedOrder.daysInFactory > 60
                         ? 'bg-rose-500/30 text-rose-300'
                         : 'bg-emerald-500/30 text-emerald-300'
@@ -1114,7 +1114,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                       {selectedOrder.daysInFactory} Days in Factory
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-[13px] text-slate-500 mt-0.5">
                     Ready Goods Date: {formatDisplayDate(selectedOrder.readyGoodsDate)}
                   </p>
                 </div>
@@ -1129,13 +1129,13 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-5 text-xs">
+            <div className="p-6 overflow-y-auto space-y-5 text-[13px]">
               {/* Customer & Product Section */}
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
-                <h4 className="text-xs font-semibold text-slate-500">
+                <h4 className="text-[13px] font-semibold text-slate-500">
                   Customer & Order Details
                 </h4>
-                <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="grid grid-cols-2 gap-3 text-[13px]">
                   <div>
                     <span className="text-slate-500 block">Customer Name:</span>
                     <span className="font-semibold text-slate-900 text-sm">{selectedOrder.customerName || '-'}</span>
@@ -1165,37 +1165,37 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
 
               {/* Financial Breakdown */}
               <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
-                <h4 className="text-xs font-semibold text-slate-500">
+                <h4 className="text-[13px] font-semibold text-slate-500">
                   Financial Status & Receivables
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                   <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-100">
-                    <span className="text-xs text-slate-500 block font-semibold">Gross Amount</span>
+                    <span className="text-[13px] text-slate-500 block font-semibold">Gross Amount</span>
                     <span className="text-sm font-semibold tabular-nums text-slate-900 mt-0.5 block">
                       ₹{formatINR(selectedOrder.grossAmount)}
                     </span>
                   </div>
                   <div className="p-2.5 bg-emerald-50 rounded-lg border border-emerald-100">
-                    <span className="text-xs text-emerald-800 block font-semibold">Received</span>
+                    <span className="text-[13px] text-emerald-800 block font-semibold">Received</span>
                     <span className="text-sm font-semibold tabular-nums text-emerald-800 mt-0.5 block">
                       ₹{formatINR(selectedOrder.totalReceived)}
                     </span>
                   </div>
                   <div className="p-2.5 bg-amber-50 rounded-lg border border-amber-200">
-                    <span className="text-xs text-amber-800 block font-semibold">Balance Due</span>
+                    <span className="text-[13px] text-amber-800 block font-semibold">Balance Due</span>
                     <span className="text-sm font-semibold tabular-nums text-amber-900 mt-0.5 block">
                       ₹{formatINR(selectedOrder.balancePayment)}
                     </span>
                   </div>
                   <div className="p-2.5 bg-rose-50 rounded-lg border border-rose-100">
-                    <span className="text-xs text-rose-800 block font-semibold">Warehouse Dues</span>
+                    <span className="text-[13px] text-rose-800 block font-semibold">Warehouse Dues</span>
                     <span className="text-sm font-semibold tabular-nums text-rose-900 mt-0.5 block">
                       ₹{formatINR(selectedOrder.warehouseCharges)}
                     </span>
                   </div>
                 </div>
 
-                <div className="text-xs text-slate-500 flex items-center justify-between pt-1">
+                <div className="text-[13px] text-slate-500 flex items-center justify-between pt-1">
                   <span>Balance Percentage:</span>
                   <span className="tabular-nums font-semibold text-slate-900">{selectedOrder.pctBalancePayment}</span>
                 </div>
@@ -1203,7 +1203,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
 
               {/* Relationship & Calling Details */}
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
-                <h4 className="text-xs font-semibold text-slate-500">
+                <h4 className="text-[13px] font-semibold text-slate-500">
                   CRM & Dispatch Follow-Up
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
@@ -1212,7 +1212,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                     <span className="font-semibold text-slate-800">{selectedOrder.salesPerson || '-'}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block">CRE Executive:</span>
+                    <span className="text-slate-500 block">Follow-up by:</span>
                     <span className="font-semibold text-slate-800">{selectedOrder.creName || '-'}</span>
                   </div>
                   <div>
@@ -1257,7 +1257,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
             <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="px-5 py-2 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-colors text-xs"
+                className="px-5 py-2 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-colors text-[13px]"
               >
                 Close
               </button>

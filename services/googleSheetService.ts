@@ -5,7 +5,12 @@ import { PMS_ARCHIVE_ORDERS } from './pmsArchiveDataset';
 
 // Live Production Google Sheet
 const LIVE_SHEET_ID = '1SCbARqE4Yc6ELPoq8eIrWQ0zkiTQ3JB1SzFKPZMrBe8';
-const LIVE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${LIVE_SHEET_ID}/export?format=csv`;
+// The Live sheet has several tabs. Orders are read from the "PMS" tab, pinned by its gid so a
+// re-ordered or newly added tab can never be read by mistake.
+const LIVE_PMS_TAB_GID = '852646666';
+const LIVE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${LIVE_SHEET_ID}/export?format=csv&gid=${LIVE_PMS_TAB_GID}`;
+// Last-resort fallback (first tab of the workbook), used only if the PMS tab cannot be fetched.
+const LIVE_SHEET_FIRST_TAB_URL = `https://docs.google.com/spreadsheets/d/${LIVE_SHEET_ID}/export?format=csv`;
 
 // Dispatched Archive Google Sheet (Destination_2)
 const ARCHIVE_SHEET_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNkodlRKUhtkgGNGqSqMm_QE2Wip6iEHgGBoCRTB_Tghe01ExmIAp_0_EMkfAQzurXg1wIDvdKmJpw/pub?gid=1064992437&single=true&output=csv';
@@ -557,10 +562,13 @@ export const fetchAndParseData = async (): Promise<Order[]> => {
   let archiveOrders: Order[] = [];
 
   // Fetch Live and Archive sheets in parallel with realistic timeouts
-  const [liveCsv, archivePubCsv] = await Promise.all([
+  const [livePmsCsv, archivePubCsv] = await Promise.all([
     fetchWithTimeout(LIVE_SHEET_CSV_URL, 6000),
     fetchWithTimeout(ARCHIVE_SHEET_PUB_CSV_URL, 10000),
   ]);
+  const liveCsv = livePmsCsv && livePmsCsv.trim().length > 0
+    ? livePmsCsv
+    : await fetchWithTimeout(LIVE_SHEET_FIRST_TAB_URL, 6000);
 
   if (liveCsv && liveCsv.trim().length > 0) {
     try {

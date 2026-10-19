@@ -50,6 +50,9 @@ export interface Order {
   source?: 'live' | 'archive';
   finalQcQtyPass?: number | null;
   finalQcStatus?: string | null;
+  /** 'QC QTY PENDING' / 'QC QTY PASSED' columns of the PMS tab (null when the sheet has no such column). */
+  qcQtyPending?: number | null;
+  qcQtyPassed?: number | null;
 }
 
 export interface Insight {

@@ -102,29 +102,29 @@ export const computeFloorMetrics = ({
     let category: 'current' | 'next' | 'backlog' | 'hold' | 'future' | 'completed' = 'completed';
 
     if (!isDispatched) {
-      if (totalQty <= 0 || isQcPassed) {
+      // The sheet's own "QC QTY PENDING" column is the source of truth when present;
+      // otherwise fall back to Total qty - QC qty passed.
+      const pending = order.qcQtyPending;
+      remainingQueue = pending !== null && pending !== undefined
+        ? pending
+        : (totalQty <= 0 || isQcPassed ? 0 : Math.max(0, totalQty - qtyPass));
+
+      if (remainingQueue <= 0) {
         remainingQueue = 0;
         category = 'completed';
+      } else if (!orderDispYMD || orderDispYMD < `${currentPrefix}-01`) {
+        // Dispatch date before this month, or no date at all -> Backlog
+        category = 'backlog';
+        backlogChairs += remainingQueue;
+      } else if (orderDispYMD.startsWith(currentPrefix)) {
+        category = 'current';
+        inQueueCurrentMonth += remainingQueue;
+      } else if (orderDispYMD.startsWith(nextPrefix)) {
+        category = 'next';
+        nextMonthChairs += remainingQueue;
       } else {
-        // Status is <> "Pass": calculate remaining in queue = Total (Col C) - Pass (Col AZ)
-        remainingQueue = Math.max(0, totalQty - qtyPass);
-
-        if (remainingQueue === 0) {
-          category = 'completed';
-        } else if (!orderDispYMD || orderDispYMD < `${currentPrefix}-01`) {
-          // Dispatch date before this month, or no date at all (e.g. HOLD) -> Backlog
-          category = 'backlog';
-          backlogChairs += remainingQueue;
-        } else if (orderDispYMD.startsWith(currentPrefix)) {
-          category = 'current';
-          inQueueCurrentMonth += remainingQueue;
-        } else if (orderDispYMD.startsWith(nextPrefix)) {
-          category = 'next';
-          nextMonthChairs += remainingQueue;
-        } else {
-          category = 'future';
-          otherFutureChairs += remainingQueue;
-        }
+        category = 'future';
+        otherFutureChairs += remainingQueue;
       }
     }
 

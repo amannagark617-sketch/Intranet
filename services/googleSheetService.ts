@@ -89,7 +89,7 @@ const STEP_COLUMNS = {
  * Parses raw CSV text into Order objects.
  * Locates header row dynamically to parse both Live PMS and Archive PMS sheets reliably.
  */
-const parseCsvLines = (linesOrText: string[] | string, isArchive: boolean): Order[] => {
+export const parseCsvLines = (linesOrText: string[] | string, isArchive: boolean): Order[] => {
   let records: string[][] = [];
   if (typeof linesOrText === 'string') {
     records = parseCsvRecords(linesOrText);
@@ -109,6 +109,16 @@ const parseCsvLines = (linesOrText: string[] | string, isArchive: boolean): Orde
   }
 
   const dataRows = headerRowIdx >= 0 ? records.slice(headerRowIdx + 1) : records.slice(5);
+
+  // Only the two QC quantity columns are located by header name; every other column keeps its fixed position.
+  const headerCells = headerRowIdx >= 0 ? records[headerRowIdx] : [];
+  const pendingColIdx = headerCells.findIndex((c) => /qc\s*qty\s*pending/i.test(c));
+  const passedColIdx = headerCells.findIndex((c) => /qc\s*qty\s*passed/i.test(c));
+  const readQty = (cols: string[], idx: number): number | null => {
+    if (idx < 0) return null;
+    const d = (cols[idx] || '').replace(/[^0-9]/g, '');
+    return d ? parseInt(d, 10) : null;
+  };
   const orders: Order[] = [];
 
   for (const cols of dataRows) {
@@ -121,7 +131,10 @@ const parseCsvLines = (linesOrText: string[] | string, isArchive: boolean): Orde
     const rawDispatchCol = cols[6]?.trim() || '';
     const dispatchDate = parseDate(rawDispatchCol);
     const rawQtyDigits = cols[2] !== undefined ? cols[2].replace(/[^0-9]/g, '') : '';
-    const quantity = rawQtyDigits !== '' ? parseInt(rawQtyDigits, 10) : 0;
+    const qcQtyPending = readQty(cols, pendingColIdx);
+    const qcQtyPassed = readQty(cols, passedColIdx);
+    let quantity = rawQtyDigits !== '' ? parseInt(rawQtyDigits, 10) : 0;
+    if (quantity === 0 && ((qcQtyPending ?? 0) + (qcQtyPassed ?? 0)) > 0) quantity = (qcQtyPending ?? 0) + (qcQtyPassed ?? 0);
     const modelName = cols[3]?.trim() || 'Custom Recliner Model';
     const upholstery = cols[4]?.trim() || 'Standard Upholstery';
     const opfReceiveDate = parseDate(cols[5]);
@@ -306,6 +319,8 @@ const parseCsvLines = (linesOrText: string[] | string, isArchive: boolean): Orde
         source: 'live',
         finalQcQtyPass,
         finalQcStatus,
+        qcQtyPending,
+        qcQtyPassed,
       });
     }
   }

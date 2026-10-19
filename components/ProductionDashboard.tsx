@@ -888,19 +888,12 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
           </section>
 
           {/* KEY NUMBERS */}
-          <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
+          <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
             <StatTile
               label="In queue"
               value={floorMetrics.totalChairsInQueue.toLocaleString()}
               sub="chairs waiting"
               onClick={() => { setQueueFilterCategory('all'); setShowQueueDrawer(true); }}
-            />
-            <StatTile
-              label="On hold"
-              value={floorMetrics.holdChairs.toLocaleString()}
-              sub={`${floorMetrics.holdOrdersCount} orders`}
-              accent={floorMetrics.holdOrdersCount > 0 ? 'amber' : undefined}
-              onClick={() => { setQueueFilterCategory('hold'); setShowQueueDrawer(true); }}
             />
             <StatTile
               label="Dispatched"

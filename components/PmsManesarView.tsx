@@ -4,7 +4,6 @@ import StatCard from './StatCard';
 import FilterBar, { DEFAULT_STATUSES } from './FilterBar';
 import OrderCard from './OrderCard';
 import ProductionPlannerCalendar from './ProductionPlannerCalendar';
-import HoldOrdersView from './HoldOrdersView';
 import PmsTableView from './PmsTableView';
 import ResponsibleStats from './ResponsibleStats';
 import ProductionChart from './ProductionChart';
@@ -31,7 +30,7 @@ import {
   Download
 } from 'lucide-react';
 
-export type PmsSubTab = 'cards' | 'planner' | 'hold' | 'stages' | 'table';
+export type PmsSubTab = 'cards' | 'planner' | 'stages' | 'table';
 
 interface PmsManesarViewProps {
   orders: Order[];
@@ -156,7 +155,6 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
           {([
             { id: 'cards', label: 'Orders', badge: filteredOrders.length },
             { id: 'planner', label: 'Calendar' },
-            { id: 'hold', label: 'On hold', badge: holdOrdersCount },
             { id: 'stages', label: 'Bottlenecks' },
             { id: 'table', label: 'Data sheet' },
           ] as Array<{ id: PmsSubTab; label: string; badge?: number }>).map(t => (
@@ -207,18 +205,14 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
           />
 
           {/* Key numbers */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {[
               { label: 'Orders shown', value: kpis.total.count, sub: `${kpis.total.units} chairs` },
               { label: 'In progress', value: kpis.wip.count, sub: `${kpis.wip.units} chairs` },
-              { label: 'On hold', value: kpis.onHold.count, sub: `${kpis.onHold.units} chairs`, accent: kpis.onHold.count > 0 },
               { label: 'Ready to dispatch', value: kpis.ready.count, sub: `${kpis.ready.units} chairs` },
             ].map(c => (
               <div key={c.label} className="bg-white rounded-2xl border border-slate-200/80 px-5 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                <div className="flex items-center gap-1.5 text-[13px] font-medium text-slate-500">
-                  {c.accent && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
-                  {c.label}
-                </div>
+                <div className="text-[13px] font-medium text-slate-500">{c.label}</div>
                 <div className="mt-2 text-2xl sm:text-3xl whitespace-nowrap font-semibold tracking-tight text-slate-900 tabular-nums">{c.value}</div>
                 <div className="mt-1 text-xs text-slate-400">{c.sub}</div>
               </div>
@@ -293,14 +287,6 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
       {/* SUB-TAB 2: PLANNING CALENDAR */}
       {activeSubTab === 'planner' && (
         <ProductionPlannerCalendar 
-          orders={orders} 
-          onSelectOrder={onSelectOrder} 
-        />
-      )}
-
-      {/* SUB-TAB 3: ON HOLD ORDERS */}
-      {activeSubTab === 'hold' && (
-        <HoldOrdersView 
           orders={orders} 
           onSelectOrder={onSelectOrder} 
         />

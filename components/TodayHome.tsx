@@ -348,7 +348,6 @@ const TodayHome: React.FC<TodayHomeProps> = ({
   const onTimeVal = otd?.month?.unitOnTimePct;
   const onTimeTone: Tone =
     onTimeVal == null ? 'neutral' : onTimeVal >= 90 ? 'good' : onTimeVal >= 75 ? 'watch' : 'bad';
-  const holdTone: Tone = stats.hold.count === 0 ? 'good' : stats.hold.count <= 5 ? 'watch' : 'bad';
   const dueTone: Tone = stats.overdueAmount === 0 ? 'good' : 'bad';
   const maxBottleneck = Math.max(1, ...stats.bottlenecks.map(b => b.orders));
   const monthTone = sales ? paceTone(sales.month.sales, sales.month.target, monthElapsed) : 'neutral';
@@ -371,7 +370,6 @@ const TodayHome: React.FC<TodayHomeProps> = ({
     if (production && production.target) {
       parts.push(`Manesar production at ${Math.round((production.monthUnits / production.target) * 100)}% of target`);
     }
-    if (stats.hold.count > 0) parts.push(`${stats.hold.count} orders on hold`);
     if (stats.overdueAmount > 0) parts.push(`${formatInr(stats.overdueAmount)} receivables overdue`);
     return parts.length ? parts.join(' · ') : "Loading today's numbers…";
   })();
@@ -526,21 +524,13 @@ const TodayHome: React.FC<TodayHomeProps> = ({
 
       <section>
         <SectionLabel>Factory &amp; delivery</SectionLabel>
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <KpiCard
             title="In production"
             value={`${stats.wip.units}`}
             sub={`units across ${stats.wip.count} orders`}
             tone="neutral"
             icon={Factory}
-            onClick={() => onNavigate('pmsManesar')}
-          />
-          <KpiCard
-            title="On hold"
-            value={`${stats.hold.count}`}
-            sub={`orders · ${stats.hold.units} units`}
-            tone={holdTone}
-            icon={PauseCircle}
             onClick={() => onNavigate('pmsManesar')}
           />
           <KpiCard

@@ -54,7 +54,7 @@ interface FilterBarProps {
 }
 
 const ALL_STATUS_OPTIONS = [
-  { key: 'WIP', label: 'In progress', color: 'indigo', icon: Clock },
+  { key: 'WIP', label: 'WIP', color: 'indigo', icon: Clock },
   { key: 'Ready', label: 'Ready for Dispatch', color: 'teal', icon: CheckCircle2 },
   { key: 'On Hold', label: 'On Hold', color: 'amber', icon: AlertTriangle },
   { key: 'Dispatched', label: 'Dispatched', color: 'emerald', icon: Truck },
@@ -137,7 +137,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
           </div>
           <input
             type="text"
-            placeholder="Search order, model, fabric or owner"
+            placeholder="Search OPF Number, Model Name, Fabric, Stage, Owner..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full p-2.5 pl-10 pr-8 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 text-[13px] shadow-xs focus:bg-white focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 placeholder:text-slate-400 transition-all"

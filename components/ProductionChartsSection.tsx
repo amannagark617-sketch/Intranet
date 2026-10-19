@@ -477,7 +477,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-semibold text-slate-900">Orders at each stage</h3>
+                <h3 className="text-sm font-semibold text-slate-900">14-Stage Floor WIP Queue Distribution</h3>
                 <p className="text-[13px] text-slate-500">Live order &amp; chair concentration across production workstations</p>
               </div>
             </div>

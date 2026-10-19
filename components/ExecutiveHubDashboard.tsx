@@ -259,7 +259,7 @@ export const ExecutiveHubDashboard: React.FC<ExecutiveHubDashboardProps> = ({ on
                 <option value="Google Sheet">Google Sheets</option>
                 <option value="Web App / Portal">Web Apps & Portals</option>
                 <option value="Google Drive">Drive Archives</option>
-                <option value="Looker Studio">Looker dashboards</option>
+                <option value="Looker Studio">Looker BI Dashboards</option>
                 <option value="External Link">External Links</option>
               </select>
 

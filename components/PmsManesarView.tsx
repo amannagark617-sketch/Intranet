@@ -208,7 +208,7 @@ export const PmsManesarView: React.FC<PmsManesarViewProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {[
               { label: 'Orders shown', value: kpis.total.count, sub: `${kpis.total.units} chairs` },
-              { label: 'In progress', value: kpis.wip.count, sub: `${kpis.wip.units} chairs` },
+              { label: 'WIP Orders', value: kpis.wip.count, sub: `${kpis.wip.units} chairs` },
               { label: 'Ready to dispatch', value: kpis.ready.count, sub: `${kpis.ready.units} chairs` },
             ].map(c => (
               <div key={c.label} className="bg-white rounded-2xl border border-slate-200/80 px-5 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">

@@ -14,7 +14,7 @@ import {
 const MODULES = [
   { label: 'Executive Directory & Leadership Sheets', icon: FolderKanban, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-200' },
   { label: 'Production Management System (Manesar & Indore)', icon: Factory, color: 'text-amber-600', bg: 'bg-amber-50 border-amber-200' },
-  { label: 'Receivables and payment follow-up', icon: ReceiptText, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-200' },
+  { label: 'Receivables & FMS Payment Follow-up', icon: ReceiptText, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-200' },
   { label: 'Real-Time Gross Profit & Margins', icon: BadgePercent, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-200' },
   { label: 'Ready Goods & Factory Stock Pipeline', icon: PackageCheck, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-200' },
   { label: 'Sales Reports & Regional Performance', icon: TrendingUp, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-200' },

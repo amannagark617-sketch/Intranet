@@ -49,8 +49,7 @@ When analyzing, adhere strictly to these principles:
 - Ground every suggestion in the quantitative metrics provided (e.g. daily target deficit, remaining working days, specific stage backlogs, hold units).
 - Formulate practical floor actions (e.g. line rebalancing, overtime scheduling, fabric kitting, QC expedited clearing, customer hold resolution).
 - Estimate realistic unit impacts (e.g. "+35 units/month", "Reduces WIP cycle by 2.2 days").
-- Never make up imaginary numbers; use the provided context precisely.
-- Write for a business owner, not an engineer: plain, everyday English. Say "in progress" not "WIP", "order" not "OPF". No jargon or abbreviations.`;
+- Never make up imaginary numbers; use the provided context precisely.`;
 
 /**
  * Deterministic baseline analysis generator computed directly from live production math.
@@ -97,9 +96,9 @@ export const computeBaselineHeuristicAnalysis = (ctx: AIPlantContext): Productio
       category: 'Bottlenecks & Flow',
       priority: 'HIGH',
       title: `Unclog Critical Chokepoints: ${topStage.stage} (${topStage.orders} orders in queue)`,
-      observation: `${topStage.stage} currently holds ${topStage.orders} orders in progress (${topStage.units} units), overseen by ${topStage.responsible}.${secondStage ? ` Followed by ${secondStage.stage} (${secondStage.orders} orders).` : ''}`,
-      actionPlan: `Rebalance the workload: temporarily cross-train and reallocate 2 operators from early framing to ${topStage.stage}. Implement batch kitting of upholstery & foam kits 24 hours prior to feeding this station.`,
-      expectedImpact: `Speeds up this stage and sends ~${Math.ceil(topStage.units * 0.4)} chairs to final QC within 48 hours`,
+      observation: `${topStage.stage} currently holds ${topStage.orders} active WIP orders (${topStage.units} units), overseen by ${topStage.responsible}.${secondStage ? ` Followed by ${secondStage.stage} (${secondStage.orders} orders).` : ''}`,
+      actionPlan: `Institute immediate WIP balancing: temporarily cross-train and reallocate 2 operators from early framing to ${topStage.stage}. Implement batch kitting of upholstery & foam kits 24 hours prior to feeding this station.`,
+      expectedImpact: `Accelerates WIP turnover by 35% and releases ~${Math.ceil(topStage.units * 0.4)} units to Final QC within 48 hours`,
       responsibleDept: `${topStage.stage} (${topStage.responsible})`,
     });
   }
@@ -352,17 +351,17 @@ export const generateDashboardInsights = async (context: any): Promise<Insight[]
     return [
       {
         title: "Stage Flow & Bottleneck Review",
-        description: "Analyze stage queues with many orders waiting (such as Stitching and Fitting) to accelerate throughput.",
+        description: "Analyze stage queues with high WIP concentration (such as Stitching and Fitting) to accelerate throughput.",
         severity: "warning"
       },
       {
         title: "Hold Orders Resolution",
-        description: "Review on-hold customer orders with sales coordination to clear floor congestion.",
+        description: "Review on-hold customer orders with sales coordination to clear WIP floor lock.",
         severity: "critical"
       },
       {
         title: "Dispatch Pace & Target Alignment",
-        description: "Monitor daily QC pass rate against the monthly targets for consistent quota attainment.",
+        description: "Monitor daily QC pass velocity against the monthly targets for consistent quota attainment.",
         severity: "positive"
       }
     ];
@@ -373,7 +372,6 @@ const chatSystemInstruction = `You are a helpful, concise plant assistant for Li
 - Answer the user's question directly, simply, and specifically.
 - Keep answers short and clear: 1 to 3 sentences, or a quick bulleted list if explicitly asked.
 - Never dump unsolicited data, unprompted summaries, or technical internal labels.
-- Use plain everyday English: say "in progress" not "WIP", "order number" not "OPF".
 - If asked about an order, answer only its model, current stage, owner, and status.`;
 
 /**
@@ -443,7 +441,7 @@ export const generateDataGroundedAnswer = (
       return { text: answer, sources, followups: [] };
     } else {
       return {
-        text: `I couldn't find an order matching **${rawNumber}**. Please check the order number.`,
+        text: `I couldn't find an order matching **${rawNumber}**. Please verify the OPF number.`,
         sources,
         followups: []
       };
@@ -470,7 +468,7 @@ export const generateDataGroundedAnswer = (
 
     let text = top 
       ? `The main bottleneck right now is **${top[0]}** with **${top[1].orders} orders** (${top[1].units} units) waiting under ${top[1].responsible}.${second ? ` The next slowest is **${second[0]}** (${second[1].orders} orders).` : ''}`
-      : `No significant stage bottleneck found across current orders in progress.`;
+      : `No significant stage bottleneck found across current WIP orders.`;
 
     return { text, sources, followups: [] };
   }
@@ -512,7 +510,7 @@ export const generateDataGroundedAnswer = (
   // 8. GENERAL / DEFAULT SHORT ANSWER
   const wipCount = orders.filter(o => o.overallStatus === 'WIP').length;
   const readyCount = orders.filter(o => o.overallStatus === 'Ready').length;
-  const text = `There are currently **${wipCount} orders in progress** and **${readyCount} ready for dispatch**. Ask me about a specific order number, stage bottleneck, or attach a file.`;
+  const text = `There are currently **${wipCount} orders in progress** and **${readyCount} ready for dispatch**. Ask me about a specific order OPF, stage bottleneck, or attach a file.`;
 
   return { text, sources, followups: [] };
 };

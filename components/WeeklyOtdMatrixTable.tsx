@@ -81,7 +81,7 @@ export const WeeklyOtdMatrixTable: React.FC<WeeklyOtdMatrixTableProps> = ({
             <h2 className="text-lg sm:text-xl font-semibold text-slate-900 tracking-tight flex items-center gap-2.5">
               <span>OTD Production Data — {currentMatrix.monthDisplay}</span>
               <span className="text-[13px] tabular-nums font-semibold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200">
-                {currentMatrix.totalNoOfOpf} orders • {currentMatrix.totalNoOfChairs} Units
+                {currentMatrix.totalNoOfOpf} OPFs • {currentMatrix.totalNoOfChairs} Units
               </span>
             </h2>
             <p className="text-[13px] text-slate-500">
@@ -129,7 +129,7 @@ export const WeeklyOtdMatrixTable: React.FC<WeeklyOtdMatrixTableProps> = ({
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
               }`}
             >
-              <span>Full Month ({currentMatrix.totalNoOfOpf} orders)</span>
+              <span>Full Month ({currentMatrix.totalNoOfOpf} OPFs)</span>
             </button>
 
             {/* Individual Week Buttons */}
@@ -150,7 +150,7 @@ export const WeeklyOtdMatrixTable: React.FC<WeeklyOtdMatrixTableProps> = ({
                   <span className={`text-[13px] font-medium px-1 rounded ${
                     isWkSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
                   }`}>
-                    {w.totalOpf} orders
+                    {w.totalOpf} OPF
                   </span>
                   <span className={`text-[13px] tabular-nums font-semibold ${
                     isWkSelected
@@ -189,7 +189,7 @@ export const WeeklyOtdMatrixTable: React.FC<WeeklyOtdMatrixTableProps> = ({
               Active Weekly Filter: <span className="underline decoration-indigo-400 decoration-2">{activeWeekObj.weekName} ({activeWeekObj.dateRange})</span>
             </span>
             <span className="text-indigo-700 hidden sm:inline">
-              — Showing {activeWeekObj.totalOpf} orders ({activeWeekObj.totalChairs} units), {activeWeekObj.onTimeOpfPct}% On-Time in ledger below
+              — Showing {activeWeekObj.totalOpf} OPFs ({activeWeekObj.totalChairs} units), {activeWeekObj.onTimeOpfPct}% On-Time in ledger below
             </span>
           </div>
           <button
@@ -275,7 +275,7 @@ export const WeeklyOtdMatrixTable: React.FC<WeeklyOtdMatrixTableProps> = ({
                   !selectedWeek ? 'bg-indigo-50 text-indigo-950 font-semibold' : 'bg-slate-50/80 text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                Orders
+                OPF
               </th>
               <th
                 onClick={() => handleWeekClick(null)}
@@ -298,7 +298,7 @@ export const WeeklyOtdMatrixTable: React.FC<WeeklyOtdMatrixTableProps> = ({
                           : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
                       }`}
                     >
-                      Orders
+                      OPF
                     </th>
                     <th
                       onClick={() => handleWeekClick(w.weekName)}
@@ -320,7 +320,7 @@ export const WeeklyOtdMatrixTable: React.FC<WeeklyOtdMatrixTableProps> = ({
             {/* ROW 1: TOTAL NUMBER OF OPF / CHAIRS */}
             <tr className="hover:bg-slate-50/80 font-semibold text-slate-800 transition-colors">
               <td className="p-3 text-left font-semibold text-slate-900 bg-slate-50/60 border-r border-slate-200">
-                Total orders
+                TOTAL NUMBER OF OPF
               </td>
               <td
                 onClick={() => handleWeekClick(null)}

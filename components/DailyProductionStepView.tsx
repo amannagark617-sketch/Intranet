@@ -691,7 +691,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
             <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3" />
             <input
               type="text"
-              placeholder="Search order, model or inspector"
+              placeholder="Search OPF, model, inspector..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[13px] font-medium text-slate-800 placeholder-slate-400 outline-none w-full sm:w-56 focus:border-indigo-500 focus:bg-white transition-colors"
@@ -858,7 +858,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                                   <span className="text-[13px] font-normal text-slate-500">units</span>
                                 </span>
                                 <span className="text-[13px] font-semibold text-slate-500 tabular-nums">
-                                  {stepData.orderCount} orders
+                                  {stepData.orderCount} OPF
                                 </span>
                               </div>
 
@@ -1264,7 +1264,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                             {stepData.unitCount} <span className="text-[13px] font-normal text-slate-500">{isDispatch ? 'boxes' : 'units'}</span>
                           </div>
                           <div className="text-[13px] font-semibold text-slate-500 tabular-nums">
-                            {isDispatch ? `${stepData.orderCount} entries` : `${stepData.orderCount} orders`}
+                            {isDispatch ? `${stepData.orderCount} entries` : `${stepData.orderCount} OPFs`}
                           </div>
                         </div>
                       </div>
@@ -1278,14 +1278,14 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                 <div className="space-y-3">
                   {selectedDayDetail.totalStepActivitiesCount === 0 ? (
                     <div className="text-center py-8 text-slate-500 text-[13px]">
-                      No orders were completed on this date.
+                      No OPF work order completions logged on this date.
                     </div>
                   ) : (
                     <div className="overflow-x-auto border border-slate-200 rounded-xl">
                       <table className="w-full text-[13px] text-left border-collapse bg-white">
                         <thead className="bg-slate-50 text-slate-600 font-semibold text-[13px]  border-b border-slate-200">
                           <tr>
-                            <th className="p-2.5">Order no.</th>
+                            <th className="p-2.5">OPF No</th>
                             <th className="p-2.5">Model / Upholstery</th>
                             <th className="p-2.5 text-right">Units</th>
                             <th className="p-2.5">Step</th>
@@ -1338,7 +1338,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                         <thead className="bg-slate-50 text-slate-600 font-semibold text-[13px]  border-b border-slate-200">
                           <tr>
                             <th className="p-2.5">Timestamp</th>
-                            <th className="p-2.5">Order no.</th>
+                            <th className="p-2.5">OPF No</th>
                             <th className="p-2.5 text-right">Pass Qty</th>
                             <th className="p-2.5 text-right">Rej Qty</th>
                             <th className="p-2.5">Status</th>
@@ -1400,7 +1400,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                         <thead className="bg-slate-50 text-slate-600 font-semibold text-[13px]  border-b border-slate-200">
                           <tr>
                             <th className="p-2.5">Timestamp</th>
-                            <th className="p-2.5">Order no.</th>
+                            <th className="p-2.5">OPF No</th>
                             <th className="p-2.5">Model Name</th>
                             <th className="p-2.5 text-right">Boxes / Cartons</th>
                             <th className="p-2.5">Responsible</th>

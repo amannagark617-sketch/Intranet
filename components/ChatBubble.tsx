@@ -72,7 +72,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ messages, isLoading, isOpen, se
                 </div>
                 <div className="bg-white text-slate-700 border border-slate-200 rounded-2xl p-3 text-[13px] shadow-xs max-w-[85%]">
                   <p className="leading-relaxed">
-                    Hello! I'm your assistant. Ask me anything about orders (e.g. <em>"Where is my latest order?"</em>), upcoming dispatches, or department bottlenecks.
+                    Hello! I'm your PMS assistant. Ask me anything about orders (e.g. <em>"What is the status of OPF-218?"</em>), upcoming dispatches, or department bottlenecks.
                   </p>
                 </div>
               </div>

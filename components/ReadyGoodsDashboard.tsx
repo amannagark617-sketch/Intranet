@@ -236,7 +236,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
       badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
       headerBg: 'border-t-4 border-t-amber-500',
       accentColor: 'text-amber-700',
-      description: 'Moderate aging; follow-up active for balance collection'
+      description: 'Moderate aging; CRE follow-up active for balance collection'
     },
     {
       id: '46 - 60 Days',
@@ -471,7 +471,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
             )}
             {selectedCreName !== 'All' && (
               <span className="bg-indigo-100 text-indigo-900 border border-indigo-300 px-2 py-0.5 rounded-full font-semibold">
-                Follow-up: {selectedCreName}
+                CRE: {selectedCreName}
               </span>
             )}
             {searchTerm && (
@@ -589,7 +589,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
               onChange={e => setSelectedCreName(e.target.value)}
               className="py-2 px-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-indigo-500 focus:outline-hidden"
             >
-              <option value="All">All follow-up owners</option>
+              <option value="All">All CREs</option>
               {creNames.map(cre => (
                 <option key={cre} value={cre}>{cre}</option>
               ))}
@@ -935,7 +935,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                     className="p-3 cursor-pointer hover:bg-slate-200/60"
                   >
                     <div className="flex items-center gap-1">
-                      <span>Order no.</span>
+                      <span>OPF No</span>
                       <ArrowUpDown className="w-3 h-3" />
                     </div>
                   </th>
@@ -958,7 +958,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                     </div>
                   </th>
                   <th className="p-3">Model</th>
-                  <th className="p-3">Salesperson / follow-up</th>
+                  <th className="p-3">Sales / CRE</th>
                   <th 
                     onClick={() => handleSort('readyGoodsQty')}
                     className="p-3 text-right cursor-pointer hover:bg-slate-200/60"
@@ -1027,7 +1027,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                       </td>
                       <td className="p-3 text-slate-600 whitespace-nowrap text-[13px]">
                         <div>SP: {item.salesPerson || '-'}</div>
-                        <div className="text-slate-500">Follow-up: {item.creName || '-'}</div>
+                        <div className="text-slate-500">CRE: {item.creName || '-'}</div>
                       </td>
                       <td className="p-3 text-right tabular-nums font-semibold text-emerald-700">
                         {item.readyGoodsQty}
@@ -1212,7 +1212,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
                     <span className="font-semibold text-slate-800">{selectedOrder.salesPerson || '-'}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block">Follow-up by:</span>
+                    <span className="text-slate-500 block">CRE Executive:</span>
                     <span className="font-semibold text-slate-800">{selectedOrder.creName || '-'}</span>
                   </div>
                   <div>

@@ -10,7 +10,7 @@ interface OrderCardProps {
 }
 
 const STATUS: Record<string, { label: string; dot: string; text: string }> = {
-  WIP: { label: 'In progress', dot: 'bg-indigo-500', text: 'text-indigo-700' },
+  WIP: { label: 'WIP', dot: 'bg-indigo-500', text: 'text-indigo-700' },
   'On Hold': { label: 'On hold', dot: 'bg-amber-500', text: 'text-amber-700' },
   Dispatched: { label: 'Dispatched', dot: 'bg-emerald-500', text: 'text-emerald-700' },
   Ready: { label: 'Ready to dispatch', dot: 'bg-emerald-500', text: 'text-emerald-700' },

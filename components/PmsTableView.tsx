@@ -37,7 +37,7 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
     if (isCurrent || status === 'In Progress') {
       return (
         <span className="px-1.5 py-0.5 rounded text-[13px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse whitespace-nowrap">
-          In progress
+          WIP
         </span>
       );
     }
@@ -73,14 +73,14 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-3 text-[13px] text-slate-600">
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Completed</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block animate-pulse"></span> In progress</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block animate-pulse"></span> WIP Stage</span>
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Hold / Delay</span>
           </div>
 
           <button
             onClick={() => exportOrdersToExcel(orders, `PMS_Production_Orders_${new Date().toISOString().slice(0, 10)}.xlsx`, 'PMS Live Orders')}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[13px] font-semibold shadow-xs transition-all cursor-pointer"
-            title="Export all orders to Excel"
+            title="Export full PMS Matrix orders to Excel"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export</span>
@@ -208,11 +208,11 @@ const PmsTableView: React.FC<PmsTableViewProps> = ({ orders, onSelectOrder }) =>
             <tr className="bg-slate-100 text-slate-700 border-b border-slate-300 text-[13px] font-semibold sticky top-0 z-10">
               {/* Order Info Sticky Columns */}
               <th className="p-2 border-r border-slate-300 sticky left-0 z-30 bg-slate-200 w-28">Target Dispatch</th>
-              <th className="p-2 border-r border-slate-300 sticky left-28 z-30 bg-slate-200 w-28">Order no.</th>
+              <th className="p-2 border-r border-slate-300 sticky left-28 z-30 bg-slate-200 w-28">OPF No.</th>
               <th className="p-2 border-r border-slate-200 text-center w-16">Qty (units)</th>
               <th className="p-2 border-r border-slate-200 w-44">Model Of Recliners</th>
               <th className="p-2 border-r border-slate-200 w-48">Upholstery Type & Code</th>
-              <th className="p-2 border-r border-slate-200 w-28">Order received</th>
+              <th className="p-2 border-r border-slate-200 w-28">OPF Receive</th>
               <th className="p-2 border-r border-slate-300 w-24">Action</th>
 
               {/* 1. Carpentry */}

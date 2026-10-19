@@ -724,7 +724,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
               className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[13px] text-slate-700 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
             >
               <option value="All">Any status</option>
-              <option value="WIP">In progress</option>
+              <option value="WIP">WIP (In Progress)</option>
               <option value="Completed">Completed</option>
               <option value="Delayed">Delayed</option>
               <option value="Pending">Pending</option>
@@ -962,7 +962,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                     <span className="font-semibold tabular-nums text-sm">{selectedDayInfo.completedSteps}</span>
                   </div>
                   <div className="p-2 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-800">
-                    <span className="text-[13px] font-semibold block opacity-80">In progress</span>
+                    <span className="text-[13px] font-semibold block opacity-80">WIP / Active</span>
                     <span className="font-semibold tabular-nums text-sm">{selectedDayInfo.wipSteps}</span>
                   </div>
                   <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
@@ -1294,7 +1294,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                 <Target className="w-5 h-5 text-indigo-600" />
                 <div>
                   <h4 className="font-semibold text-slate-900 text-sm">Delayed Orders by Stage</h4>
-                  <p className="text-[13px] text-slate-500">Calculated directly from live production tracker</p>
+                  <p className="text-[13px] text-slate-500">Calculated directly from live PMS stage status</p>
                 </div>
               </div>
 
@@ -1539,7 +1539,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                         {cfg?.stepCode}
                       </span>
                       <span className="text-[13px] font-semibold text-slate-800 tabular-nums">
-                        {activeCount} in progress ({activeUnits} units)
+                        {activeCount} WIP ({activeUnits} units)
                       </span>
                     </div>
 

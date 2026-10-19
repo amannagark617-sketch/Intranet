@@ -430,7 +430,7 @@ export const AIAgentChatDrawer: React.FC<AIAgentChatDrawerProps> = ({
                   handleSendMessage();
                 }
               }}
-              placeholder="Ask a question (e.g. an order number, or what is holding up production)..."
+              placeholder="Ask a question (e.g. OPF-218 or current bottleneck)..."
               className="w-full bg-transparent text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none resize-none px-1 py-0.5"
               disabled={isLoading}
             />

@@ -328,7 +328,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
               {topBottleneckOwner?.name || 'None'}
             </div>
             <div className="text-[13px] text-slate-500 mt-0.5">
-              {topBottleneckOwner?.activeOrders || 0} orders in progress ({topBottleneckOwner?.stages.length} stages)
+              {topBottleneckOwner?.activeOrders || 0} active WIP orders ({topBottleneckOwner?.stages.length} stages)
             </div>
           </div>
 
@@ -343,7 +343,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
           </div>
 
           <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-            <div className="text-[13px] font-semibold text-slate-500">Chairs in progress</div>
+            <div className="text-[13px] font-semibold text-slate-500">Active WIP Units</div>
             <div className="text-base font-semibold tabular-nums text-emerald-700 mt-1">
               {uniqueWipUnits.toLocaleString()} units
             </div>
@@ -428,7 +428,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
 
                     <div className="mt-4 grid grid-cols-2 gap-4">
                       <div>
-                        <div className="text-[13px] text-slate-500">In progress</div>
+                        <div className="text-[13px] text-slate-500">Active WIP</div>
                         <div className="text-xl font-semibold tabular-nums text-slate-900">
                           {st.wipOrders} <span className="text-[13px] font-normal text-slate-500">· {st.wipUnits} chairs</span>
                         </div>
@@ -524,7 +524,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                     {/* Workload breakdown */}
                     <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-100 text-[13px] text-center">
                       <div className="bg-slate-50 p-2 rounded-lg">
-                        <span className="text-[13px] text-slate-500 block font-semibold">In progress</span>
+                        <span className="text-[13px] text-slate-500 block font-semibold">Active WIP</span>
                         <span className="text-sm font-semibold tabular-nums text-indigo-700">
                           {owner.activeOrders} <span className="text-[13px] font-normal">({owner.activeUnits}u)</span>
                         </span>
@@ -596,7 +596,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search order, model or reason"
+                  placeholder="Search OPF, Model, Reason..."
                   className="pl-8 pr-3 py-1.5 text-[13px] bg-white border border-slate-200 rounded-xl focus:outline-hidden focus:border-indigo-500 w-full sm:w-60 shadow-2xs"
                 />
               </div>
@@ -653,7 +653,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
             <table className="w-full text-left text-[13px]">
               <thead className="bg-slate-100/80 text-slate-600 font-semibold border-b border-slate-200">
                 <tr>
-                  <th className="py-3 px-4">Order no.</th>
+                  <th className="py-3 px-4">OPF No</th>
                   <th className="py-3 px-4">Model & Description</th>
                   <th className="py-3 px-4">Qty</th>
                   <th className="py-3 px-4">Current Stage</th>
@@ -683,7 +683,7 @@ export const BottleneckIntelligenceView: React.FC<BottleneckIntelligenceViewProp
                       </td>
                       <td className="py-3 px-4">
                         <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200 font-medium text-[13px]">
-                          {order.currentStage || 'On the floor'}
+                          {order.currentStage || 'Floor WIP'}
                         </span>
                       </td>
                       <td className="py-3 px-4 font-medium text-slate-700">

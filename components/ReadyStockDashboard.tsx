@@ -596,7 +596,7 @@ export const ReadyStockDashboard: React.FC<ReadyStockDashboardProps> = ({ onBack
                     onClick={() => handleSort('code')}
                     className="py-2.5 px-3 cursor-pointer hover:bg-slate-200 transition"
                   >
-                    Code / order
+                    Code / OPF
                   </th>
                   <th 
                     onClick={() => handleSort('model')}

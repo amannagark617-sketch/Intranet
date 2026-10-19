@@ -373,7 +373,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
               onChange={(e) => { setSelectedCreSales(e.target.value); setCurrentPage(1); }}
               className="py-2 px-3 text-sm bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:border-indigo-500"
             >
-              <option value="All">All follow-up owners</option>
+              <option value="All">All CREs</option>
               {availableCreSales.map(c => (<option key={c} value={c}>{c}</option>))}
             </select>
             <select
@@ -635,7 +635,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                     onClick={() => handleSort('opfNo')}
                     className="py-2.5 px-3 cursor-pointer hover:bg-slate-200 transition"
                   >
-                    Order
+                    Order / OPF
                   </th>
                   <th 
                     onClick={() => handleSort('salesPerson')}
@@ -669,7 +669,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                     Balance Due
                   </th>
                   <th className="py-2.5 px-3">Group</th>
-                  <th className="py-2.5 px-3">Follow-up owner</th>
+                  <th className="py-2.5 px-3">CRE / Sales</th>
                   <th className="py-2.5 px-3">Remarks</th>
                   <th className="py-2.5 px-3 text-center">Action</th>
                 </tr>
@@ -739,7 +739,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded text-[13px] font-semibold transition border border-indigo-200"
-                            title="Open the follow-up form"
+                            title="Open FMS Google Form to log follow-up"
                           >
                             <span>Form</span>
                             <ExternalLink className="w-2.5 h-2.5" />
@@ -863,7 +863,7 @@ export const ReceivableListDashboard: React.FC<ReceivableListDashboardProps> = (
               {/* Follow-Up & Remarks */}
               <div className="space-y-3">
                 <div className="bg-indigo-50/60 p-3.5 rounded-xl border border-indigo-100">
-                  <span className="text-[13px] font-semibold text-indigo-900 block mb-1">Follow-up owner</span>
+                  <span className="text-[13px] font-semibold text-indigo-900 block mb-1">CRE / Sales Follow-Up</span>
                   <div className="flex items-center justify-between text-[13px]">
                     <span className="font-semibold text-indigo-950">Follow-Up By: {selectedItem.creSales || 'Not Assigned'}</span>
                     <span className="tabular-nums bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-800">

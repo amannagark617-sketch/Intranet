@@ -109,7 +109,7 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
               <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
               <input
                 type="text"
-                placeholder="Search orders."
+                placeholder="Search OPF, model, upholstery, remarks.."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-[13px] font-medium text-slate-800 placeholder-slate-400 outline-none w-72 focus:border-amber-500 focus:bg-white transition-all"
@@ -157,7 +157,7 @@ const HoldOrdersView: React.FC<HoldOrdersViewProps> = ({ orders, onSelectOrder }
             <table className="w-full text-[13px] border-collapse bg-white">
               <thead className="bg-[#fef9c3] border-b-2 border-black text-black font-semibold text-left">
                 <tr>
-                  <th className="p-3 border-r border-slate-300">Order no.</th>
+                  <th className="p-3 border-r border-slate-300">OPF No</th>
                   <th className="p-3 border-r border-slate-300">Model Name</th>
                   <th className="p-3 border-r border-slate-300">Upholstery</th>
                   <th className="p-3 border-r border-slate-300 text-center">Current Stage</th>

@@ -449,10 +449,10 @@ export const calculateOnTimePerformance = (
         explanation = `Scheduled for future dispatch on ${dispatchYMD || '-'} (0 units booked); production in progress.`;
       } else if (onTimeQcPassed > 0 || archiveCleared || isQcStepDone || order.overallStatus === 'Dispatched') {
         status = 'On-Time';
-        explanation = `Order with 0 booked quantity cleared on or before scheduled dispatch date (${dispatchYMD || '-'}).`;
+        explanation = `OPF with 0 booked quantity cleared on or before scheduled dispatch date (${dispatchYMD || '-'}).`;
       } else if (validPassedRecords.length > 0) {
         status = 'On-Time';
-        explanation = `Order with 0 booked quantity passed final QC.`;
+        explanation = `OPF with 0 booked quantity passed final QC.`;
       } else if (dispatchYMD && dispatchYMD <= todayYMD) {
         status = 'Delayed';
         explanation = `Scheduled for ${dispatchYMD} (0 units booked), but final QC is pending.`;
@@ -478,7 +478,7 @@ export const calculateOnTimePerformance = (
       explanation = `${onTimeQty} of ${totalQty} units passed QC on time; ${delayedQty} units delayed past dispatch date (${dispatchYMD}).`;
     } else {
       status = 'Delayed';
-      explanation = `Scheduled for ${dispatchYMD}, but final QC records show 0 on-time cleared units.`;
+      explanation = `Scheduled for ${dispatchYMD} (Column G), but Final QC responses show 0 on-time cleared units.`;
     }
 
     const monthKey = dispatchYMD ? dispatchYMD.slice(0, 7) : 'Unscheduled';

@@ -30,7 +30,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         </div>
         <p className="text-[13px] font-semibold text-white">{label}</p>
         <p className="text-[13px] text-amber-300 font-semibold mt-1">
-          Active Orders in progress: {payload[0].value}
+          Active WIP Orders: {payload[0].value}
         </p>
         <p className="text-[13px] text-slate-300 mt-1">
           Timeline Target: {cfg?.timeline}
@@ -48,7 +48,7 @@ const ProductionChart: React.FC<ProductionChartProps> = ({ data, onSelectStage }
     <div className="w-full h-[380px] md:h-[480px]">
       {!hasData ? (
         <div className="flex flex-col items-center justify-center h-full text-slate-500 bg-slate-50 rounded-xl border border-slate-200">
-          <p className="font-semibold text-slate-700">No orders in progress.</p>
+          <p className="font-semibold text-slate-700">No WIP orders at any production stage.</p>
           <p className="text-[13px] text-slate-500 mt-1">All orders are either dispatched or ready.</p>
         </div>
       ) : (
@@ -104,7 +104,7 @@ const ProductionChart: React.FC<ProductionChartProps> = ({ data, onSelectStage }
 
             <Bar 
               dataKey="orders" 
-              name="Orders in progress" 
+              name="WIP Orders" 
               radius={[0, 6, 6, 0]} 
               animationDuration={800}
               onClick={(entry) => onSelectStage && onSelectStage(entry.name)}

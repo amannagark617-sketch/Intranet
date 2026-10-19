@@ -66,7 +66,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
             <span className="text-sm font-semibold text-slate-800 tabular-nums">{order.quantity}</span>
           </div>
           <div>
-            <span className="text-slate-500 block font-medium">Order received</span>
+            <span className="text-slate-500 block font-medium">OPF Receive Date</span>
             <span className="text-sm font-semibold text-slate-800 tabular-nums">{formatDateDDMMMYYYY(order.opfReceiveDate)}</span>
           </div>
           <div>

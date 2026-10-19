@@ -58,7 +58,7 @@ const AIPoweredInsightsCard: React.FC<AIPoweredInsightsCardProps> = ({ onGenerat
         {!insights && !error && !isLoading && (
           <div className="text-center py-6 text-slate-500 bg-slate-50 rounded-xl border border-dashed border-slate-200">
             <Lightbulb className="w-6 h-6 mx-auto mb-2 text-slate-300" />
-            <p className="text-[13px]">Click "Generate Insights" to run automated analysis on orders in progress & schedules.</p>
+            <p className="text-[13px]">Click "Generate Insights" to run automated analysis on active WIP orders & schedules.</p>
           </div>
         )}
         {isLoading && (

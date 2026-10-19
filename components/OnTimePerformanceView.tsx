@@ -501,7 +501,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search orders."
+                  placeholder="Search OPF, Model, Customer.."
                   className="pl-8 pr-3 py-1.5 text-[13px] bg-white border border-slate-200 rounded-xl focus:outline-hidden focus:border-indigo-500 w-full sm:w-56 shadow-2xs text-slate-800"
                 />
               </div>
@@ -624,7 +624,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
           <table className="w-full text-left border-collapse text-[13px] min-w-[850px]">
             <thead className="bg-slate-50 sticky top-0 z-10 border-b border-slate-200 text-slate-600 text-[13px] font-semibold">
               <tr>
-                <th className="py-3 px-4">Order &amp; model</th>
+                <th className="py-3 px-4">OPF &amp; Model</th>
                 <th className="py-3 px-4">Week</th>
                 <th className="py-3 px-4">Chairs</th>
                 <th className="py-3 px-4">Due</th>

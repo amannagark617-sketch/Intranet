@@ -990,7 +990,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3" />
                 <input
                   type="text"
-                  placeholder="Search order, inspector or remarks"
+                  placeholder="Search OPF, inspector, remarks..."
                   value={batchSearchTerm}
                   onChange={(e) => setBatchSearchTerm(e.target.value)}
                   className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[13px] font-medium text-slate-800 placeholder-slate-400 outline-none w-full sm:w-64 focus:border-indigo-500 focus:bg-white transition-colors"
@@ -1009,7 +1009,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-[13px]  z-10">
                     <tr>
                       <th className="p-2.5">Timestamp</th>
-                      <th className="p-2.5">Order no.</th>
+                      <th className="p-2.5">OPF No</th>
                       <th className="p-2.5">Factory</th>
                       <th className="p-2.5 text-right">Batch Qty</th>
                       <th className="p-2.5 text-right">Pass Qty</th>
@@ -1142,7 +1142,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3" />
                 <input
                   type="text"
-                  placeholder="Search order, model or stage"
+                  placeholder="Search OPF, model, stage..."
                   value={queueSearchTerm}
                   onChange={(e) => setQueueSearchTerm(e.target.value)}
                   className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[13px] font-medium text-slate-800 placeholder-slate-400 outline-none w-full sm:w-56 focus:border-amber-500 focus:bg-white transition-colors"
@@ -1160,7 +1160,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 <table className="w-full text-[13px] text-left border-collapse bg-white">
                   <thead className="bg-slate-50 sticky top-0 border-b border-slate-200 font-semibold text-slate-600 text-[13px]  z-10">
                     <tr>
-                      <th className="p-2.5">Order no.</th>
+                      <th className="p-2.5">OPF No</th>
                       <th className="p-2.5">Model Name</th>
                       <th className="p-2.5">Dispatch Date</th>
                       <th className="p-2.5">Current Stage</th>
@@ -1312,7 +1312,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                     <tr>
                       <th className="p-2.5 w-12 text-center">#</th>
                       <th className="p-2.5">Timestamp</th>
-                      <th className="p-2.5 font-semibold">Order no.</th>
+                      <th className="p-2.5 font-semibold">OPF No.</th>
                       <th className="p-2.5 text-right">Number of Boxes / Qty</th>
                       <th className="p-2.5">Details</th>
                     </tr>
@@ -1388,13 +1388,13 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               {/* Formula explanation */}
               <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl p-3 text-[13px] text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div className="space-y-0.5">
-                  <span className="font-semibold block text-amber-900">How this is counted:</span>
+                  <span className="font-semibold block text-amber-900">OPF-Level Factory Inventory Methodology:</span>
                   <p className="text-[13px] text-slate-700 leading-snug">
-                    Every order that passed its final QC in <strong>{selectedMonthDisplay}</strong>, checked against what has been dispatched. What is left is still in the factory.
+                    Evaluates each OPF with Final QC completed in <strong>{selectedMonthDisplay}</strong>. Checks whether the OPF was dispatched in the same period to calculate exact units still held on the factory floor.
                   </p>
                 </div>
                 <div className="text-[13px] text-amber-900 font-semibold bg-amber-100 px-3 py-1 rounded-lg border border-amber-200 whitespace-nowrap">
-                  {qcReconciliation.notDispatchedOpfs} orders waiting to be dispatched
+                  {qcReconciliation.notDispatchedOpfs} OPF(s) Pending Dispatch
                 </div>
               </div>
 
@@ -1406,7 +1406,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                     {qcReconciliation.totalQcPassedUnits.toLocaleString()}
                   </span>
                   <span className="text-[13px] text-emerald-700 font-semibold block">
-                    {qcReconciliation.totalQcPassedOpfs} orders passed QC
+                    {qcReconciliation.totalQcPassedOpfs} OPFs inspected
                   </span>
                 </div>
 
@@ -1416,7 +1416,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                     {qcReconciliation.dispatchedUnits.toLocaleString()}
                   </span>
                   <span className="text-[13px] text-indigo-700 font-semibold block">
-                    {qcReconciliation.dispatchedOpfs} orders shipped
+                    {qcReconciliation.dispatchedOpfs} OPFs shipped
                   </span>
                 </div>
 
@@ -1426,7 +1426,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                     {floorMetrics.qcPassedNotDispatched.toLocaleString()}
                   </span>
                   <span className="text-[13px] text-amber-800 font-semibold block">
-                    {qcReconciliation.notDispatchedOpfs} orders awaiting dispatch
+                    {qcReconciliation.notDispatchedOpfs} OPFs awaiting dispatch
                   </span>
                 </div>
               </div>
@@ -1471,7 +1471,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search order, model or customer"
+                  placeholder="Search OPF, model, customer..."
                   value={reconciliationSearch}
                   onChange={(e) => setReconciliationSearch(e.target.value)}
                   className="w-full pl-9 pr-3 py-1.5 text-[13px] bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:bg-white focus:border-indigo-500 font-medium text-slate-800 transition-colors"
@@ -1496,7 +1496,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   <table className="w-full text-left border-collapse text-[13px]">
                     <thead className="bg-slate-50 text-slate-600 font-semibold text-[13px]  border-b border-slate-200 sticky top-0 z-10">
                       <tr>
-                        <th className="p-2.5">Order no.</th>
+                        <th className="p-2.5">OPF No</th>
                         <th className="p-2.5">Model / Customer</th>
                         <th className="p-2.5">QC Date & Inspector</th>
                         <th className="p-2.5 text-right">Passed</th>

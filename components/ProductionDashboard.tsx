@@ -744,7 +744,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               onClick={() => setShowDispatchDrawer(true)}
             />
             <StatTile
-              label="Passed QC, not sent"
+              label={`QC Passed, Not Dispatched (${isCurrentMonth ? 'this month' : selectedMonthDisplay})`}
               value={floorMetrics.qcPassedNotDispatched.toLocaleString()}
               sub={`${qcReconciliation.notDispatchedOpfs} orders`}
               accent={floorMetrics.qcPassedNotDispatched > 0 ? 'amber' : undefined}

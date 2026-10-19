@@ -53,6 +53,7 @@ export const computeFloorMetrics = ({
     category: 'current' | 'next' | 'backlog' | 'hold' | 'future' | 'completed';
     currentStage: string;
     overallStatus: string;
+    isHold: boolean; // counted in the queue like any other order; flagged for information
   }> = [];
 
   let inQueueCurrentMonth = 0;
@@ -104,12 +105,6 @@ export const computeFloorMetrics = ({
       if (totalQty <= 0 || isQcPassed) {
         remainingQueue = 0;
         category = 'completed';
-      } else if (isHold) {
-        // Status is <> "Pass" but order is on HOLD: isolated from standard in-queue backlog/current metrics
-        remainingQueue = Math.max(0, totalQty - qtyPass);
-        category = 'hold';
-        holdChairs += remainingQueue;
-        holdOrdersCount += 1;
       } else {
         // Status is <> "Pass": calculate remaining in queue = Total (Col C) - Pass (Col AZ)
         remainingQueue = Math.max(0, totalQty - qtyPass);
@@ -117,7 +112,7 @@ export const computeFloorMetrics = ({
         if (remainingQueue === 0) {
           category = 'completed';
         } else if (!orderDispYMD || orderDispYMD < `${currentPrefix}-01`) {
-          // Overdue past date and NOT on hold -> Backlog!
+          // Dispatch date before this month, or no date at all (e.g. HOLD) -> Backlog
           category = 'backlog';
           backlogChairs += remainingQueue;
         } else if (orderDispYMD.startsWith(currentPrefix)) {
@@ -131,6 +126,11 @@ export const computeFloorMetrics = ({
           otherFutureChairs += remainingQueue;
         }
       }
+    }
+
+    if (isHold && remainingQueue > 0) {
+      holdChairs += remainingQueue;
+      holdOrdersCount += 1;
     }
 
     if (remainingQueue > 0 || !isDispatched || isHold) {
@@ -147,6 +147,7 @@ export const computeFloorMetrics = ({
         category,
         currentStage: order.currentStage || 'Pending',
         overallStatus: isHold ? 'On Hold' : order.overallStatus,
+        isHold,
       });
     }
   });

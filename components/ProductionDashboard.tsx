@@ -420,8 +420,8 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
       if (queueFilterCategory === 'current' && item.category !== 'current') return false;
       if (queueFilterCategory === 'backlog' && item.category !== 'backlog') return false;
       if (queueFilterCategory === 'next' && item.category !== 'next') return false;
-      if (queueFilterCategory === 'hold' && item.category !== 'hold') return false;
-      if (queueFilterCategory === 'all' && (item.category === 'completed' || item.category === 'hold')) return false;
+      if (queueFilterCategory === 'hold' && !(item.isHold && item.remainingQueue > 0)) return false;
+      if (queueFilterCategory === 'all' && (item.category === 'completed' || item.category === 'future')) return false;
 
       if (queueSearchTerm) {
         const q = queueSearchTerm.toLowerCase();
@@ -1210,18 +1210,16 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                               ? 'bg-amber-50 text-amber-900 border border-amber-200'
                               : item.category === 'backlog'
                               ? 'bg-rose-50 text-rose-900 border border-rose-200'
-                              : item.category === 'hold'
-                              ? 'bg-amber-50 text-amber-900 border border-amber-200'
                               : item.category === 'next'
                               ? 'bg-indigo-50 text-indigo-900 border border-indigo-200'
                               : 'bg-slate-100 text-slate-700 border border-slate-200'
                           }`}>
-                            {item.category === 'current' ? 'Current Month' : item.category === 'backlog' ? 'Backlog (Past Due)' : item.category === 'hold' ? '⚡ On Hold' : item.category === 'next' ? 'Next Month' : 'Future'}
+                            {item.category === 'current' ? 'Current Month' : item.category === 'backlog' ? 'Backlog (Past Due)' : item.category === 'next' ? 'Next Month' : 'Future'}
                           </span>
                         </td>
                         <td className="p-2.5">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-medium ${
-                            item.category === 'hold'
+                            item.isHold
                               ? 'bg-amber-50 text-amber-900 border border-amber-200 font-semibold'
                               : 'bg-slate-100 text-slate-800'
                           }`}>

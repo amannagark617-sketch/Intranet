@@ -228,7 +228,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
               status: qcRec.status === 'Pass' ? 'Completed' : qcRec.status || 'Inspected',
               responsible: qcRec.qcInspector || cfg.responsible,
               actualDate: qcRec.dateYMD,
-              remarks: qcRec.passRemarks || (qcRec.rejectedQuantity > 0 ? `${qcRec.rejectedQuantity} rejected` : 'Final inspection Form Inspection'),
+              remarks: qcRec.passRemarks || (qcRec.rejectedQuantity > 0 ? `${qcRec.rejectedQuantity} rejected` : 'Final QC Form Inspection'),
             });
 
             if (qcRec.status === 'Pass' || qcRec.passQuantity > 0) {
@@ -507,7 +507,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
       <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-slate-200 bg-slate-50/80 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-slate-500">{selectedMonthDisplay} · chairs passed final inspection each day</p>
+            <p className="text-sm text-slate-500">{selectedMonthDisplay} · chairs passed final QC each day</p>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
             {onBackToOverview && (
@@ -924,12 +924,12 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                 Cross-Step Unit Completion Matrix ({selectedMonthDisplay})
               </h3>
               <p className="text-[13px] text-slate-500">
-                Daily throughput across all 14 sequential PMS production steps. <strong>Final inspection</strong> is the official count of chairs produced.
+                Daily throughput across all 14 sequential PMS production steps. <strong>Final QC</strong> is the official count of chairs produced.
               </p>
             </div>
             <div className="flex items-center gap-3 text-[13px] text-slate-600">
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-100 border border-emerald-300"></span> Output &gt; 0</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-indigo-50 border border-indigo-200"></span> Final inspection</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-sm bg-indigo-50 border border-indigo-200"></span> Final QC</span>
             </div>
           </div>
 
@@ -1104,7 +1104,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                   </div>
 
                   <div className="my-auto text-center">
-                    <div className="text-[13px] text-slate-500 font-semibold">Output after final inspection</div>
+                    <div className="text-[13px] text-slate-500 font-semibold">Final QC Output</div>
                     <div className="text-lg font-semibold tabular-nums text-emerald-950">
                       {day.actualProducedFinalQc}{' '}
                       <span className="text-[13px] font-normal text-slate-500">units</span>
@@ -1204,7 +1204,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                   selectedModalTab === 'qcBatches' ? 'border-indigo-600 text-indigo-700 font-semibold' : 'border-transparent hover:text-slate-900'
                 }`}
               >
-                Final inspection Inspections ({selectedDayDetail.qcSubmissionsCount})
+                Final QC Inspections ({selectedDayDetail.qcSubmissionsCount})
               </button>
               <button
                 onClick={() => setSelectedModalTab('dispatchBatches')}
@@ -1330,7 +1330,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                 <div className="space-y-3">
                   {selectedDayDetail.qcSubmissions.length === 0 ? (
                     <div className="text-center py-8 text-slate-500 text-[13px]">
-                      No Google Form Final inspection submissions recorded on {selectedDayDetail.dateDisplay}.
+                      No Google Form Final QC submissions recorded on {selectedDayDetail.dateDisplay}.
                     </div>
                   ) : (
                     <div className="overflow-x-auto border border-slate-200 rounded-xl">
@@ -1342,7 +1342,7 @@ export const DailyProductionStepView: React.FC<DailyProductionStepViewProps> = (
                             <th className="p-2.5 text-right">Pass Qty</th>
                             <th className="p-2.5 text-right">Rej Qty</th>
                             <th className="p-2.5">Status</th>
-                            <th className="p-2.5">Inspector</th>
+                            <th className="p-2.5">QC Inspector</th>
                             <th className="p-2.5">Remarks</th>
                             <th className="p-2.5 text-center">Photos</th>
                           </tr>

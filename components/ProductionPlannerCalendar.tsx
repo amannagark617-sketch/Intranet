@@ -1331,7 +1331,7 @@ export const ProductionPlannerCalendar: React.FC<ProductionPlannerCalendarProps>
                     Backlog Queue ({filteredBacklogList.length} Orders)
                   </h4>
                   <p className="text-[13px] text-slate-500">
-                    Sorted by delay severity. Click any order to open full 14-step inspection modal.
+                    Sorted by delay severity. Click any order to open the full 14-step details.
                   </p>
                 </div>
                 <span className="text-[13px] font-semibold text-slate-500 tabular-nums">

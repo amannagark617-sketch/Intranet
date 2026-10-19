@@ -50,7 +50,7 @@ When analyzing, adhere strictly to these principles:
 - Formulate practical floor actions (e.g. line rebalancing, overtime scheduling, fabric kitting, QC expedited clearing, customer hold resolution).
 - Estimate realistic unit impacts (e.g. "+35 units/month", "Reduces WIP cycle by 2.2 days").
 - Never make up imaginary numbers; use the provided context precisely.
-- Write for a business owner, not an engineer: plain, everyday English. Say "inspection" not "QC", "in progress" not "WIP", "order" not "OPF". No jargon or abbreviations.`;
+- Write for a business owner, not an engineer: plain, everyday English. Say "in progress" not "WIP", "order" not "OPF". No jargon or abbreviations.`;
 
 /**
  * Deterministic baseline analysis generator computed directly from live production math.
@@ -99,7 +99,7 @@ export const computeBaselineHeuristicAnalysis = (ctx: AIPlantContext): Productio
       title: `Unclog Critical Chokepoints: ${topStage.stage} (${topStage.orders} orders in queue)`,
       observation: `${topStage.stage} currently holds ${topStage.orders} orders in progress (${topStage.units} units), overseen by ${topStage.responsible}.${secondStage ? ` Followed by ${secondStage.stage} (${secondStage.orders} orders).` : ''}`,
       actionPlan: `Rebalance the workload: temporarily cross-train and reallocate 2 operators from early framing to ${topStage.stage}. Implement batch kitting of upholstery & foam kits 24 hours prior to feeding this station.`,
-      expectedImpact: `Speeds up this stage and sends ~${Math.ceil(topStage.units * 0.4)} chairs to final inspection within 48 hours`,
+      expectedImpact: `Speeds up this stage and sends ~${Math.ceil(topStage.units * 0.4)} chairs to final QC within 48 hours`,
       responsibleDept: `${topStage.stage} (${topStage.responsible})`,
     });
   }
@@ -362,7 +362,7 @@ export const generateDashboardInsights = async (context: any): Promise<Insight[]
       },
       {
         title: "Dispatch Pace & Target Alignment",
-        description: "Monitor daily inspection pass rate against the monthly targets for consistent quota attainment.",
+        description: "Monitor daily QC pass rate against the monthly targets for consistent quota attainment.",
         severity: "positive"
       }
     ];
@@ -373,7 +373,7 @@ const chatSystemInstruction = `You are a helpful, concise plant assistant for Li
 - Answer the user's question directly, simply, and specifically.
 - Keep answers short and clear: 1 to 3 sentences, or a quick bulleted list if explicitly asked.
 - Never dump unsolicited data, unprompted summaries, or technical internal labels.
-- Use plain everyday English: say "inspection" not "QC", "in progress" not "WIP", "order number" not "OPF".
+- Use plain everyday English: say "in progress" not "WIP", "order number" not "OPF".
 - If asked about an order, answer only its model, current stage, owner, and status.`;
 
 /**

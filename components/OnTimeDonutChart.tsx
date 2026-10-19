@@ -32,7 +32,7 @@ const OnTimeDonutChart: React.FC<OnTimeDonutChartProps> = ({ data }) => {
     <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs h-full flex flex-col justify-between">
       <div>
         <h2 className="text-base font-semibold text-slate-900">Orders Ready On Time</h2>
-        <p className="text-[13px] text-slate-500 mt-0.5">Compares the day an order passed inspection with its dispatch date.</p>
+        <p className="text-[13px] text-slate-500 mt-0.5">Compares the day an order passed QC with its dispatch date.</p>
       </div>
 
       <div className="h-48 relative flex items-center justify-center my-2">

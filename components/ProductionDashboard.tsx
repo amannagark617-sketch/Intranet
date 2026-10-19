@@ -182,8 +182,8 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
       setReadyGoodsItems(readyGoods);
       setReadyStockItems(readyStock);
     } catch (err: any) {
-      console.error('Failed to load Final inspection responses or Dispatch records:', err);
-      setQcError(err?.message || 'Could not load Final inspection data');
+      console.error('Failed to load Final QC responses or Dispatch records:', err);
+      setQcError(err?.message || 'Could not load Final QC data');
     } finally {
       setLoadingQc(false);
       setLoadingDispatch(false);
@@ -655,7 +655,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h2 className="text-sm font-medium text-slate-500">{selectedMonthDisplay} · Chairs passed final inspection</h2>
+                  <h2 className="text-sm font-medium text-slate-500">{selectedMonthDisplay} · Chairs passed final QC</h2>
                   <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[13px] font-semibold ${pace.pill}`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${pace.dot}`} />
                     {pace.label}
@@ -744,7 +744,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               onClick={() => setShowDispatchDrawer(true)}
             />
             <StatTile
-              label="Inspected, not sent"
+              label="Passed QC, not sent"
               value={floorMetrics.qcPassedNotDispatched.toLocaleString()}
               sub={`${qcReconciliation.notDispatchedOpfs} orders`}
               accent={floorMetrics.qcPassedNotDispatched > 0 ? 'amber' : undefined}
@@ -895,7 +895,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
           {/* DETAILED RECORDS (collapsed; opens automatically from the tiles above) */}
           <Disclosure
             title="Detailed records"
-            subtitle="Inspection records, queue orders and dispatch entries"
+            subtitle="QC submissions, queue orders and dispatch entries"
             open={showAudit || showBatchDrawer || showQueueDrawer || showDispatchDrawer}
             onToggle={() => {
               const next = !(showAudit || showBatchDrawer || showQueueDrawer || showDispatchDrawer);
@@ -915,7 +915,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               <Layers className="w-4 h-4" />
             </div>
             <span className="font-semibold text-[13px] text-slate-800">
-              Live Final inspection Response Batch Submissions {qcViewScope === 'all' ? '(All Responses)' : `(${selectedMonthDisplay})`}
+              Live Final QC Response Batch Submissions {qcViewScope === 'all' ? '(All Responses)' : `(${selectedMonthDisplay})`}
             </span>
             <span className="bg-amber-50 text-amber-900 border border-amber-200 text-[13px] px-2.5 py-0.5 rounded-full tabular-nums font-semibold">
               {filteredBatchRecords.length} Submissions • {filteredBatchRecords.filter(r => r.status === 'Pass' || r.passQuantity > 0).reduce((acc, r) => acc + r.passQuantity, 0).toLocaleString()} Passed (Units)
@@ -1001,7 +1001,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
             {/* Submissions Table */}
             {filteredBatchRecords.length === 0 ? (
               <div className="text-center py-8 text-slate-500 text-[13px] font-medium">
-                No Final inspection responses found matching the selected filters for {selectedMonthDisplay}.
+                No Final QC responses found matching the selected filters for {selectedMonthDisplay}.
               </div>
             ) : (
               <div className="overflow-x-auto max-h-80 overflow-y-auto border border-slate-200/80 rounded-xl">
@@ -1015,7 +1015,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                       <th className="p-2.5 text-right">Pass Qty</th>
                       <th className="p-2.5 text-right">Rej Qty</th>
                       <th className="p-2.5">Status</th>
-                      <th className="p-2.5">Inspector</th>
+                      <th className="p-2.5">QC Inspector</th>
                       <th className="p-2.5">Remarks / Notes</th>
                       <th className="p-2.5 text-center">Photos</th>
                     </tr>
@@ -1166,7 +1166,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                       <th className="p-2.5">Current Stage</th>
                       <th className="p-2.5 text-right">Total Qty</th>
                       <th className="p-2.5 text-right">Passed</th>
-                      <th className="p-2.5 text-center">Inspection</th>
+                      <th className="p-2.5 text-center">QC Status</th>
                       <th className="p-2.5 text-right bg-amber-50 text-amber-900 font-semibold">Remaining in Queue</th>
                       <th className="p-2.5">Queue Bucket</th>
                       <th className="p-2.5">Overall Status</th>
@@ -1368,10 +1368,10 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-semibold text-slate-900 tracking-tight">
-                    Passed inspection, Not Dispatched — Order Reconciliation
+                    QC Passed, Not Dispatched — Order Reconciliation
                   </h3>
                   <p className="text-[13px] text-slate-500 font-medium">
-                    Month: {selectedMonthDisplay} · Order by order: passed final inspection vs dispatched
+                    Month: {selectedMonthDisplay} · Order by order: passed final QC vs dispatched
                   </p>
                 </div>
               </div>
@@ -1390,7 +1390,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                 <div className="space-y-0.5">
                   <span className="font-semibold block text-amber-900">How this is counted:</span>
                   <p className="text-[13px] text-slate-700 leading-snug">
-                    Every order that passed its final inspection in <strong>{selectedMonthDisplay}</strong>, checked against what has been dispatched. What is left is still in the factory.
+                    Every order that passed its final QC in <strong>{selectedMonthDisplay}</strong>, checked against what has been dispatched. What is left is still in the factory.
                   </p>
                 </div>
                 <div className="text-[13px] text-amber-900 font-semibold bg-amber-100 px-3 py-1 rounded-lg border border-amber-200 whitespace-nowrap">
@@ -1401,12 +1401,12 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
               {/* 3 Metric Summary Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200/80 text-center">
-                  <span className="text-[13px] font-semibold text-emerald-800 block">1. Total passed inspection</span>
+                  <span className="text-[13px] font-semibold text-emerald-800 block">1. Total QC Passed</span>
                   <span className="text-xl sm:text-2xl font-semibold tabular-nums text-emerald-950 block mt-0.5">
                     {qcReconciliation.totalQcPassedUnits.toLocaleString()}
                   </span>
                   <span className="text-[13px] text-emerald-700 font-semibold block">
-                    {qcReconciliation.totalQcPassedOpfs} orders inspected
+                    {qcReconciliation.totalQcPassedOpfs} orders passed QC
                   </span>
                 </div>
 
@@ -1487,7 +1487,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                   <p className="text-sm font-semibold text-slate-700">No orders match the selected filter or search.</p>
                   <p className="text-[13px] text-slate-500 mt-1">
                     {qcReconciliation.items.length === 0
-                      ? 'No Final Passed inspection orders logged for this month.'
+                      ? 'No Final QC Passed orders logged for this month.'
                       : 'Try adjusting your search keywords or switching tabs above.'}
                   </p>
                 </div>
@@ -1498,7 +1498,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                       <tr>
                         <th className="p-2.5">Order no.</th>
                         <th className="p-2.5">Model / Customer</th>
-                        <th className="p-2.5">Inspected on / by</th>
+                        <th className="p-2.5">QC Date & Inspector</th>
                         <th className="p-2.5 text-right">Passed</th>
                         <th className="p-2.5 text-right">Dispatched</th>
                         <th className="p-2.5 text-right font-semibold text-amber-950">Left in Factory</th>
@@ -1532,7 +1532,7 @@ export const ProductionDashboard: React.FC<ProductionDashboardProps> = ({
                             </div>
                             {item.qcInspector && (
                               <div className="text-[13px] text-slate-500">
-                                Inspected by: {item.qcInspector}
+                                QC by: {item.qcInspector}
                               </div>
                             )}
                           </td>

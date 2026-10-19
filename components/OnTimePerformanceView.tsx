@@ -232,7 +232,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
       {/* Month picker and export */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <p className="text-sm text-slate-500">
-          Was each order passed through final inspection by its dispatch date?
+          Was each order passed through final QC by its dispatch date?
           {(monthScopeFilter !== 'all' || weekScopeFilter) && (
             <span className="text-slate-700">
               {' '}Showing {monthScopeFilter === 'all' ? 'all months' : monthScopeFilter}
@@ -628,7 +628,7 @@ export const OnTimePerformanceView: React.FC<OnTimePerformanceViewProps> = ({
                 <th className="py-3 px-4">Week</th>
                 <th className="py-3 px-4">Chairs</th>
                 <th className="py-3 px-4">Due</th>
-                <th className="py-3 px-4">Inspected on</th>
+                <th className="py-3 px-4">QC passed</th>
                 <th className="py-3 px-4 text-emerald-700">On time</th>
                 <th className="py-3 px-4 text-rose-700">Late</th>
                 <th className="py-3 px-4">Status</th>

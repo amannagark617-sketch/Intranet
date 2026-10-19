@@ -85,7 +85,7 @@ export const WeeklyOtdMatrixTable: React.FC<WeeklyOtdMatrixTableProps> = ({
               </span>
             </h2>
             <p className="text-[13px] text-slate-500">
-              Weekly breakdown comparing Column G scheduled dispatch against completed Final inspection pass dates
+              Weekly breakdown comparing Column G scheduled dispatch against completed Final QC pass dates
             </p>
           </div>
 

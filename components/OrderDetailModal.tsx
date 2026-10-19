@@ -153,7 +153,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ order, onClose }) =
                     <div className="mt-2 text-[13px] bg-slate-50 p-2 rounded-lg border border-slate-200 text-slate-700 flex items-start gap-1.5">
                       <FileText className="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-slate-800">Inspector remarks:</strong> {step.remarks}
+                        <strong className="text-slate-800">QC Remarks:</strong> {step.remarks}
                       </div>
                     </div>
                   )}

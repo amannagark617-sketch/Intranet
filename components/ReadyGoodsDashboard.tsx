@@ -218,7 +218,7 @@ export const ReadyGoodsDashboard: React.FC<ReadyGoodsDashboardProps> = ({ onBack
       badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
       headerBg: 'border-t-4 border-t-emerald-500',
       accentColor: 'text-emerald-700',
-      description: 'Recently finished inspection, ready for initial dispatch coordination'
+      description: 'Recently passed QC, ready for initial dispatch coordination'
     },
     {
       id: '16 - 30 Days',

@@ -486,10 +486,10 @@ const TodayHome: React.FC<TodayHomeProps> = ({
                   {!production
                     ? 'Loading…'
                     : production.todayUnits > 0
-                    ? `chairs · ${production.todayOrders} orders passed inspection`
+                    ? `chairs · ${production.todayOrders} orders passed QC`
                     : production.lastDay
                     ? `Last: ${production.lastUnits} on ${formatDisplayDate(production.lastDay, false)}`
-                    : 'Nothing passed inspection yet'}
+                    : 'Nothing passed QC yet'}
                 </div>
               </div>
               <div>

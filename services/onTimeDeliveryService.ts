@@ -452,10 +452,10 @@ export const calculateOnTimePerformance = (
         explanation = `Order with 0 booked quantity cleared on or before scheduled dispatch date (${dispatchYMD || '-'}).`;
       } else if (validPassedRecords.length > 0) {
         status = 'On-Time';
-        explanation = `Order with 0 booked quantity passed final inspection.`;
+        explanation = `Order with 0 booked quantity passed final QC.`;
       } else if (dispatchYMD && dispatchYMD <= todayYMD) {
         status = 'Delayed';
-        explanation = `Scheduled for ${dispatchYMD} (0 units booked), but final inspection is pending.`;
+        explanation = `Scheduled for ${dispatchYMD} (0 units booked), but final QC is pending.`;
       } else {
         status = 'Upcoming';
         explanation = `Scheduled for ${dispatchYMD || '-'} with 0 units.`;
@@ -463,22 +463,22 @@ export const calculateOnTimePerformance = (
     } else if (onTimeQty >= totalQty && totalQty > 0) {
       status = 'On-Time';
       explanation = isFutureDispatch 
-        ? `All ${totalQty} units passed final inspection early ahead of schedule (${dispatchYMD}).`
-        : `All ${totalQty} units passed final inspection on or before scheduled dispatch date (${dispatchYMD}).`;
+        ? `All ${totalQty} units passed final QC early ahead of schedule (${dispatchYMD}).`
+        : `All ${totalQty} units passed final QC on or before scheduled dispatch date (${dispatchYMD}).`;
     } else if (isFutureDispatch) {
       status = 'Upcoming';
       explanation = onTimeQty > 0
-        ? `${onTimeQty} of ${totalQty} units already passed inspection ahead of schedule; remaining ${upcomingQty} in progress for ${dispatchYMD}.`
+        ? `${onTimeQty} of ${totalQty} units already passed QC ahead of schedule; remaining ${upcomingQty} in progress for ${dispatchYMD}.`
         : `Scheduled for future dispatch on ${dispatchYMD}; production currently in progress.`;
     } else if (!dispatchYMD) {
       status = 'Delayed';
-      explanation = 'Unassigned dispatch schedule; final inspection pending or unverified.';
+      explanation = 'Unassigned dispatch schedule; final QC pending or unverified.';
     } else if (onTimeQty > 0 && onTimeQty < totalQty) {
       status = 'Partially Delayed';
-      explanation = `${onTimeQty} of ${totalQty} units passed inspection on time; ${delayedQty} units delayed past dispatch date (${dispatchYMD}).`;
+      explanation = `${onTimeQty} of ${totalQty} units passed QC on time; ${delayedQty} units delayed past dispatch date (${dispatchYMD}).`;
     } else {
       status = 'Delayed';
-      explanation = `Scheduled for ${dispatchYMD}, but final inspection records show 0 on-time cleared units.`;
+      explanation = `Scheduled for ${dispatchYMD}, but final QC records show 0 on-time cleared units.`;
     }
 
     const monthKey = dispatchYMD ? dispatchYMD.slice(0, 7) : 'Unscheduled';

@@ -67,7 +67,7 @@ export const ProductionAIAdvisor: React.FC<ProductionAIAdvisorProps> = ({
   const handleCopySummary = () => {
     const summaryText = `*LITTLE NAP RECLINERS - AI PRODUCTION ADVISOR SUMMARY* (${plantContext.selectedMonth})
 Status: ${analysis.targetStatus} (Health Score: ${analysis.targetHealthScore}/100)
-Target: ${plantContext.target} units | Passed inspection: ${plantContext.achievedQcPassed} units (${plantContext.achievementPct}%)
+Target: ${plantContext.target} units | QC Passed: ${plantContext.achievedQcPassed} units (${plantContext.achievementPct}%)
 Daily Pace: ${plantContext.dailyAvgPace} chairs/day (Required: ${plantContext.dailyRequiredPace}/day, Delta: ${plantContext.dailyPaceDelta >= 0 ? '+' : ''}${plantContext.dailyPaceDelta}/day)
 Projected Month-End: ${analysis.projectedMonthEndUnits} units (${analysis.projectedTargetAchievementPct}%)
 

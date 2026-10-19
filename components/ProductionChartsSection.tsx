@@ -95,7 +95,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
         month: item.monthDisplay || item.monthKey,
         monthKey: item.monthKey,
         Target: item.target || 0,
-        'Passed inspection': item.achieved || 0,
+        'QC Passed': item.achieved || 0,
         Dispatched: item.dispatched || 0,
         achievementRate: item.achPct || 0
       }));
@@ -304,12 +304,12 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
           <div className="space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 className="text-sm font-semibold text-slate-900">Target vs. passed inspection vs. dispatched, by month</h3>
+                <h3 className="text-sm font-semibold text-slate-900">Monthly Target vs. QC Passed vs. Dispatched Performance</h3>
                 <p className="text-[13px] text-slate-500">Multi-month comparative volume tracking from April 2025 onwards</p>
               </div>
               <div className="flex items-center gap-3 text-[13px] font-medium">
                 <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-xs bg-slate-300 inline-block"></span> Target</span>
-                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-xs bg-indigo-600 inline-block"></span> Passed inspection</span>
+                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-xs bg-indigo-600 inline-block"></span> QC Passed</span>
                 <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-xs bg-emerald-600 inline-block"></span> Dispatched</span>
               </div>
             </div>
@@ -339,7 +339,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
                     formatter={(val: any, name: any) => [`${Number(val).toLocaleString()} units`, name]}
                   />
                   <Bar dataKey="Target" fill="#cbd5e1" radius={[4, 4, 0, 0]} maxBarSize={32} />
-                  <Bar dataKey="Passed inspection" fill="#4f46e5" radius={[4, 4, 0, 0]} maxBarSize={32} />
+                  <Bar dataKey="QC Passed" fill="#4f46e5" radius={[4, 4, 0, 0]} maxBarSize={32} />
                   <Bar dataKey="Dispatched" fill="#059669" radius={[4, 4, 0, 0]} maxBarSize={32} />
                 </BarChart>
               </ResponsiveContainer>
@@ -353,7 +353,7 @@ export const ProductionChartsSection: React.FC<ProductionChartsSectionProps> = (
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900">On-Time vs Delayed Delivery Performance</h3>
-                <p className="text-[13px] text-slate-500">Compares each order's dispatch date with the day it passed final inspection</p>
+                <p className="text-[13px] text-slate-500">Compares each order's dispatch date with the day it passed final QC</p>
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <div className="flex items-center gap-3 text-[13px] font-medium">

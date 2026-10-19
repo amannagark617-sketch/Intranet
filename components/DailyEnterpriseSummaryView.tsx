@@ -468,8 +468,8 @@ export const DailyEnterpriseSummaryView: React.FC<DailyEnterpriseSummaryViewProp
         'Quantity': item.order.quantity,
         'Upholstery': item.order.upholstery,
         'Current Stage': item.order.currentStage || 'Finished',
-        'Steps Today': item.stepsToday.map(s => s.stage).join(', ') || 'Final inspection / Dispatch',
-        'Final inspection Today': item.isFinalQcToday ? 'YES' : 'NO',
+        'Steps Today': item.stepsToday.map(s => s.stage).join(', ') || 'Final QC / Dispatch',
+        'Final QC Today': item.isFinalQcToday ? 'YES' : 'NO',
         'Dispatched Today': item.isDispatchToday ? 'YES' : 'NO',
       }));
       const wsProd = XLSX.utils.json_to_sheet(prodRows);
@@ -576,7 +576,7 @@ export const DailyEnterpriseSummaryView: React.FC<DailyEnterpriseSummaryViewProp
           key: o.order.opfNo,
           left: o.order.modelName || o.order.opfNo,
           sub: o.order.opfNo,
-          right: o.isDispatchToday ? 'Dispatched' : o.isFinalQcToday ? 'Passed inspection' : pl(o.order.quantity, 'chair'),
+          right: o.isDispatchToday ? 'Dispatched' : o.isFinalQcToday ? 'Passed QC' : pl(o.order.quantity, 'chair'),
         }))}
       />
 

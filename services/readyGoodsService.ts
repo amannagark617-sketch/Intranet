@@ -1,3 +1,9 @@
+// Ready Goods now lives in the "Ready Goods" tab of the Live PMS spreadsheet (pinned by gid).
+const LIVE_SPREADSHEET_ID = '1SCbARqE4Yc6ELPoq8eIrWQ0zkiTQ3JB1SzFKPZMrBe8';
+const READY_GOODS_TAB_GID = '620154471';
+export const READY_GOODS_TAB_CSV_URL = `https://docs.google.com/spreadsheets/d/${LIVE_SPREADSHEET_ID}/export?format=csv&gid=${READY_GOODS_TAB_GID}`;
+
+// Previous standalone published sheet; kept only as a fallback if the tab cannot be read.
 export const READY_GOODS_SHEET_PUB_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5BLvJ43V0mGuTuVMlZCRAiGGPBdiKagCsKrTPtBSisW5Ksyr6nptWEokiYTYJ3Le02_ySm84PYCif/pub?gid=223115185&single=true&output=csv';
 
 export interface ReadyGoodItem {
@@ -119,101 +125,96 @@ export const formatINR = (amount: number): string => {
   }).format(Math.round(amount));
 };
 
+/**
+ * Parses the Ready Goods CSV. Columns are read relative to the "OPF No." column, so the data may
+ * start in column A (a dedicated tab) or in column X (the old layout) and still line up.
+ */
+export const parseReadyGoodsCsv = (csvText: string): ReadyGoodItem[] => {
+  if (!csvText || csvText.trim().length === 0) return [];
+  const lines = csvText.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+
+  const OLD_OPF_COL = 23; // column X in the old layout
+  let offset = 0;
+  let dataStart = 3;
+  for (let r = 0; r < Math.min(lines.length, 8); r++) {
+    const cells = robustCsvSplit(lines[r]);
+    const idx = cells.findIndex(c => /opf\s*no/i.test(c));
+    if (idx >= 0) {
+      offset = idx - OLD_OPF_COL;
+      dataStart = r + 1;
+      break;
+    }
+  }
+  const col = (cols: string[], i: number) => cols[i + offset];
+
+  const items: ReadyGoodItem[] = [];
+  lines.slice(dataStart).forEach((line, idx) => {
+    if (!line || !line.trim()) return;
+    const cols = robustCsvSplit(line);
+    const rawOpf = col(cols, 23)?.trim();
+    if (!rawOpf || rawOpf.startsWith('*') || /^(opf no\.?|total opf)$/i.test(rawOpf)) return;
+    const readyGoodsQty = Math.round(cleanNum(col(cols, 25)));
+    if (cols.length <= 25 + offset) return;
+
+    items.push({
+      id: `rg-${rawOpf}-${idx}`,
+      opfNo: rawOpf,
+      orderQty: Math.round(cleanNum(col(cols, 24))),
+      readyGoodsQty,
+      creName: col(cols, 26)?.trim() || '',
+      salesPerson: col(cols, 27)?.trim() || '',
+      customerName: col(cols, 28)?.trim() || '',
+      companyName: col(cols, 29)?.trim() || '',
+      location: col(cols, 30)?.trim() || '',
+      grossAmount: cleanNum(col(cols, 31)),
+      amountReceived: cleanNum(col(cols, 32)),
+      bank: cleanNum(col(cols, 33)),
+      receivable: cleanNum(col(cols, 34)),
+      warehouseCharges: cleanNum(col(cols, 35)),
+      totalReceived: cleanNum(col(cols, 36)),
+      balancePayment: cleanNum(col(cols, 37)),
+      readyGoodsDate: col(cols, 38)?.trim() || '',
+      pctBalancePayment: col(cols, 39)?.trim() || '',
+      daysInFactory: Math.round(cleanNum(col(cols, 40))),
+      category: col(cols, 42)?.trim() || '',
+      dateRange: col(cols, 43)?.trim() || 'Other',
+      modelOfRecliners: col(cols, 49)?.trim() || '',
+      creNextFollowUpDate: col(cols, 50)?.trim() || '',
+      creCallingRemarks: col(cols, 51)?.trim() || '',
+      noOfFollowUps: Math.round(cleanNum(col(cols, 52))),
+      formLink: col(cols, 53)?.trim() || '',
+    });
+  });
+  return items;
+};
+
 export const fetchReadyGoodsData = async (force = false): Promise<ReadyGoodItem[]> => {
   const now = Date.now();
   if (!force && cachedReadyGoods && now - lastFetchTime < CACHE_TTL_MS) {
     return cachedReadyGoods;
   }
 
-  let csvText = '';
-  try {
-    const res = await fetch(READY_GOODS_SHEET_PUB_CSV_URL, { cache: 'no-store' });
-    if (res.ok) {
-      csvText = await res.text();
+  const fetchCsv = async (url: string): Promise<string> => {
+    try {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) return '';
+      const text = await res.text();
+      return /^\s*<!doctype html|<html/i.test(text) ? '' : text;
+    } catch (err) {
+      console.error('Failed fetching Ready Goods sheet:', err);
+      return '';
     }
-  } catch (err) {
-    console.error('Failed fetching Ready Goods sheet:', err);
-  }
+  };
 
-  if (!csvText || csvText.trim().length === 0) {
+  // Primary: the Ready Goods tab. Fallback: the old standalone sheet.
+  let items = parseReadyGoodsCsv(await fetchCsv(READY_GOODS_TAB_CSV_URL));
+  if (items.length === 0) {
+    items = parseReadyGoodsCsv(await fetchCsv(READY_GOODS_SHEET_PUB_CSV_URL));
+  }
+  if (items.length === 0) {
     return cachedReadyGoods && cachedReadyGoods.length > 0 ? cachedReadyGoods : INITIAL_READY_GOODS_ITEMS;
   }
-
-  const lines = csvText.trim().split(/\r?\n/);
-  if (lines.length < 4) {
-    return cachedReadyGoods && cachedReadyGoods.length > 0 ? cachedReadyGoods : INITIAL_READY_GOODS_ITEMS;
-  }
-
-  // Rows 0-2 are summary & headers; data rows start at index 3
-  const items: ReadyGoodItem[] = [];
-  const dataLines = lines.slice(3);
-
-  dataLines.forEach((line, idx) => {
-    if (!line || !line.trim()) return;
-    const cols = robustCsvSplit(line);
-    // Col X is index 23
-    if (cols.length <= 23) return;
-
-    const rawOpf = cols[23]?.trim();
-    if (!rawOpf || rawOpf.startsWith('*') || rawOpf.toLowerCase() === 'opf no.' || rawOpf.toLowerCase() === 'total opf') {
-      return;
-    }
-
-    const opfNo = rawOpf;
-    const orderQty = Math.round(cleanNum(cols[24]));
-    const readyGoodsQty = Math.round(cleanNum(cols[25]));
-    const creName = cols[26]?.trim() || '';
-    const salesPerson = cols[27]?.trim() || '';
-    const customerName = cols[28]?.trim() || '';
-    const companyName = cols[29]?.trim() || '';
-    const location = cols[30]?.trim() || '';
-    const grossAmount = cleanNum(cols[31]);
-    const amountReceived = cleanNum(cols[32]);
-    const bank = cleanNum(cols[33]);
-    const receivable = cleanNum(cols[34]);
-    const warehouseCharges = cleanNum(cols[35]);
-    const totalReceived = cleanNum(cols[36]);
-    const balancePayment = cleanNum(cols[37]);
-    const readyGoodsDate = cols[38]?.trim() || '';
-    const pctBalancePayment = cols[39]?.trim() || '';
-    const daysInFactory = Math.round(cleanNum(cols[40]));
-    const category = cols[42]?.trim() || '';
-    const dateRange = cols[43]?.trim() || 'Other';
-    const modelOfRecliners = cols[49]?.trim() || '';
-    const creNextFollowUpDate = cols[50]?.trim() || '';
-    const creCallingRemarks = cols[51]?.trim() || '';
-    const noOfFollowUps = Math.round(cleanNum(cols[52]));
-    const formLink = cols[53]?.trim() || '';
-
-    items.push({
-      id: `rg-${opfNo}-${idx}`,
-      opfNo,
-      orderQty,
-      readyGoodsQty,
-      creName,
-      salesPerson,
-      customerName,
-      companyName,
-      location,
-      grossAmount,
-      amountReceived,
-      bank,
-      receivable,
-      warehouseCharges,
-      totalReceived,
-      balancePayment,
-      readyGoodsDate,
-      pctBalancePayment,
-      daysInFactory,
-      category,
-      dateRange,
-      modelOfRecliners,
-      creNextFollowUpDate,
-      creCallingRemarks,
-      noOfFollowUps,
-      formLink,
-    });
-  });
 
   cachedReadyGoods = items;
   lastFetchTime = Date.now();

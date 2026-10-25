@@ -125,7 +125,7 @@ export interface FactoryWeekScheduleItem {
 }
 
 /**
- * Returns clean, deterministic calendar weeks for any given month (e.g. "2026-08").
+ * Returns clean, deterministic Monday-Sunday weeks for any given month (e.g. "2026-08").
  * Ensures every day from the 1st of the month to the last day of the month is covered
  * without spilling into previous or subsequent months.
  */
@@ -139,50 +139,23 @@ export const getWeeksForMonth = (monthKey: string): FactoryWeekScheduleItem[] =>
   const pad = (n: number) => String(n).padStart(2, '0');
   const makeYMD = (d: number) => `${year}-${pad(month)}-${pad(d)}`;
 
-  const weeks: FactoryWeekScheduleItem[] = [
-    {
-      weekNumInMonth: 1,
-      weekName: 'Week 1',
-      startDate: makeYMD(1),
-      endDate: makeYMD(Math.min(7, daysInMonth)),
-      assignedMonthKey: monthKey,
-      rangeLabel: `(${getOrdinal(1)} ${mShort} to ${getOrdinal(Math.min(7, daysInMonth))} ${mShort})`,
-    },
-    {
-      weekNumInMonth: 2,
-      weekName: 'Week 2',
-      startDate: makeYMD(8),
-      endDate: makeYMD(Math.min(14, daysInMonth)),
-      assignedMonthKey: monthKey,
-      rangeLabel: `(${getOrdinal(8)} ${mShort} to ${getOrdinal(Math.min(14, daysInMonth))} ${mShort})`,
-    },
-    {
-      weekNumInMonth: 3,
-      weekName: 'Week 3',
-      startDate: makeYMD(15),
-      endDate: makeYMD(Math.min(21, daysInMonth)),
-      assignedMonthKey: monthKey,
-      rangeLabel: `(${getOrdinal(15)} ${mShort} to ${getOrdinal(Math.min(21, daysInMonth))} ${mShort})`,
-    },
-    {
-      weekNumInMonth: 4,
-      weekName: 'Week 4',
-      startDate: makeYMD(22),
-      endDate: makeYMD(Math.min(28, daysInMonth)),
-      assignedMonthKey: monthKey,
-      rangeLabel: `(${getOrdinal(22)} ${mShort} to ${getOrdinal(Math.min(28, daysInMonth))} ${mShort})`,
-    },
-  ];
-
-  if (daysInMonth > 28) {
+  // Monday-Sunday weeks, clipped to the month (the first/last week may be shorter).
+  const weeks: FactoryWeekScheduleItem[] = [];
+  let day = 1;
+  while (day <= daysInMonth) {
+    const dow = new Date(year, month - 1, day).getDay(); // 0 = Sunday
+    const daysToSunday = dow === 0 ? 0 : 7 - dow;
+    const endDay = Math.min(day + daysToSunday, daysInMonth);
+    const n = weeks.length + 1;
     weeks.push({
-      weekNumInMonth: 5,
-      weekName: 'Week 5',
-      startDate: makeYMD(29),
-      endDate: makeYMD(daysInMonth),
+      weekNumInMonth: n,
+      weekName: `Week ${n}`,
+      startDate: makeYMD(day),
+      endDate: makeYMD(endDay),
       assignedMonthKey: monthKey,
-      rangeLabel: `(${getOrdinal(29)} ${mShort} to ${getOrdinal(daysInMonth)} ${mShort})`,
+      rangeLabel: `(${getOrdinal(day)} ${mShort} to ${getOrdinal(endDay)} ${mShort})`,
     });
+    day = endDay + 1;
   }
 
   return weeks;
